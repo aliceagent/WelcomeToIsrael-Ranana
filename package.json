@@ -13,18 +13,23 @@
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@ai-sdk/moonshotai": "^3.0.41",
+    "@ai-sdk/react": "^4.0.86",
+    "ai": "^7.0.83",
     "leaflet": "^1.9.4",
     "minisearch": "^7.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
-    "react-router-dom": "^6.30.1"
+    "react-router-dom": "^6.30.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
     "@types/leaflet": "^1.9.21",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@vercel/node": "^9.0.1",
     "@vitejs/plugin-react": "^4.3.4",
     "satori": "^0.33.4",
     "typescript": "^5.7.3",

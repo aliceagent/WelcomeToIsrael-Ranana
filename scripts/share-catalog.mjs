@@ -68,6 +68,7 @@ export const FOLDERS = [
 export const PAGES = [
   { id: "home", path: "/", title: "Welcome to Ra'anana", he: "ברוכים הבאים לרעננה", kicker: "Daily directory", description: "Restaurants, groceries, schools, health, transit, and emergency numbers for English and French speakers in Ra'anana. Works offline.", kind: "home" },
   { id: "food", path: "/food", title: "Food in Ra'anana", he: "אוכל ברעננה", kicker: "Eat · Order · Shop", description: "Restaurants, bakeries, groceries, French food, and delivery — the daily food map for Ra'anana.", kind: "food" },
+  { id: "ask", path: "/ask", title: "How do you need help in Israel?", he: "איך אפשר לעזור לכם בישראל?", kicker: "Ask · Directory", description: "Ask a question. We search the Ra'anana directory first, then answer with jump-to cards and general Israel help.", kind: "place" },
   { id: "search", path: "/search", title: "Search Ra'anana", he: "חיפוש", kicker: "Directory", description: "Find an electrician, pharmacy, dinner, school, or clinic in the Ra'anana directory.", kind: "place" },
   { id: "saved", path: "/saved", title: "Saved places", he: "שמורים", kicker: "Your list", description: "The Ra'anana places and apps you starred for later.", kind: "place" },
   { id: "emergency", path: "/emergency", title: "Need help now", he: "חירום", kicker: "SOS", description: "Police 100, MDA 101, Fire 102, Home Front 104, city 107, and nearby shelters.", kind: "sos" },

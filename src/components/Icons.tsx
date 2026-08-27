@@ -51,6 +51,26 @@ export function FoodIcon({ filled, size }: GlyphProps) {
   );
 }
 
+export function AskIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      focusable="false"
+    >
+      <path d="M12 3.2 13.4 8.4 18.6 9.8 13.4 11.2 12 16.4 10.6 11.2 5.4 9.8 10.6 8.4 12 3.2Z" />
+      <path d="M19 15.2 19.7 17.4 22 18.1 19.7 18.8 19 21 18.3 18.8 16 18.1 18.3 17.4 19 15.2Z" />
+    </svg>
+  );
+}
+
 export function SearchIcon({ filled, size = 28 }: GlyphProps) {
   return (
     <svg

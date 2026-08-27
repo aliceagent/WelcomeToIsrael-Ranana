@@ -3,6 +3,9 @@ dist
 *.tsbuildinfo
 .DS_Store
 .vercel
+.env
+.env.local
+.env.*.local
 data/raw/*.json
 data/raw/*.csv
 data/raw/*.xlsx

@@ -28,6 +28,35 @@ export const dict = {
   quickApps: { en: "Everyday apps", fr: "Applis du quotidien", he: "אפליקציות יומיום" },
   nearbyFood: { en: "Near home", fr: "Près de la maison", he: "אוכל ליד הבית" },
   iNeed: { en: "I need…", fr: "J'ai besoin de…", he: "אני צריך…" },
+  askHeadline: {
+    en: "How do you need help in Israel?",
+    fr: "De quoi avez-vous besoin en Israël ?",
+    he: "איך אפשר לעזור לכם בישראל?",
+  },
+  askHint: {
+    en: "Ask in English, French, or Hebrew. We search this Ra'anana directory first, then answer the rest.",
+    fr: "Posez la question en anglais, français ou hébreu. On cherche d'abord dans l'annuaire de Ra'anana.",
+    he: "שאלו באנגלית, צרפתית או עברית. קודם מחפשים במדריך רעננה, ואז עונים.",
+  },
+  askPlaceholder: {
+    en: "School, plumber, kupah, dinner…",
+    fr: "École, plombier, kupah, dîner…",
+    he: "בית ספר, אינסטלטור, קופה, ארוחת ערב…",
+  },
+  askSend: { en: "Ask", fr: "Demander", he: "שאלו" },
+  askLooking: { en: "Looking in the directory…", fr: "Recherche dans l'annuaire…", he: "מחפשים במדריך…" },
+  askFromDirectory: { en: "From the directory", fr: "Dans l'annuaire", he: "מהמדריך" },
+  askOpenList: { en: "Open", fr: "Ouvrir", he: "פתח" },
+  askUnavailable: {
+    en: "The helper is offline right now. Directory cards below still work.",
+    fr: "L'assistant est indisponible. Les fiches de l'annuaire fonctionnent encore.",
+    he: "העוזר לא זמין כרגע. כרטיסי המדריך עדיין עובדים.",
+  },
+  askOffline: {
+    en: "You're offline. Here are matching cards from the directory on this phone.",
+    fr: "Hors ligne. Voici les fiches correspondantes déjà sur cet appareil.",
+    he: "אין רשת. הנה כרטיסים תואמים ששמורים במכשיר.",
+  },
   searchEmpty: {
     en: "Tap a need, or type a name, phone, or Hebrew word.",
     fr: "Touchez un besoin, ou tapez un nom, un numéro, un mot d'hébreu.",

@@ -188,6 +188,137 @@ button, a {
   min-width: 0;
 }
 
+.ask-hero {
+  background: var(--olive);
+  color: #f7f1e4;
+  border-radius: 22px;
+  padding: 16px 16px 14px;
+  margin: 0 0 14px;
+  box-shadow: var(--shadow);
+}
+.ask-hero h2 {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.ask-sub {
+  margin: 0 0 12px;
+  color: rgba(247, 241, 228, 0.82);
+  font-size: 0.92rem;
+}
+.ask-form,
+.ask-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cream);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 8px 8px 14px;
+  min-height: 52px;
+}
+.ask-form svg,
+.ask-composer svg {
+  flex: none;
+  color: var(--olive);
+}
+.ask-form input,
+.ask-composer input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: none;
+  min-width: 0;
+}
+.ask-go {
+  border: 0;
+  background: var(--terracotta);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 10px 16px;
+  min-height: 40px;
+}
+.ask-go:disabled {
+  opacity: 0.55;
+}
+.ask-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.ask-chip {
+  border: 1px solid rgba(247, 241, 228, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 0.82rem;
+  text-align: start;
+}
+.ask-page .ask-chip {
+  border-color: var(--line);
+  background: var(--cream);
+  color: var(--ink);
+}
+.ask-kicker {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.ask-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ask-msg {
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+.ask-msg.user {
+  align-self: flex-end;
+  max-width: 92%;
+  background: var(--olive);
+  color: #f7f1e4;
+  font-weight: 650;
+}
+.ask-msg.bot {
+  background: var(--cream);
+  border: 1px solid var(--line);
+}
+.ask-p {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+}
+.ask-p:last-child {
+  margin-bottom: 0;
+}
+.ask-cards-label {
+  margin: 8px 0 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.ask-folders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+.ask-composer {
+  position: sticky;
+  bottom: calc(var(--nav-h) - 12px);
+  z-index: 8;
+  box-shadow: var(--shadow);
+  margin-top: 8px;
+}
+
 .screen-title {
   font-family: var(--font);
   font-size: 1.45rem;

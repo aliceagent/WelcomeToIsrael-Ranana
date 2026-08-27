@@ -15,6 +15,7 @@ import { MorePage } from "./pages/More";
 import { HubPage } from "./pages/Hub";
 import { FoodPage } from "./pages/Food";
 import { FolderPage } from "./pages/Folder";
+import { AskPage } from "./pages/Ask";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/food" element={<FoodPage />} />
         <Route path="/d/:slug" element={<FolderPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/ask" element={<AskPage />} />
         <Route path="/c/:slug" element={<CategoryPage />} />
         <Route path="/e/:slug" element={<RecordPage />} />
         <Route path="/map" element={<MapPage />} />
