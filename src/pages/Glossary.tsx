@@ -19,7 +19,7 @@ export function GlossaryPage() {
   }, [q]);
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)" }}>{t(lang, "glossary")}</h1>
+      <h1 className="chrome-title">{t(lang, "glossary")}</h1>
       <form className="search" onSubmit={(e) => e.preventDefault()}>
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t(lang, "searchHint")} />
       </form>

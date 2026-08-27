@@ -19,7 +19,7 @@ export function EmergencyPage() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)", color: "#8a2f1c" }}>{t(lang, "needHelpNow")}</h1>
+      <h1 className="chrome-title">{t(lang, "needHelpNow")}</h1>
       <div className="banner warn">{t(lang, "safetyNav")}</div>
       {strip.map((r) =>
         r?.phone_primary ? (

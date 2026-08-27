@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import type { Lang } from "../lib/types";
 import { getFolder } from "../lib/directory";
+import { fallbackParent, isTabPath, useChromeTitle } from "../lib/nav";
 
 const LANGS: Lang[] = ["en", "fr", "he"];
 
@@ -16,8 +17,11 @@ function scrollToTop() {
 export function Layout() {
   const { lang, setLang, online } = useStore();
   const loc = useLocation();
+  const navigate = useNavigate();
+  const title = useChromeTitle();
   const folder = loc.pathname.startsWith("/d/") ? getFolder(loc.pathname.slice(3)) : undefined;
   const foodOn = loc.pathname === "/food" || folder?.group === "food";
+  const tab = isTabPath(loc.pathname);
 
   useEffect(() => {
     if (loc.hash) {
@@ -32,16 +36,32 @@ export function Layout() {
     return () => cancelAnimationFrame(frame);
   }, [loc.pathname, loc.hash]);
 
+  function goBack() {
+    if (loc.key !== "default") navigate(-1);
+    else navigate(fallbackParent(loc.pathname));
+  }
+
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <Link className="brand" to="/">
-          <div className="mark">ר</div>
-          <div>
-            <h1>{t(lang, "appName")}</h1>
-            <p>{t(lang, "tagline")}</p>
-          </div>
-        </Link>
+      <header className={`topbar ${tab ? "tab" : "stack"}`}>
+        {tab ? (
+          <Link className="brand" to="/">
+            <div className="mark">ר</div>
+            <div>
+              <h1>{title}</h1>
+              {loc.pathname === "/" ? <p>{t(lang, "tagline")}</p> : null}
+            </div>
+          </Link>
+        ) : (
+          <>
+            <button type="button" className="back-btn" onClick={goBack} aria-label={t(lang, "back")}>
+              <span className="chev" aria-hidden>
+                ‹
+              </span>
+            </button>
+            <h1 className="nav-title">{title}</h1>
+          </>
+        )}
         <div className="lang-switch" role="group" aria-label={t(lang, "language")}>
           {LANGS.map((l) => (
             <button key={l} className={l === lang ? "on" : ""} onClick={() => setLang(l)}>

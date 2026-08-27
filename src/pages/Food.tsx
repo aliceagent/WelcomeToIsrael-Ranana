@@ -22,7 +22,7 @@ export function FoodPage() {
 
   return (
     <div>
-      <h1 className="screen-title">{t(lang, "food")}</h1>
+      <h1 className="chrome-title">{t(lang, "food")}</h1>
       <form className="search" onSubmit={(e) => e.preventDefault()}>
         <span>⌕</span>
         <input

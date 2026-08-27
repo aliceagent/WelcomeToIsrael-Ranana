@@ -14,7 +14,7 @@ export function MorePage() {
   ];
   return (
     <div>
-      <h1 className="screen-title">{t(lang, "more")}</h1>
+      <h1 className="chrome-title">{t(lang, "more")}</h1>
       {links.map(([to, label, ico]) => (
         <Link className="card" key={to} to={to}>
           <h3>

@@ -19,6 +19,7 @@ export const dict = {
     he: "סושי, שופרסל, קרואסון, וולט…",
   },
   home: { en: "Home", fr: "Accueil", he: "בית" },
+  back: { en: "Back", fr: "Retour", he: "חזרה" },
   map: { en: "Map", fr: "Carte", he: "מפה" },
   saved: { en: "Saved", fr: "Favoris", he: "שמורים" },
   more: { en: "More", fr: "Plus", he: "עוד" },

@@ -24,7 +24,7 @@ export function HubPage() {
     .slice(0, 40);
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)" }}>{t(lang, titleKey)}</h1>
+      <h1 className="chrome-title">{t(lang, titleKey)}</h1>
       {items.map((r) => (
         <RecordCard key={r.record_id} r={r} compact />
       ))}

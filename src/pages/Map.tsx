@@ -22,7 +22,7 @@ export function MapPage() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)" }}>{t(lang, "map")}</h1>
+      <h1 className="chrome-title">{t(lang, "map")}</h1>
       <div className="filters">
         <button className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>
           {t(lang, "any")}

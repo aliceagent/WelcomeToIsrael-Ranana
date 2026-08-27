@@ -11,7 +11,7 @@ export function ChecklistsPage() {
   const done = items.filter((i) => checks.has(i.record_id)).length;
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)" }}>{t(lang, "checklists")}</h1>
+      <h1 className="chrome-title">{t(lang, "checklists")}</h1>
       <p className="muted">
         {done}/{items.length} {t(lang, "progress")}
       </p>

@@ -41,7 +41,7 @@ export function CategoryPage() {
 
   return (
     <div>
-      <h1 className="detail" style={{ fontFamily: "var(--display)", fontSize: "1.8rem" }}>
+      <h1 className="chrome-title">
         {CATEGORY_ICONS[category]} {categoryLabel(lang, category)}
       </h1>
       <p className="muted">

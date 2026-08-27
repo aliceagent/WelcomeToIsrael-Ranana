@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
@@ -34,15 +34,7 @@ export function FolderPage() {
 
   return (
     <div>
-      <p className="crumb">
-        <Link to={folder.group === "food" ? "/food" : "/"}>{folder.group === "food" ? t(lang, "food") : t(lang, "home")}</Link>
-        <span className="muted"> / </span>
-        <span>{title}</span>
-      </p>
-      <h1 className="detail" style={{ fontFamily: "var(--font)", fontSize: "1.55rem", fontWeight: 800 }}>
-        <span className="title-emoji">{folder.icon}</span> {title}
-      </h1>
-      {folder.hint ? <p className="muted">{folder.hint[lang]}</p> : null}
+      {folder.hint ? <p className="muted" style={{ marginTop: 0 }}>{folder.hint[lang]}</p> : null}
       <p className="muted">
         {items.length} {t(lang, "results")}
       </p>

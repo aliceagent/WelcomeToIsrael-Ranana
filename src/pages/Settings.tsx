@@ -10,7 +10,7 @@ export function SettingsPage() {
 
   return (
     <div>
-      <h1 className="screen-title">{t(lang, "settings")}</h1>
+      <h1 className="chrome-title">{t(lang, "settings")}</h1>
       <div className="sheet">
         <h2>{t(lang, "homePin")}</h2>
         <p className="muted">{t(lang, "homePinHelp")}</p>

@@ -14,7 +14,7 @@ export function ShareKitPage() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--display)" }}>{t(lang, "shareKit")}</h1>
+      <h1 className="chrome-title">{t(lang, "shareKit")}</h1>
       <p>{t(lang, "tagline")}</p>
       <div className="actions">
         <button className="btn primary" onClick={() => shareContent(t(lang, "appName"), t(lang, "tagline"), origin)}>

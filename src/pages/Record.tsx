@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getBySlug } from "../lib/data";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
@@ -188,18 +188,13 @@ export function RecordPage() {
         {r.source_url_primary ? (
           <>
             {" · "}
-            <a href={r.source_url_primary} target="_blank" rel="noreferrer">
+            <a className="source-link" href={r.source_url_primary} target="_blank" rel="noreferrer">
               {t(lang, "source")}
             </a>
           </>
         ) : null}
       </p>
       {r.verification_status ? <p className="muted">{r.verification_status}</p> : null}
-      <p>
-        <Link to={`/c/${r.category.toLowerCase().replace(/['’]/g, "").replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}>
-          ← {r.category}
-        </Link>
-      </p>
     </article>
   );
 }

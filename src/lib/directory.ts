@@ -456,6 +456,13 @@ export function getFolder(id: string | undefined): Folder | undefined {
   return folderById.get(id);
 }
 
+/** Best folder to return to when a record is opened without history. */
+export function folderForRecord(r: Resource): Folder | undefined {
+  const hits = FOLDERS.filter((f) => f.match(r));
+  if (!hits.length) return undefined;
+  return hits.find((f) => f.featured) || hits.find((f) => f.group === "food") || hits[0];
+}
+
 export function folderLabel(folder: { title: Copy }, lang: Lang): string {
   return folder.title[lang];
 }

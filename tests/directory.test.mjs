@@ -65,6 +65,22 @@ test("app is not gated on kids or driving questions", () => {
   assert.match(store, /drives: true, kids: true/);
 });
 
+test("nested screens have a fixed back button in the header", () => {
+  const layout = readFileSync(join(root, "src/components/Layout.tsx"), "utf8");
+  const css = readFileSync(join(root, "src/styles/global.css"), "utf8");
+  const record = readFileSync(join(root, "src/pages/Record.tsx"), "utf8");
+  const folder = readFileSync(join(root, "src/pages/Folder.tsx"), "utf8");
+  const nav = readFileSync(join(root, "src/lib/nav.ts"), "utf8");
+  assert.match(layout, /back-btn/);
+  assert.match(layout, /navigate\(-1\)/);
+  assert.match(css, /\.topbar[\s\S]*position:\s*fixed/);
+  assert.match(css, /\.back-btn[\s\S]*min-width:\s*44px/);
+  assert.match(css, /a \{ color: inherit; text-decoration: none; \}/);
+  assert.equal(record.includes("←"), false);
+  assert.equal(folder.includes("crumb"), false);
+  assert.match(nav, /folderForRecord/);
+});
+
 test("route changes scroll the window back to the top", () => {
   const layout = readFileSync(join(root, "src/components/Layout.tsx"), "utf8");
   assert.match(layout, /scrollTo\(0, 0\)/);

@@ -42,10 +42,10 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
   const type = TYPE_LABELS[r.record_type]?.[lang];
   const saved = favorites.has(r.record_id);
   return (
-    <div className="card" style={{ position: "relative" }}>
-      <Link to={recordPath(r)} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+    <div className="card">
+      <Link to={recordPath(r)} className="card-link">
         <div className="card-row">
-          <div style={{ flex: 1, paddingInlineEnd: 48 }}>
+          <div className="card-body">
             {r.name_he && lang !== "he" ? <div className="he-name">{r.name_he}</div> : null}
             <h3>{name}</h3>
             {!compact && desc ? <p className="muted" style={{ margin: 0 }}>{desc}</p> : null}
@@ -61,7 +61,6 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
       <button
         type="button"
         className={`star ${saved ? "on" : ""}`}
-        style={{ position: "absolute", top: 10, insetInlineEnd: 10, minHeight: 36, padding: "6px 10px" }}
         aria-pressed={saved}
         aria-label={t(lang, "save")}
         onClick={(e) => {
