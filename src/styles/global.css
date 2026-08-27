@@ -14,7 +14,7 @@
   --radius: 18px;
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
-  --nav-h: calc(76px + var(--safe-b));
+  --nav-h: calc(84px + var(--safe-b));
   --top-h: calc(56px + var(--safe-t));
   --font: "Heebo", "Segoe UI", system-ui, sans-serif;
   --display: "Fraunces", "Times New Roman", serif;
@@ -78,16 +78,16 @@ button, a {
   min-width: 0;
 }
 .mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   background: var(--olive);
   color: #f6efdc;
   display: grid;
   place-items: center;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 20px;
   flex: none;
 }
 .brand h1,
@@ -152,10 +152,13 @@ button, a {
 .lang-switch button {
   border: 0;
   background: transparent;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 999px;
   color: var(--ink-soft);
   cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-height: 36px;
 }
 .lang-switch button.on {
   background: var(--olive);
@@ -165,12 +168,17 @@ button, a {
 .search {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: var(--cream);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 12px 16px;
+  min-height: 48px;
   box-shadow: var(--shadow);
+}
+.search svg {
+  flex: none;
+  color: var(--ink-soft);
 }
 .search input {
   flex: 1;
@@ -222,7 +230,7 @@ button, a {
   unicode-bidi: isolate;
 }
 .sos-chip .lbl {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   opacity: 0.9;
   text-align: center;
   line-height: 1.15;
@@ -239,23 +247,23 @@ button, a {
 }
 .quick-app {
   flex: none;
-  width: 72px;
+  width: 76px;
   text-align: center;
   text-decoration: none;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 650;
   color: var(--ink);
   line-height: 1.2;
 }
 .quick-app .dot {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 18px;
   background: var(--cream);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
-  font-size: 1.55rem;
+  font-size: 1.9rem;
   margin: 0 auto 6px;
   box-shadow: var(--shadow);
 }
@@ -274,18 +282,22 @@ button, a {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: var(--cream);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 10px 14px;
   text-decoration: none;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  min-height: 44px;
+  min-height: 46px;
   white-space: nowrap;
   box-shadow: var(--shadow);
   color: var(--ink);
+}
+.need-ico {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 .need-chip.inline { margin: 10px 0 4px; }
 
@@ -308,22 +320,22 @@ button, a {
   border-radius: 16px;
   padding: 12px 6px 10px;
   text-align: center;
-  min-height: 96px;
+  min-height: 104px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 4px;
   box-shadow: var(--shadow);
 }
-.food-tile .emoji { font-size: 1.85rem; line-height: 1; }
+.food-tile .emoji { font-size: 2rem; line-height: 1; }
 .food-tile strong {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   line-height: 1.2;
   font-weight: 750;
 }
 .food-tile .count {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--ink-soft);
 }
 
@@ -343,18 +355,18 @@ button, a {
   color: var(--ink);
 }
 .app-icon .well {
-  width: 62px;
-  height: 62px;
+  width: 64px;
+  height: 64px;
   border-radius: 18px;
   background: var(--cream);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   box-shadow: var(--shadow);
 }
 .app-icon .lbl {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   text-align: center;
   line-height: 1.15;
   font-weight: 650;
@@ -377,7 +389,7 @@ button, a {
   box-shadow: var(--shadow);
 }
 .hub.wide { grid-column: 1 / -1; background: linear-gradient(135deg, #3a1f1c, #8a3a2a); color: #fff; border: 0; }
-.hub .emoji { font-size: 1.65rem; display: block; margin-bottom: 8px; }
+.hub .emoji { font-size: 1.85rem; display: block; margin-bottom: 8px; }
 .hub strong { display: block; font-size: 0.98rem; }
 
 .section-head {
@@ -423,8 +435,8 @@ button, a {
   text-align: center;
   min-height: 86px;
 }
-.cat-tile .emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
-.cat-tile span { font-size: 0.78rem; color: var(--ink-soft); display: block; line-height: 1.25; }
+.cat-tile .emoji { font-size: 1.85rem; display: block; margin-bottom: 6px; }
+.cat-tile span { font-size: 0.8rem; color: var(--ink-soft); display: block; line-height: 1.25; }
 
 .card {
   display: block;
@@ -501,8 +513,9 @@ button, a {
 }
 .wa-text::before {
   content: "";
-  width: 18px;
-  height: 18px;
+  mask-size: 22px 22px;
+  width: 22px;
+  height: 22px;
   flex: none;
   background: currentColor;
   mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12.04 2c-5.46 0-9.91 4.44-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.44 9.91-9.91S17.5 2 12.04 2zm5.79 14.16c-.24.68-1.4 1.26-1.94 1.34-.5.08-1.13.11-1.82-.11-.42-.14-.96-.31-1.66-.61-2.92-1.26-4.82-4.2-4.97-4.39-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.41.27-.29.58-.36.78-.36h.56c.18 0 .42-.07.66.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.2-.14.31-.28.48-.14.16-.3.37-.42.5-.14.14-.29.29-.12.56.16.27.73 1.2 1.56 1.94 1.08.96 1.98 1.26 2.26 1.4.27.14.43.12.59-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.61-.14.24.08 1.54.73 1.81.86.27.14.45.2.51.31.07.12.07.68-.17 1.36z'/></svg>") center / contain no-repeat;
@@ -539,7 +552,7 @@ button, a {
   border-top: 1px solid var(--line);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  padding: 8px 8px var(--safe-b);
+  padding: 8px 4px var(--safe-b);
   z-index: 20;
 }
 .bottom-nav a, .bottom-nav button {
@@ -547,15 +560,28 @@ button, a {
   background: none;
   border: 0;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 650;
   color: var(--ink-soft);
-  padding: 6px 0 4px;
+  padding: 8px 0 6px;
   cursor: pointer;
-  min-height: 56px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 .bottom-nav a.on, .bottom-nav button.on { color: var(--olive); font-weight: 800; }
-.bottom-nav .ico { display: block; font-size: 1.55rem; margin-bottom: 2px; line-height: 1; }
+.bottom-nav .ico {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  line-height: 0;
+}
+.bottom-nav .ico svg { display: block; }
 
 .filters {
   display: flex;

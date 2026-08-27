@@ -6,6 +6,7 @@ import { telHref } from "../lib/geo";
 import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { NeedChips } from "../components/NeedChips";
+import { SearchIcon } from "../components/Icons";
 import {
   QUICK_APPS,
   foodHomeFolders,
@@ -33,7 +34,7 @@ export function HomePage() {
   return (
     <div className="home-dir">
       <Link className="search" to="/search">
-        <span>⌕</span>
+        <SearchIcon size={22} />
         <span className="muted">{t(lang, "searchHint")}</span>
       </Link>
 

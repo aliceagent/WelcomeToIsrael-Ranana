@@ -65,6 +65,20 @@ test("app is not gated on kids or driving questions", () => {
   assert.match(store, /drives: true, kids: true/);
 });
 
+test("tab bar uses matched SVG icons instead of tiny unicode glyphs", () => {
+  const layout = readFileSync(join(root, "src/components/Layout.tsx"), "utf8");
+  const css = readFileSync(join(root, "src/styles/global.css"), "utf8");
+  const icons = readFileSync(join(root, "src/components/Icons.tsx"), "utf8");
+  assert.match(layout, /HomeIcon/);
+  assert.match(layout, /SearchIcon/);
+  assert.match(layout, /SavedIcon/);
+  assert.match(icons, /viewBox="0 0 24 24"/);
+  assert.equal(layout.includes("⌕"), false);
+  assert.equal(layout.includes("⌂"), false);
+  assert.match(css, /\.bottom-nav \.ico[\s\S]*width:\s*28px/);
+  assert.match(css, /\.app-icon \.well[\s\S]*width:\s*64px/);
+});
+
 test("nested screens have a fixed back button in the header", () => {
   const layout = readFileSync(join(root, "src/components/Layout.tsx"), "utf8");
   const css = readFileSync(join(root, "src/styles/global.css"), "utf8");

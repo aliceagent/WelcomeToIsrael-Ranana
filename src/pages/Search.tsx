@@ -4,6 +4,7 @@ import { records } from "../lib/data";
 import { buildSearch, searchRecords } from "../lib/search";
 import { RecordCard } from "../components/RecordCard";
 import { NeedChips } from "../components/NeedChips";
+import { SearchIcon } from "../components/Icons";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { matchNeed, needLabel } from "../lib/needs";
@@ -33,7 +34,7 @@ export function SearchPage() {
           setParams(q.trim() ? { q: q.trim() } : {});
         }}
       >
-        <span>⌕</span>
+        <SearchIcon size={22} />
         <input
           autoFocus
           value={q}
@@ -53,7 +54,7 @@ export function SearchPage() {
           {need ? (
             <p>
               <Link className="need-chip inline" to={need.to}>
-                {need.icon} {t(lang, "seeFolder")} {needLabel(need, lang)}
+                <span className="need-ico">{need.icon}</span> {t(lang, "seeFolder")} {needLabel(need, lang)}
               </Link>
             </p>
           ) : null}

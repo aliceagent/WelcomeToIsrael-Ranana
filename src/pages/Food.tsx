@@ -5,6 +5,7 @@ import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { foodAllFolders, folderCount, folderLabel, isFoodRecord, sortDirectory } from "../lib/directory";
 import { records } from "../lib/data";
+import { SearchIcon } from "../components/Icons";
 import { buildSearch, searchRecords } from "../lib/search";
 
 buildSearch(records);
@@ -24,7 +25,7 @@ export function FoodPage() {
     <div>
       <h1 className="chrome-title">{t(lang, "food")}</h1>
       <form className="search" onSubmit={(e) => e.preventDefault()}>
-        <span>⌕</span>
+        <SearchIcon size={22} />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}

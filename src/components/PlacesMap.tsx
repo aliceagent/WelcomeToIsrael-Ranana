@@ -21,17 +21,17 @@ function iconFor(type: string) {
   const fill = colors[type] || "#c9a227";
   return L.divIcon({
     className: "",
-    html: `<span style="display:block;width:14px;height:14px;border-radius:50%;background:${fill};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></span>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
+    html: `<span style="display:block;width:22px;height:22px;border-radius:50%;background:${fill};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></span>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
   });
 }
 
 const homeIcon = L.divIcon({
   className: "",
-  html: `<span style="display:block;width:16px;height:16px;border-radius:50%;background:#1a2b24;border:3px solid #f3ead9"></span>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
+  html: `<span style="display:block;width:22px;height:22px;border-radius:50%;background:#1a2b24;border:3px solid #f3ead9"></span>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
 });
 
 export function PlacesMap({ places, highlight }: { places: Resource[]; highlight?: string }) {

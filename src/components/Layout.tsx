@@ -5,6 +5,7 @@ import { t } from "../lib/i18n";
 import type { Lang } from "../lib/types";
 import { getFolder } from "../lib/directory";
 import { fallbackParent, isTabPath, useChromeTitle } from "../lib/nav";
+import { FoodIcon, HomeIcon, SavedIcon, SearchIcon, SosIcon } from "./Icons";
 
 const LANGS: Lang[] = ["en", "fr", "he"];
 
@@ -74,24 +75,50 @@ export function Layout() {
       <Outlet />
       <nav className="bottom-nav">
         <NavLink to="/" end className={({ isActive }) => (isActive ? "on" : "")}>
-          <span className="ico">⌂</span>
-          {t(lang, "home")}
+          {({ isActive }) => (
+            <>
+              <span className="ico">
+                <HomeIcon filled={isActive} />
+              </span>
+              {t(lang, "home")}
+            </>
+          )}
         </NavLink>
         <NavLink to="/food" className={() => (foodOn ? "on" : "")}>
-          <span className="ico">🍽</span>
+          <span className="ico">
+            <FoodIcon filled={foodOn} />
+          </span>
           {t(lang, "food")}
         </NavLink>
         <NavLink to="/search" className={({ isActive }) => (isActive ? "on" : "")}>
-          <span className="ico">⌕</span>
-          {t(lang, "search")}
+          {({ isActive }) => (
+            <>
+              <span className="ico">
+                <SearchIcon filled={isActive} />
+              </span>
+              {t(lang, "search")}
+            </>
+          )}
         </NavLink>
         <NavLink to="/saved" className={({ isActive }) => (isActive ? "on" : "")}>
-          <span className="ico">★</span>
-          {t(lang, "saved")}
+          {({ isActive }) => (
+            <>
+              <span className="ico">
+                <SavedIcon filled={isActive} />
+              </span>
+              {t(lang, "saved")}
+            </>
+          )}
         </NavLink>
         <NavLink to="/emergency" className={({ isActive }) => (isActive ? "on" : "")}>
-          <span className="ico">🚨</span>
-          {t(lang, "sos")}
+          {({ isActive }) => (
+            <>
+              <span className="ico">
+                <SosIcon filled={isActive} />
+              </span>
+              {t(lang, "sos")}
+            </>
+          )}
         </NavLink>
       </nav>
     </div>
