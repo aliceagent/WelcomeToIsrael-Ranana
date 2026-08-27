@@ -54,6 +54,9 @@ const folders = [
   ["grocery-delivery", "Grocery delivery in Ra'anana"],
   ["treats", "Treats in Ra'anana"],
   ["food", "All food in Ra'anana"],
+  ["home-help", "Trades, hardware and home help in Ra'anana"],
+  ["phone-net", "Phone and internet in Ra'anana"],
+  ["pets", "Pets in Ra'anana"],
 ];
 for (const [id, desc] of folders) {
   writeRoute(`/d/${id}`, page(`${desc}`, desc, `/d/${id}`));

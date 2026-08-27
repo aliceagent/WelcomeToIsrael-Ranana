@@ -1,5 +1,5 @@
 import type { Lang, Resource } from "./types";
-import { records } from "./data";
+import { records, getById } from "./data";
 import { priorityScore } from "./format";
 
 export type FolderGroup = "food" | "daily" | "family" | "city" | "help";
@@ -23,6 +23,8 @@ export type Folder = {
   match: (r: Resource) => boolean;
   chips?: FolderChip[];
   caveat?: "hours" | "kosher" | "shelter";
+  /** Live directories to pin at the top (Midrag, Maps, Easy…). */
+  pinIds?: string[];
 };
 
 export type Launcher = {
@@ -261,6 +263,44 @@ export const FOLDERS: Folder[] = [
     },
   },
   {
+    id: "home-help",
+    icon: "🛠️",
+    title: { en: "Trades & hardware", fr: "Artisans & bricolage", he: "בעלי מקצוע וכלי עבודה" },
+    hint: {
+      en: "Electrician, plumber, dentist, hardware — start with Midrag or Home Center. Live maps if we don't have the shop yet.",
+      fr: "Électricien, plombier, dentiste, bricolage — commencez par Midrag ou Home Center.",
+      he: "חשמלאי, אינסטלטור, רופא שיניים, כלי עבודה — התחילו במידרג או הום סנטר.",
+    },
+    group: "daily",
+    pinIds: ["TRN-026", "DIR-008", "DIR-007"],
+    match: (r) =>
+      /midrag/i.test(r.name_en || "") ||
+      subHas(r, "home & diy", "home & furniture", "home & value", "home services", "service marketplace") ||
+      /home center|ace israel|ikea|max stock|fox home|mahsanei/i.test(r.name_en || ""),
+    chips: [
+      { id: "trades", title: { en: "Trades", fr: "Artisans", he: "בעלי מקצוע" }, match: (r) => /midrag/i.test(r.name_en || "") || subHas(r, "home services", "service marketplace") },
+      { id: "hardware", title: { en: "Hardware", fr: "Bricolage", he: "כלי עבודה" }, match: (r) => subHas(r, "home & diy") || /home center|ace/i.test(r.name_en || "") },
+      { id: "furniture", title: { en: "Furniture", fr: "Meubles", he: "רהיטים" }, match: (r) => subHas(r, "home & furniture", "home & value") || /ikea|fox home|max stock/i.test(r.name_en || "") },
+    ],
+  },
+  {
+    id: "phone-net",
+    icon: "📶",
+    title: { en: "Phone & internet", fr: "Téléphone & internet", he: "טלפון ואינטרנט" },
+    hint: { en: "SIM, fiber, HOT, Cellcom, Partner, Golan", fr: "SIM, fibre, HOT, Cellcom, Partner, Golan", he: "סלים, סיבים, הוט, סלקום, פרטנר, גולן" },
+    group: "daily",
+    match: (r) => subHas(r, "telecom") || /golan|pelephone|019 mobile/i.test(r.name_en || ""),
+  },
+  {
+    id: "pets",
+    icon: "🐾",
+    title: { en: "Pets", fr: "Animaux", he: "חיות מחמד" },
+    hint: { en: "Municipal vet, licensing, pet setup", fr: "Vétérinaire municipal, licences", he: "וטרינר עירוני ורישוי" },
+    group: "family",
+    pinIds: ["MUN-005"],
+    match: (r) => subHas(r, "pets", "veterinary") || /pet setup/i.test(r.name_en || ""),
+  },
+  {
     id: "home-setup",
     icon: "🏠",
     title: { en: "Home & bills", fr: "Maison & factures", he: "בית וחשבונות" },
@@ -446,7 +486,11 @@ export function foodAllFolders(): Folder[] {
 }
 
 export function recordsInFolder(folder: Folder): Resource[] {
-  return records.filter(folder.match).sort(sortDirectory);
+  const matched = records.filter(folder.match).sort(sortDirectory);
+  if (!folder.pinIds?.length) return matched;
+  const pinned = folder.pinIds.map(getById).filter((r): r is Resource => !!r);
+  const seen = new Set(pinned.map((r) => r.record_id));
+  return [...pinned, ...matched.filter((r) => !seen.has(r.record_id))];
 }
 
 export function folderCount(folder: Folder): number {

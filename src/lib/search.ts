@@ -1,6 +1,8 @@
 import MiniSearch from "minisearch";
 import type { Resource } from "./types";
 import { priorityScore } from "./format";
+import { expandQuery, isThinTradeQuery, LIVE_LOOKUP_IDS } from "./needs";
+import { getById } from "./data";
 
 function fold(s: string): string {
   return s
@@ -12,10 +14,10 @@ function fold(s: string): string {
 }
 
 let index: MiniSearch<Resource> | null = null;
-let indexed: Resource[] = [];
+let byId = new Map<string, Resource>();
 
 export function buildSearch(records: Resource[]) {
-  indexed = records;
+  byId = new Map(records.map((r) => [r.record_id, r]));
   index = new MiniSearch({
     fields: [
       "name_en",
@@ -58,10 +60,12 @@ export function buildSearch(records: Resource[]) {
   index.addAll(records);
 }
 
-export function searchRecords(query: string): Resource[] {
+function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[] {
   if (!index || !query.trim()) return [];
-  const raw = index.search(fold(query), { combineWith: "AND" });
-  const byId = new Map(indexed.map((r) => [r.record_id, r]));
+  let raw = index.search(fold(query), { combineWith });
+  if (raw.length === 0 && combineWith === "AND" && query.trim().split(/\s+/).length > 1) {
+    raw = index.search(fold(query), { combineWith: "OR" });
+  }
   const emergency = /emergenc|urgence|חירום|rocket|alert|מקלט|shelter|ambulance|police/i.test(query);
   return raw
     .map((hit) => {
@@ -77,4 +81,27 @@ export function searchRecords(query: string): Resource[] {
     .filter((x): x is { rec: Resource; score: number } => x !== null)
     .sort((a, b) => b.score - a.score)
     .map((x) => x.rec);
+}
+
+export function searchRecords(query: string): Resource[] {
+  const queries = expandQuery(query);
+  const seen = new Set<string>();
+  const merged: Resource[] = [];
+  queries.forEach((q) => {
+    for (const rec of searchOnce(q)) {
+      if (seen.has(rec.record_id)) continue;
+      seen.add(rec.record_id);
+      merged.push(rec);
+    }
+  });
+  if (isThinTradeQuery(query) || merged.length === 0) {
+    for (const id of LIVE_LOOKUP_IDS) {
+      const rec = getById(id);
+      if (rec && !seen.has(rec.record_id)) {
+        seen.add(rec.record_id);
+        merged.push(rec);
+      }
+    }
+  }
+  return merged;
 }

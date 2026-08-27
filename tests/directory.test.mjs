@@ -64,3 +64,23 @@ test("app is not gated on kids or driving questions", () => {
   assert.equal(settings.includes("weHaveKids") || settings.includes("weDrive"), false);
   assert.match(store, /drives: true, kids: true/);
 });
+
+test("at least 30 I-need shortcuts point at real folders or pages", () => {
+  const needsSrc = readFileSync(join(root, "src/lib/needs.ts"), "utf8");
+  const dirSrc = readFileSync(join(root, "src/lib/directory.ts"), "utf8");
+  const tos = [...needsSrc.matchAll(/\bto: "([^"]+)"/g)].map((m) => m[1]);
+  assert.ok(tos.length >= 30, `only ${tos.length} needs`);
+  for (const to of tos) {
+    if (to.startsWith("/d/")) {
+      const id = to.slice(3);
+      assert.match(dirSrc, new RegExp(`id: "${id}"`), `missing folder ${id}`);
+    }
+  }
+  assert.match(needsSrc, /electrician/);
+  assert.match(needsSrc, /hardware/);
+  assert.match(needsSrc, /pharmacy/);
+  assert.match(needsSrc, /dinner/i);
+  assert.match(dirSrc, /id: "home-help"/);
+  const home = readFileSync(join(root, "src/pages/Home.tsx"), "utf8");
+  assert.match(home, /NeedChips/);
+});

@@ -77,6 +77,7 @@ export function FolderPage() {
       {folder.caveat === "shelter" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
       {folder.caveat === "hours" ? <div className="banner">{t(lang, "hoursCaveat")}</div> : null}
       {folder.caveat === "kosher" ? <div className="banner">{t(lang, "kosherCaveat")}</div> : null}
+      {folder.pinIds?.length ? <div className="banner">{t(lang, "tryLiveHelp")}</div> : null}
       {items.length === 0 ? <div className="empty">{t(lang, "noResults")}</div> : null}
       {items.map((r) => (
         <RecordCard key={r.record_id} r={r} compact />

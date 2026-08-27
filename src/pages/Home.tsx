@@ -5,6 +5,7 @@ import { t } from "../lib/i18n";
 import { telHref } from "../lib/geo";
 import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
+import { NeedChips } from "../components/NeedChips";
 import {
   QUICK_APPS,
   foodHomeFolders,
@@ -35,6 +36,8 @@ export function HomePage() {
         <span>⌕</span>
         <span className="muted">{t(lang, "searchHint")}</span>
       </Link>
+
+      <NeedChips />
 
       <div className="sos-strip" aria-label={t(lang, "emergency")}>
         {sos.map((r) => {

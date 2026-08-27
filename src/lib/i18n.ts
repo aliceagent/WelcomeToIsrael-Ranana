@@ -9,9 +9,9 @@ export const dict = {
   },
   search: { en: "Search", fr: "Rechercher", he: "חיפוש" },
   searchHint: {
-    en: "Wolt, bakery, Clalit, parking…",
-    fr: "Wolt, boulangerie, Clalit, parking…",
-    he: "וולט, מאפייה, כללית, חניה…",
+    en: "Electrician, pharmacy, dinner, hardware…",
+    fr: "Électricien, pharmacie, dîner, bricolage…",
+    he: "חשמלאי, בית מרקחת, ארוחת ערב, כלי עבודה…",
   },
   foodSearchHint: {
     en: "Sushi, Shufersal, croissant, Wolt…",
@@ -26,6 +26,19 @@ export const dict = {
   sos: { en: "SOS", fr: "SOS", he: "חירום" },
   quickApps: { en: "Everyday apps", fr: "Applis du quotidien", he: "אפליקציות יומיום" },
   nearbyFood: { en: "Near home", fr: "Près de la maison", he: "אוכל ליד הבית" },
+  iNeed: { en: "I need…", fr: "J'ai besoin de…", he: "אני צריך…" },
+  searchEmpty: {
+    en: "Tap a need, or type a name, phone, or Hebrew word.",
+    fr: "Touchez un besoin, ou tapez un nom, un numéro, un mot d'hébreu.",
+    he: "בחרו צורך, או הקלידו שם, טלפון או מילה בעברית.",
+  },
+  seeFolder: { en: "Open", fr: "Ouvrir", he: "פתח" },
+  tryLive: { en: "Look it up live", fr: "Chercher en direct", he: "לחפש בשידור חי" },
+  tryLiveHelp: {
+    en: "We may not have every shop on file. Midrag, Easy, and Google Maps cover electricians, dentists, and stores that change often.",
+    fr: "Tous les commerces ne sont pas listés. Midrag, Easy et Google Maps couvrent électriciens, dentistes et magasins qui changent souvent.",
+    he: "לא כל העסקים ברשימה. מידרג, Easy ומפות Google מכסים חשמלאים, רופאי שיניים וחנויות שמשתנות.",
+  },
   emergency: { en: "Emergency", fr: "Urgence", he: "חירום" },
   checklists: { en: "Checklists", fr: "Listes", he: "רשימות" },
   glossary: { en: "Hebrew glossary", fr: "Glossaire hébreu", he: "מילון עברי" },
