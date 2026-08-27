@@ -7,7 +7,7 @@ const FAV_KEY = "raanana.favs";
 const CHECK_KEY = "raanana.checks";
 const HOME_KEY = "raanana.home";
 const PROFILE_KEY = "raanana.profile";
-const ONBOARD_KEY = "raanana.onboarded";
+const DEFAULT_PROFILE: Profile = { drives: true, kids: true, kupah: null, bank: null };
 
 type Store = {
   lang: Lang;
@@ -21,8 +21,6 @@ type Store = {
   resetHome: () => void;
   profile: Profile;
   setProfile: (p: Partial<Profile>) => void;
-  onboarded: boolean;
-  setOnboarded: (v: boolean) => void;
   online: boolean;
 };
 
@@ -44,10 +42,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
-  const [profile, setProfileState] = useState<Profile>(() =>
-    readJson(PROFILE_KEY, { drives: null, kids: null, kupah: null, bank: null }),
-  );
-  const [onboarded, setOnboardedState] = useState(() => readJson(ONBOARD_KEY, false));
+  const [profile, setProfileState] = useState<Profile>(() => {
+    const stored = readJson<Partial<Profile>>(PROFILE_KEY, {});
+    return { ...DEFAULT_PROFILE, ...stored, drives: true, kids: true };
+  });
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
 
   useEffect(() => {
@@ -68,9 +66,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   }, [profile]);
-  useEffect(() => {
-    localStorage.setItem(ONBOARD_KEY, JSON.stringify(onboarded));
-  }, [onboarded]);
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -107,12 +102,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setHome: setHomeState,
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
       profile,
-      setProfile: (p) => setProfileState((prev) => ({ ...prev, ...p })),
-      onboarded,
-      setOnboarded: setOnboardedState,
+      setProfile: (p) => setProfileState((prev) => ({ ...prev, ...p, drives: true, kids: true })),
       online,
     }),
-    [lang, favorites, checks, home, profile, onboarded, online],
+    [lang, favorites, checks, home, profile, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

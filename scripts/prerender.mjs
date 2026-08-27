@@ -39,9 +39,25 @@ function writeRoute(urlPath, html) {
   writeFileSync(join(dir, "index.html"), html);
 }
 
-writeRoute("/", page("Welcome to Ra'anana", "Living guide for new families in Ra'anana.", "/"));
+writeRoute("/", page("Welcome to Ra'anana", "Daily directory for family life in Ra'anana — food, schools, health, and city services.", "/"));
+writeRoute("/food", page("Food — Welcome to Ra'anana", "Restaurants, bakeries, groceries, delivery, and French food in Ra'anana.", "/food"));
 writeRoute("/emergency", page("Emergency — Welcome to Ra'anana", "Critical numbers and nearby shelters.", "/emergency"));
 writeRoute("/share", page("Share kit — Welcome to Ra'anana", "Share the Ra'anana living guide.", "/share"));
+
+const folders = [
+  ["restaurants", "Eat out in Ra'anana"],
+  ["bakeries", "Bakeries and cafés in Ra'anana"],
+  ["groceries", "Groceries and supermarkets in Ra'anana"],
+  ["order-in", "Food delivery in Ra'anana"],
+  ["french-food", "French food in Ra'anana"],
+  ["butcher", "Butcher in Ra'anana"],
+  ["grocery-delivery", "Grocery delivery in Ra'anana"],
+  ["treats", "Treats in Ra'anana"],
+  ["food", "All food in Ra'anana"],
+];
+for (const [id, desc] of folders) {
+  writeRoute(`/d/${id}`, page(`${desc}`, desc, `/d/${id}`));
+}
 
 for (const rec of records) {
   const title = `${rec.name_en || rec.name_he || rec.record_id} — Ra'anana`;

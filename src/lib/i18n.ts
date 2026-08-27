@@ -3,20 +3,29 @@ import type { Lang } from "./types";
 export const dict = {
   appName: { en: "Welcome to Ra'anana", fr: "Bienvenue à Ra'anana", he: "ברוכים הבאים לרעננה" },
   tagline: {
-    en: "A living guide for a new home.",
-    fr: "Un guide pratique pour votre nouveau chez-vous.",
-    he: "מדריך חיים לבית החדש.",
+    en: "Daily directory for Ra'anana.",
+    fr: "L'annuaire du quotidien à Ra'anana.",
+    he: "מדריך יומי לרעננה.",
   },
   search: { en: "Search", fr: "Rechercher", he: "חיפוש" },
   searchHint: {
-    en: "Pharmacy, synagogue, Rav-Kav, livraison…",
-    fr: "Pharmacie, synagogue, Rav-Kav, livraison…",
-    he: "בית מרקחת, בית כנסת, רב-קו, משלוחים…",
+    en: "Wolt, bakery, Clalit, parking…",
+    fr: "Wolt, boulangerie, Clalit, parking…",
+    he: "וולט, מאפייה, כללית, חניה…",
+  },
+  foodSearchHint: {
+    en: "Sushi, Shufersal, croissant, Wolt…",
+    fr: "Sushi, Shufersal, croissant, Wolt…",
+    he: "סושי, שופרסל, קרואסון, וולט…",
   },
   home: { en: "Home", fr: "Accueil", he: "בית" },
   map: { en: "Map", fr: "Carte", he: "מפה" },
   saved: { en: "Saved", fr: "Favoris", he: "שמורים" },
   more: { en: "More", fr: "Plus", he: "עוד" },
+  food: { en: "Food", fr: "Manger", he: "אוכל" },
+  sos: { en: "SOS", fr: "SOS", he: "חירום" },
+  quickApps: { en: "Everyday apps", fr: "Applis du quotidien", he: "אפליקציות יומיום" },
+  nearbyFood: { en: "Near home", fr: "Près de la maison", he: "אוכל ליד הבית" },
   emergency: { en: "Emergency", fr: "Urgence", he: "חירום" },
   checklists: { en: "Checklists", fr: "Listes", he: "רשימות" },
   glossary: { en: "Hebrew glossary", fr: "Glossaire hébreu", he: "מילון עברי" },
@@ -101,10 +110,6 @@ export const dict = {
   useDefaultPin: { en: "Use family default pin", fr: "Utiliser le point famille", he: "נקודת ברירת המחדל של המשפחה" },
   latitude: { en: "Latitude", fr: "Latitude", he: "קו רוחב" },
   longitude: { en: "Longitude", fr: "Longitude", he: "קו אורך" },
-  profile: { en: "Household", fr: "Foyer", he: "משק בית" },
-  weDrive: { en: "We drive", fr: "Nous conduisons", he: "נוהגים" },
-  weHaveKids: { en: "School-age children", fr: "Enfants d'âge scolaire", he: "ילדים בגיל בית ספר" },
-  skip: { en: "Skip", fr: "Passer", he: "דלג" },
   continue: { en: "Continue", fr: "Continuer", he: "המשך" },
   offline: {
     en: "You're offline. The guide still works; maps and websites need a signal.",
@@ -142,11 +147,6 @@ export const dict = {
   notes: { en: "Notes", fr: "Notes", he: "הערות" },
   unknown: { en: "Not recorded", fr: "Non renseigné", he: "לא נרשם" },
   browseType: { en: "Type", fr: "Type", he: "סוג" },
-  onboardingTitle: {
-    en: "A few details so the guide fits your household",
-    fr: "Quelques détails pour adapter le guide",
-    he: "כמה פרטים כדי להתאים את המדריך",
-  },
 } as const;
 
 export type DictKey = keyof typeof dict;

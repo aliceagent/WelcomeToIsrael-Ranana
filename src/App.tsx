@@ -13,12 +13,16 @@ import { ShareKitPage } from "./pages/ShareKit";
 import { SettingsPage } from "./pages/Settings";
 import { MorePage } from "./pages/More";
 import { HubPage } from "./pages/Hub";
+import { FoodPage } from "./pages/Food";
+import { FolderPage } from "./pages/Folder";
 
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/food" element={<FoodPage />} />
+        <Route path="/d/:slug" element={<FolderPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/c/:slug" element={<CategoryPage />} />
         <Route path="/e/:slug" element={<RecordPage />} />
