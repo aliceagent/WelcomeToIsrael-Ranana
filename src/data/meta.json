@@ -1,0 +1,73 @@
+{
+  "dataset_name": "Welcome to Ra'anana",
+  "generated_on": "2026-08-27",
+  "record_count": 561,
+  "languages": [
+    "en",
+    "fr",
+    "he"
+  ],
+  "distance_method": {
+    "note": "Approximate route estimates; use live Google Maps links for current routing and traffic.",
+    "walking_route_factor": 1.18,
+    "walking_speed_kmh": 4.8,
+    "driving_route_factor": 1.25,
+    "driving_speed_kmh": 24,
+    "driving_overhead_minutes": 1.5
+  },
+  "home_default": {
+    "lat": 32.18205,
+    "lng": 34.87548,
+    "label": "Ra'anana"
+  },
+  "install_first": [
+    "APP-001",
+    "APP-003",
+    "APP-004",
+    "APP-005",
+    "APP-008",
+    "APP-009",
+    "APP-019",
+    "APP-012",
+    "APP-024",
+    "APP-014"
+  ],
+  "emergency_strip": [
+    "EMG-001",
+    "EMG-002",
+    "EMG-003",
+    "EMG-005",
+    "EMG-006"
+  ],
+  "categories": [
+    "Delivery & Online Shopping",
+    "Directories & Live Search",
+    "Education & Children",
+    "Emergency & Important Numbers",
+    "Essential Apps",
+    "Government, Aliyah & Rights",
+    "Health & Family",
+    "Hebrew & Orientation",
+    "Money, Jobs, Language & Community",
+    "Newcomer Checklists",
+    "Ra'anana Businesses",
+    "Ra'anana Local Services",
+    "Religion & Community",
+    "Safety & Public Shelters",
+    "Transport, Utilities & Housing"
+  ],
+  "record_types": [
+    "checklist",
+    "directory",
+    "glossary_term",
+    "important_phone_or_emergency_service",
+    "information_resource",
+    "local_business",
+    "mobile_app",
+    "online_retailer_or_delivery",
+    "physical_service",
+    "public_shelter",
+    "synagogue"
+  ],
+  "privacy_note": "Home street address is not published. Distances are estimates from a family home pin. Live directions are generated on-device."
+}

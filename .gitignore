@@ -1,0 +1,10 @@
+node_modules
+dist
+*.tsbuildinfo
+.DS_Store
+.vercel
+data/raw/*.json
+data/raw/*.csv
+data/raw/*.xlsx
+data/raw/*.zip
+!data/raw/Israel_Essential_Apps_for_New_Olim.xlsx
