@@ -29,8 +29,14 @@ export function RecordPage() {
         <p className="muted" style={{ margin: 0 }}>
           {type} · {r.category}
         </p>
-        <button className="star" aria-label={t(lang, "save")} onClick={() => toggleFav(r.record_id)}>
-          {favorites.has(r.record_id) ? "★" : "☆"}
+        <button
+          type="button"
+          className={`star ${favorites.has(r.record_id) ? "on" : ""}`}
+          aria-pressed={favorites.has(r.record_id)}
+          aria-label={t(lang, "save")}
+          onClick={() => toggleFav(r.record_id)}
+        >
+          {favorites.has(r.record_id) ? `★ ${t(lang, "savedOn")}` : `☆ ${t(lang, "save")}`}
         </button>
       </div>
       {r.record_type === "glossary_term" && r.name_he ? <p className="glossary-he">{r.name_he}</p> : null}

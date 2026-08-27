@@ -342,11 +342,21 @@ button, input, select { font: inherit; }
 }
 
 .star {
-  border: 0;
-  background: transparent;
-  font-size: 1.3rem;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  font-size: 0.9rem;
   cursor: pointer;
   line-height: 1;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.star.on {
+  background: #f3e3a8;
+  color: #7a5a00;
+  border-color: #c9a227;
 }
 
 @media (min-width: 800px) {
