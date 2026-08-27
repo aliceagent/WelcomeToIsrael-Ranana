@@ -17,10 +17,10 @@ export function ShareKitPage() {
       <h1 className="chrome-title">{t(lang, "shareKit")}</h1>
       <p>{t(lang, "tagline")}</p>
       <div className="actions">
-        <button className="btn primary" onClick={() => shareContent(t(lang, "appName"), t(lang, "tagline"), origin)}>
+        <button className="btn primary" onClick={() => shareContent(t(lang, "appName"), t(lang, "tagline"), origin, "/og/default.png")}>
           {t(lang, "shareThis")}
         </button>
-        <a className="wa-text" href={whatsappShareUrl(t(lang, "appName"), origin)}>
+        <a className="wa-text" href={whatsappShareUrl(t(lang, "appName"), origin, t(lang, "tagline"))}>
           {t(lang, "whatsapp")}
         </a>
       </div>

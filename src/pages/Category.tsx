@@ -4,7 +4,7 @@ import { byCategory, categoryFromSlug } from "../lib/data";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t, categoryLabel } from "../lib/i18n";
-import { CATEGORY_ICONS, matchesProfile, priorityScore } from "../lib/format";
+import { CATEGORY_ICONS, matchesProfile, priorityScore, slugifyCategory } from "../lib/format";
 import { shareContent, whatsappShareUrl, categoryPath, absoluteUrl } from "../lib/share";
 
 export function CategoryPage() {
@@ -69,10 +69,10 @@ export function CategoryPage() {
         ) : null}
       </div>
       <div className="actions" style={{ marginBottom: 12 }}>
-        <button className="btn" onClick={() => shareContent(categoryLabel(lang, category), "", url)}>
+        <button className="btn" onClick={() => shareContent(categoryLabel(lang, category), `Browse ${categoryLabel(lang, category)} in Welcome to Ra'anana.`, url, `/og/c/${slugifyCategory(category)}.png`)}>
           {t(lang, "shareCategory")}
         </button>
-        <a className="wa-text" href={whatsappShareUrl(categoryLabel(lang, category), url)}>
+        <a className="wa-text" href={whatsappShareUrl(categoryLabel(lang, category), url, `Browse ${categoryLabel(lang, category)} in Welcome to Ra'anana.`)}>
           {t(lang, "whatsapp")}
         </a>
       </div>

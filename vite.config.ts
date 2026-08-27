@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "apple-touch-icon.png", "og/*.png"],
+      includeAssets: ["favicon.svg", "apple-touch-icon.png", "og/**/*.png"],
       manifest: {
         name: "Welcome to Ra'anana",
         short_name: "Ra'anana",

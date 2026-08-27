@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write simple PNG icons and OG card without extra deps."""
+"""Write simple PNG app icons without extra deps."""
 from __future__ import annotations
 import struct, zlib, pathlib
 
@@ -10,7 +10,6 @@ PUB.mkdir(exist_ok=True)
 
 OLIVE = (28, 74, 60)
 CREAM = (243, 234, 217)
-TERR = (196, 92, 62)
 
 def chunk(tag: bytes, data: bytes) -> bytes:
     return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
@@ -41,19 +40,8 @@ def icon(size: int, maskable=False) -> bytes:
         return OLIVE
     return png(size, size, px)
 
-def og() -> bytes:
-    w, h = 1200, 630
-    def px(x, y):
-        if y < 18 or y > h - 18 or x < 18 or x > w - 18:
-            return TERR
-        if x < 90:
-            return OLIVE
-        return CREAM
-    return png(w, h, px)
-
 (PUB / "icon-192.png").write_bytes(icon(192))
 (PUB / "icon-512.png").write_bytes(icon(512))
 (PUB / "icon-maskable-512.png").write_bytes(icon(512, True))
 (PUB / "apple-touch-icon.png").write_bytes(icon(180))
-(PUB / "og" / "default.png").write_bytes(og())
 print("wrote icons")

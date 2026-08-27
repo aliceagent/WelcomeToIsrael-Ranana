@@ -59,10 +59,10 @@ export function FolderPage() {
         </button>
       </div>
       <div className="actions" style={{ marginBottom: 12 }}>
-        <button className="btn" onClick={() => shareContent(title, folder.hint?.[lang] || "", url)}>
+        <button className="btn" onClick={() => shareContent(title, folder.hint?.[lang] || `${title} — Welcome to Ra'anana.`, url, `/og/d/${folder.id}.png`)}>
           {t(lang, "shareCategory")}
         </button>
-        <a className="wa-text" href={whatsappShareUrl(title, url)}>
+        <a className="wa-text" href={whatsappShareUrl(title, url, folder.hint?.[lang] || title)}>
           {t(lang, "whatsapp")}
         </a>
       </div>
