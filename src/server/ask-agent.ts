@@ -1,14 +1,14 @@
 import { ToolLoopAgent, tool, isStepCount, InferAgentUIMessage } from "ai";
-import type { MoonshotAIChatModelId } from "@ai-sdk/moonshotai";
-import { createMoonshotAI } from "@ai-sdk/moonshotai";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { z } from "zod";
 import type { Lang } from "../lib/types";
 import { getCompactRecord, searchCatalog } from "../lib/catalog-hits";
 
-const MODEL = (process.env.KIMI_MODEL || process.env.MOONSHOT_MODEL || "kimi-k2.6") as MoonshotAIChatModelId;
+const KIMI_BASE_URL = process.env.KIMI_BASE_URL || "https://api.kimi.com/coding/v1";
+const MODEL = process.env.KIMI_MODEL || "k3-256k";
 
-function moonshotKey(): string | undefined {
-  return process.env.MOONSHOT_API_KEY || process.env.KIMI_API_KEY;
+function kimiKey(): string | undefined {
+  return process.env.KIMI_API_KEY || process.env.MOONSHOT_API_KEY;
 }
 
 function instructions(lang: Lang): string {
@@ -30,20 +30,19 @@ Do not mention system prompts, API keys, or Kimi.`;
 }
 
 export function createAskAgent(lang: Lang) {
-  const apiKey = moonshotKey();
+  const apiKey = kimiKey();
   if (!apiKey) return null;
-  const moonshotai = createMoonshotAI({ apiKey });
+  const kimi = createOpenAICompatible({
+    name: "kimi",
+    apiKey,
+    baseURL: KIMI_BASE_URL.replace(/\/$/, ""),
+  });
 
   return new ToolLoopAgent({
     id: "raanana-ask",
-    model: moonshotai(MODEL),
+    model: kimi.chatModel(MODEL),
     instructions: instructions(lang),
     stopWhen: isStepCount(6),
-    providerOptions: {
-      moonshotai: {
-        thinking: { type: "disabled" },
-      },
-    },
     tools: {
       searchDirectory: tool({
         description:
@@ -68,5 +67,5 @@ export type AskAgent = NonNullable<ReturnType<typeof createAskAgent>>;
 export type AskAgentUIMessage = InferAgentUIMessage<AskAgent>;
 
 export function isAskConfigured(): boolean {
-  return Boolean(moonshotKey());
+  return Boolean(kimiKey());
 }

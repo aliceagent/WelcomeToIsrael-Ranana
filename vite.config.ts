@@ -35,7 +35,7 @@ function askApiPlugin(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  for (const key of ["MOONSHOT_API_KEY", "KIMI_API_KEY", "KIMI_MODEL", "MOONSHOT_MODEL"]) {
+  for (const key of ["KIMI_API_KEY", "MOONSHOT_API_KEY", "KIMI_MODEL", "KIMI_BASE_URL"]) {
     if (env[key]) process.env[key] = env[key];
   }
 

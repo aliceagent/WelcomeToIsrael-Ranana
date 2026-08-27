@@ -59,6 +59,8 @@ export function compactHit(r: Resource, lang: Lang): CompactHit {
 const FOLDER_STOP = new Set(
   "i a an the for and or to of in on at my me we our need help how does do did what where is are in israel tonight please tonight's looking find get".split(" "),
 );
+
+export function matchingFolders(query: string, lang: Lang): FolderHit[] {
   const hits: FolderHit[] = [];
   const seen = new Set<string>();
 
