@@ -8,5 +8,7 @@ data/raw/*.csv
 data/raw/*.xlsx
 data/raw/*.zip
 !data/raw/Israel_Essential_Apps_for_New_Olim.xlsx
-public/og/
-!public/og/default.png
+public/og/e/
+public/og/d/
+public/og/p/
+public/og/c/
