@@ -33,7 +33,9 @@ function page(card) {
   const description = card.description;
   const image = abs(card.image);
   const url = abs(card.path === "/" ? "/" : card.path);
-  const alt = `${card.title}${card.he ? ` · ${card.he}` : ""}`;
+  const alt = card.path === "/"
+    ? "A family holding a Welcome to Ra'anana sign, with falafel, hummus, and the city behind them"
+    : `${card.title}${card.he ? ` · ${card.he}` : ""}`;
   return index
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(title)}</title>`)
     .replace(/property="og:title" content="[^"]*"/, `property="og:title" content="${escapeHtml(title)}"`)

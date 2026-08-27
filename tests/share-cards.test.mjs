@@ -52,11 +52,25 @@ test("build pipeline generates per-item OG images and absolute share tags", () =
   const prerender = readFileSync(join(root, "scripts/prerender.mjs"), "utf8");
   const pkg = readFileSync(join(root, "package.json"), "utf8");
   const html = readFileSync(join(root, "index.html"), "utf8");
+  const genOg = readFileSync(join(root, "scripts/gen-og.mjs"), "utf8");
   assert.match(pkg, /gen-og\.mjs/);
   assert.match(prerender, /twitter:image/);
   assert.match(prerender, /siteOrigin/);
   assert.match(html, /summary_large_image/);
   assert.match(html, /og:image:width/);
+  assert.match(html, /og\/default\.png/);
+  assert.match(genOg, /card\.image === "\/og\/default\.png"/);
   assert.equal(existsSync(join(root, "scripts/fonts/Heebo-Bold.ttf")), true);
   assert.equal(existsSync(join(root, "scripts/gen-og.mjs")), true);
+});
+
+test("home share card is the illustrated welcome photo, not a generated template", () => {
+  const pngPath = join(root, "public/og/default.png");
+  assert.equal(existsSync(pngPath), true);
+  const png = readFileSync(pngPath);
+  assert.equal(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])), true);
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+  assert.ok(png.length > 200_000, "home card should be the photo, not the small generated template");
+  assert.equal(existsSync(join(root, "scripts/assets/welcome-share.jpg")), true);
 });

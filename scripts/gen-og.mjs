@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import satori from "satori";
@@ -141,6 +141,13 @@ mkdirSync(join(outRoot, "c"), { recursive: true });
 
 let n = 0;
 for (const card of cards) {
+  // Home uses the illustrated welcome photo in public/og/default.png.
+  if (card.image === "/og/default.png") {
+    if (!existsSync(join(outRoot, "default.png"))) {
+      throw new Error("missing public/og/default.png — home share card is not generated");
+    }
+    continue;
+  }
   const png = await renderPng(card);
   const dest = destFor(card.image);
   mkdirSync(dirname(dest), { recursive: true });
@@ -148,8 +155,5 @@ for (const card of cards) {
   n += 1;
   if (n % 80 === 0) console.log(`og: ${n}/${cards.length}`);
 }
-
-const home = cards.find((c) => c.path === "/");
-if (home) writeFileSync(join(outRoot, "default.png"), await renderPng(home));
 
 console.log(`og: wrote ${n} share cards`);
