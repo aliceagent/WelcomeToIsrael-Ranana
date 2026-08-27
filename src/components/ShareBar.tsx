@@ -22,7 +22,7 @@ export function ShareBar({ r }: { r: Resource }) {
       >
         {t(lang, "share")}
       </button>
-      <a className="btn" href={whatsappShareUrl(title, url)} target="_blank" rel="noreferrer">
+      <a className="wa-text" href={whatsappShareUrl(title, url)} target="_blank" rel="noreferrer">
         {t(lang, "whatsapp")}
       </a>
       {msg ? <span className="muted">{msg}</span> : null}

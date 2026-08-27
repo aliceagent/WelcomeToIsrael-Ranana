@@ -46,6 +46,16 @@ test("food directory folders have local coverage", () => {
   assert.ok(groceryDelivery.length >= 10, "grocery delivery");
 });
 
+test("IKEA-style duplicate website/action/menu URLs are collapsed in the record page", () => {
+  const src = readFileSync(join(root, "src/pages/Record.tsx"), "utf8");
+  assert.match(src, /sameUrl\(r\.action_url, r\.website_url\)/);
+  assert.match(src, /sameUrl\(r\.menu_order_url/);
+  const ikea = records.find((r) => r.record_id === "DEL-023");
+  assert.ok(ikea);
+  assert.equal(ikea.website_url, ikea.action_url);
+  assert.equal(ikea.website_url, ikea.menu_order_url);
+});
+
 test("app is not gated on kids or driving questions", () => {
   const home = readFileSync(join(root, "src/pages/Home.tsx"), "utf8");
   const settings = readFileSync(join(root, "src/pages/Settings.tsx"), "utf8");

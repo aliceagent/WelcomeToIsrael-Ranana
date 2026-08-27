@@ -72,7 +72,7 @@ export function CategoryPage() {
         <button className="btn" onClick={() => shareContent(categoryLabel(lang, category), "", url)}>
           {t(lang, "shareCategory")}
         </button>
-        <a className="btn" href={whatsappShareUrl(categoryLabel(lang, category), url)}>
+        <a className="wa-text" href={whatsappShareUrl(categoryLabel(lang, category), url)}>
           {t(lang, "whatsapp")}
         </a>
       </div>

@@ -20,7 +20,7 @@ export function ShareKitPage() {
         <button className="btn primary" onClick={() => shareContent(t(lang, "appName"), t(lang, "tagline"), origin)}>
           {t(lang, "shareThis")}
         </button>
-        <a className="btn" href={whatsappShareUrl(t(lang, "appName"), origin)}>
+        <a className="wa-text" href={whatsappShareUrl(t(lang, "appName"), origin)}>
           {t(lang, "whatsapp")}
         </a>
       </div>

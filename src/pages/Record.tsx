@@ -7,6 +7,7 @@ import { ShareBar } from "../components/ShareBar";
 import { Distance } from "../components/RecordCard";
 import { appleMapsUrl, directionsUrl, mapsSearchUrl, telHref, wazeUrl, whatsappHref } from "../lib/geo";
 import { PlacesMap } from "../components/PlacesMap";
+import { sameUrl } from "../lib/urls";
 
 export function RecordPage() {
   const { slug } = useParams();
@@ -131,7 +132,7 @@ export function RecordPage() {
           </a>
         ) : null}
         {r.whatsapp_sms ? (
-          <a className="btn" href={whatsappHref(r.whatsapp_sms)}>
+          <a className="wa-text" href={whatsappHref(r.whatsapp_sms)}>
             {t(lang, "whatsapp")}
           </a>
         ) : null}
@@ -145,12 +146,12 @@ export function RecordPage() {
             {t(lang, "website")}
           </a>
         ) : null}
-        {r.action_url ? (
+        {r.action_url && !sameUrl(r.action_url, r.website_url) ? (
           <a className="btn" href={r.action_url} target="_blank" rel="noreferrer">
             {t(lang, "continue")}
           </a>
         ) : null}
-        {r.menu_order_url ? (
+        {r.menu_order_url && !sameUrl(r.menu_order_url, r.website_url) && !sameUrl(r.menu_order_url, r.action_url) ? (
           <a className="btn" href={r.menu_order_url} target="_blank" rel="noreferrer">
             {t(lang, "order")}
           </a>

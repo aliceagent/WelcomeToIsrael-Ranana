@@ -369,6 +369,29 @@ button, input, select { font: inherit; }
 .btn.danger { background: var(--terracotta); color: #fff; border-color: var(--terracotta); font-size: 1.05rem; min-height: 52px; flex: 1; }
 .btn.ghost { background: transparent; }
 
+.wa-text {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 0;
+  background: none;
+  color: #128c7e;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.wa-text::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: currentColor;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12.04 2c-5.46 0-9.91 4.44-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.44 9.91-9.91S17.5 2 12.04 2zm5.79 14.16c-.24.68-1.4 1.26-1.94 1.34-.5.08-1.13.11-1.82-.11-.42-.14-.96-.31-1.66-.61-2.92-1.26-4.82-4.2-4.97-4.39-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.41.27-.29.58-.36.78-.36h.56c.18 0 .42-.07.66.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.2-.14.31-.28.48-.14.16-.3.37-.42.5-.14.14-.29.29-.12.56.16.27.73 1.2 1.56 1.94 1.08.96 1.98 1.26 2.26 1.4.27.14.43.12.59-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.61-.14.24.08 1.54.73 1.81.86.27.14.45.2.51.31.07.12.07.68-.17 1.36z'/></svg>") center / contain no-repeat;
+}
+
 .call-hero {
   display: flex;
   flex-direction: column;

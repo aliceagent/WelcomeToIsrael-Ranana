@@ -70,7 +70,7 @@ export function FolderPage() {
         <button className="btn" onClick={() => shareContent(title, folder.hint?.[lang] || "", url)}>
           {t(lang, "shareCategory")}
         </button>
-        <a className="btn" href={whatsappShareUrl(title, url)}>
+        <a className="wa-text" href={whatsappShareUrl(title, url)}>
           {t(lang, "whatsapp")}
         </a>
       </div>
