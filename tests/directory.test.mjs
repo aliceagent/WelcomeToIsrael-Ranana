@@ -101,22 +101,34 @@ test("route changes scroll the window back to the top", () => {
   assert.match(layout, /loc\.pathname/);
 });
 
-test("at least 30 I-need shortcuts point at real folders or pages", () => {
+test("I-need shortcuts group occasional jobs under broader chips", () => {
   const needsSrc = readFileSync(join(root, "src/lib/needs.ts"), "utf8");
   const dirSrc = readFileSync(join(root, "src/lib/directory.ts"), "utf8");
   const tos = [...needsSrc.matchAll(/\bto: "([^"]+)"/g)].map((m) => m[1]);
-  assert.ok(tos.length >= 30, `only ${tos.length} needs`);
+  assert.ok(tos.length >= 24, `only ${tos.length} needs`);
   for (const to of tos) {
     if (to.startsWith("/d/")) {
       const id = to.slice(3);
       assert.match(dirSrc, new RegExp(`id: "${id}"`), `missing folder ${id}`);
     }
   }
+  assert.match(needsSrc, /id: "handyman"/);
   assert.match(needsSrc, /electrician/);
+  assert.match(needsSrc, /plumber/);
   assert.match(needsSrc, /hardware/);
+  assert.match(needsSrc, /hospital/);
   assert.match(needsSrc, /pharmacy/);
   assert.match(needsSrc, /dinner/i);
+  assert.match(needsSrc, /Kids & school/);
+  assert.equal(needsSrc.includes('id: "electrician"'), false);
+  assert.equal(needsSrc.includes('id: "plumber"'), false);
+  assert.equal(needsSrc.includes('id: "dentist"'), false);
   assert.match(dirSrc, /id: "home-help"/);
+  assert.match(dirSrc, /en: "Handyman"/);
+  assert.match(dirSrc, /en: "Kids & school"/);
+  assert.match(dirSrc, /showOnHome:\s*false/);
+  assert.match(dirSrc, /id: "hospital"/);
+  assert.match(dirSrc, /id: "dentist"/);
   const home = readFileSync(join(root, "src/pages/Home.tsx"), "utf8");
   assert.match(home, /NeedChips/);
 });

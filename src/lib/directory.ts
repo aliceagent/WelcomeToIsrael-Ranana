@@ -20,6 +20,11 @@ export type Folder = {
   group: FolderGroup;
   /** Large tiles on the home food panel */
   featured?: boolean;
+  /**
+   * When false, keep the folder URL but omit it from the home main-menu grid
+   * (reachable via a parent folder’s chips / search / deep link).
+   */
+  showOnHome?: boolean;
   match: (r: Resource) => boolean;
   chips?: FolderChip[];
   caveat?: "hours" | "kosher" | "shelter";
@@ -231,11 +236,37 @@ export const FOLDERS: Folder[] = [
     id: "health",
     icon: "🩺",
     title: { en: "Health", fr: "Santé", he: "בריאות" },
+    hint: {
+      en: "Clinics, hospitals, dentist — kupah first, Midrag or Maps for a dentist.",
+      fr: "Cliniques, hôpitaux, dentiste — kupah d'abord, Midrag ou Maps pour un dentiste.",
+      he: "מרפאות, בתי חולים, רופא שיניים — קודם קופה, מידרג או מפות לשיניים.",
+    },
     group: "daily",
+    pinIds: ["TRN-026", "DIR-008"],
     match: (r) =>
       catOf(r, "Health & Family") ||
       subOf(r, "Healthcare") ||
-      subHas(r, "health clinic", "medical center", "health emergency", "urgent care", "health fund"),
+      subHas(r, "health clinic", "medical center", "health emergency", "urgent care", "health fund", "hospital", "dental") ||
+      /midrag/i.test(r.name_en || ""),
+    chips: [
+      {
+        id: "clinic",
+        title: { en: "Clinic / kupah", fr: "Clinique / kupah", he: "מרפאה / קופה" },
+        match: (r) =>
+          subHas(r, "health clinic", "medical center", "urgent care", "health fund", "healthcare") ||
+          subOf(r, "Healthcare"),
+      },
+      {
+        id: "hospital",
+        title: { en: "Hospital", fr: "Hôpital", he: "בית חולים" },
+        match: (r) => subHas(r, "hospital") || /hospital|hôpital|בית חולים/i.test(blob(r)),
+      },
+      {
+        id: "dentist",
+        title: { en: "Dentist", fr: "Dentiste", he: "שיניים" },
+        match: (r) => /midrag/i.test(r.name_en || "") || subHas(r, "dental") || /dentist|dentiste|שיניים/i.test(blob(r)),
+      },
+    ],
   },
   {
     id: "pharmacy",
@@ -265,11 +296,11 @@ export const FOLDERS: Folder[] = [
   {
     id: "home-help",
     icon: "🛠️",
-    title: { en: "Trades & hardware", fr: "Artisans & bricolage", he: "בעלי מקצוע וכלי עבודה" },
+    title: { en: "Handyman", fr: "Artisans", he: "בעל מקצוע" },
     hint: {
-      en: "Electrician, plumber, dentist, hardware — start with Midrag or Home Center. Live maps if we don't have the shop yet.",
-      fr: "Électricien, plombier, dentiste, bricolage — commencez par Midrag ou Home Center.",
-      he: "חשמלאי, אינסטלטור, רופא שיניים, כלי עבודה — התחילו במידרג או הום סנטר.",
+      en: "Electrician, plumber, hardware — start with Midrag or Home Center. Live maps if we don't have the shop yet.",
+      fr: "Électricien, plombier, bricolage — commencez par Midrag ou Home Center.",
+      he: "חשמלאי, אינסטלטור, כלי עבודה — התחילו במידרג או הום סנטר.",
     },
     group: "daily",
     pinIds: ["TRN-026", "DIR-008", "DIR-007"],
@@ -278,9 +309,21 @@ export const FOLDERS: Folder[] = [
       subHas(r, "home & diy", "home & furniture", "home & value", "home services", "service marketplace") ||
       /home center|ace israel|ikea|max stock|fox home|mahsanei/i.test(r.name_en || ""),
     chips: [
-      { id: "trades", title: { en: "Trades", fr: "Artisans", he: "בעלי מקצוע" }, match: (r) => /midrag/i.test(r.name_en || "") || subHas(r, "home services", "service marketplace") },
-      { id: "hardware", title: { en: "Hardware", fr: "Bricolage", he: "כלי עבודה" }, match: (r) => subHas(r, "home & diy") || /home center|ace/i.test(r.name_en || "") },
-      { id: "furniture", title: { en: "Furniture", fr: "Meubles", he: "רהיטים" }, match: (r) => subHas(r, "home & furniture", "home & value") || /ikea|fox home|max stock/i.test(r.name_en || "") },
+      {
+        id: "trades",
+        title: { en: "Electrician & plumber", fr: "Électricien & plombier", he: "חשמלאי ואינסטלטור" },
+        match: (r) => /midrag/i.test(r.name_en || "") || subHas(r, "home services", "service marketplace"),
+      },
+      {
+        id: "hardware",
+        title: { en: "Hardware", fr: "Quincaillerie", he: "כלי עבודה" },
+        match: (r) => subHas(r, "home & diy") || /home center|ace/i.test(r.name_en || ""),
+      },
+      {
+        id: "furniture",
+        title: { en: "Furniture", fr: "Meubles", he: "רהיטים" },
+        match: (r) => subHas(r, "home & furniture", "home & value") || /ikea|fox home|max stock/i.test(r.name_en || ""),
+      },
     ],
   },
   {
@@ -318,16 +361,62 @@ export const FOLDERS: Folder[] = [
   {
     id: "schools",
     icon: "🎒",
-    title: { en: "Schools", fr: "Écoles", he: "בתי ספר" },
+    title: { en: "Kids & school", fr: "École & enfants", he: "בית ספר וילדים" },
+    hint: {
+      en: "Schools, kindergarten, camps and after-school — not everyday, but one place when you need them.",
+      fr: "Écoles, maternelle, camps et périscolaire — pas tous les jours, mais un seul endroit.",
+      he: "בתי ספר, גנים, מחנות וצהרונים — לא יומיומי, אבל במקום אחד.",
+    },
     group: "family",
-    match: (r) =>
-      catOf(r, "Education & Children") &&
-      subHas(r, "school", "kindergarten", "education department", "education ministry", "new immigrant pupils", "special education"),
+    match: (r) => {
+      if (
+        catOf(r, "Education & Children") &&
+        subHas(r, "school", "kindergarten", "education department", "education ministry", "new immigrant pupils", "special education")
+      ) {
+        return true;
+      }
+      return (
+        subHas(
+          r,
+          "after-school",
+          "childcare",
+          "youth",
+          "child benefits",
+          "student transport",
+          "french-speaking children",
+          "library",
+          "school & family",
+        ) || /o jardin|mashov/i.test(r.name_en || "")
+      );
+    },
+    chips: [
+      {
+        id: "school",
+        title: { en: "Schools", fr: "Écoles", he: "בתי ספר" },
+        match: (r) =>
+          subHas(r, "school", "education department", "education ministry", "new immigrant pupils", "special education") &&
+          !subHas(r, "kindergarten", "after-school", "childcare"),
+      },
+      {
+        id: "kindergarten",
+        title: { en: "Kindergarten", fr: "Maternelle", he: "גן ילדים" },
+        match: (r) => subHas(r, "kindergarten", "childcare") || /o jardin/i.test(r.name_en || ""),
+      },
+      {
+        id: "camps",
+        title: { en: "Camps & after-school", fr: "Camps & périscolaire", he: "מחנות וצהרונים" },
+        match: (r) =>
+          subHas(r, "after-school", "youth", "french-speaking children", "library", "school & family") ||
+          /mashov/i.test(r.name_en || ""),
+      },
+    ],
   },
   {
     id: "kids",
     icon: "🧸",
     title: { en: "Kids & camps", fr: "Enfants & activités", he: "ילדים וחוגים" },
+    /** Nested under Kids & school on the home main menu; keep URL for deep links. */
+    showOnHome: false,
     group: "family",
     match: (r) =>
       subHas(
@@ -471,10 +560,12 @@ export function groupLabel(group: FolderGroup, lang: Lang): string {
   return GROUP_TITLES[group][lang];
 }
 
-/** Home daily/family/city/help icons — skip food (shown as featured tiles) and skip the catch-all food folder. */
+/** Home daily/family/city/help icons — skip food (featured tiles) and folders nested under a parent. */
 export function homeLaunchers(group: Exclude<FolderGroup, "food">): Launcher[] {
   const skip = new Set(["food"]);
-  const fromFolders: Launcher[] = FOLDERS.filter((f) => f.group === group && !skip.has(f.id)).map((f) => ({
+  const fromFolders: Launcher[] = FOLDERS.filter(
+    (f) => f.group === group && !skip.has(f.id) && f.showOnHome !== false,
+  ).map((f) => ({
     id: f.id,
     icon: f.icon,
     title: f.title,

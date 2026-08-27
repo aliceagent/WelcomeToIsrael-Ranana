@@ -11,7 +11,11 @@ export type Need = {
   aliases: string[];
 };
 
-/** Everyday jobs a new arrival actually tries to solve. Each one has a one-tap path. */
+/**
+ * Everyday jobs a new arrival actually tries to solve.
+ * Occasional items (hospital, school, plumber…) stay as search aliases
+ * under broader chips — Health, Handyman, Kids & school — not as separate top-level taps.
+ */
 export const NEEDS: Need[] = [
   { id: "dinner", icon: "🍽️", title: { en: "Dinner", fr: "Dîner", he: "ארוחת ערב" }, to: "/d/restaurants", row: 1, aliases: ["dinner", "restaurant", "eat out", "souper"] },
   { id: "delivery", icon: "🛵", title: { en: "Delivery", fr: "Livraison", he: "משלוח" }, to: "/d/order-in", row: 1, aliases: ["wolt", "10bis", "delivery", "order in"] },
@@ -20,19 +24,57 @@ export const NEEDS: Need[] = [
   { id: "french", icon: "🇫🇷", title: { en: "French food", fr: "Cuisine FR", he: "אוכל צרפתי" }, to: "/d/french-food", row: 1, aliases: ["french", "boulangerie", "traiteur"] },
   { id: "butcher", icon: "🥩", title: { en: "Butcher", fr: "Boucher", he: "קצבייה" }, to: "/d/butcher", row: 1, aliases: ["butcher", "meat", "boucher"] },
   { id: "pharmacy", icon: "💊", title: { en: "Pharmacy", fr: "Pharmacie", he: "בית מרקחת" }, to: "/d/pharmacy", row: 1, aliases: ["pharmacy", "super-pharm", "pharmacie"] },
-  { id: "doctor", icon: "🩺", title: { en: "Doctor", fr: "Médecin", he: "רופא" }, to: "/d/health", row: 1, aliases: ["doctor", "kupah", "clalit", "clinic", "urgent"] },
-  { id: "electrician", icon: "💡", title: { en: "Electrician", fr: "Électricien", he: "חשמלאי" }, to: "/d/home-help", row: 2, aliases: ["electrician", "electricien", "חשמלאי"] },
-  { id: "plumber", icon: "🔧", title: { en: "Plumber", fr: "Plombier", he: "אינסטלטור" }, to: "/d/home-help", row: 2, aliases: ["plumber", "plombier", "אינסטלטור"] },
-  { id: "hardware", icon: "🛠️", title: { en: "Hardware", fr: "Bricolage", he: "כלי עבודה" }, to: "/d/home-help", row: 2, aliases: ["hardware", "home center", "ace", "diy"] },
-  { id: "furniture", icon: "🛋️", title: { en: "Furniture", fr: "Meubles", he: "רהיטים" }, to: "/d/home-help", row: 2, aliases: ["ikea", "furniture", "meubles"] },
+  {
+    id: "health",
+    icon: "🩺",
+    title: { en: "Health", fr: "Santé", he: "בריאות" },
+    to: "/d/health",
+    row: 1,
+    aliases: ["doctor", "hospital", "clinic", "kupah", "clalit", "dentist", "dentiste", "urgent", "רופא", "שיניים"],
+  },
+  {
+    id: "handyman",
+    icon: "🔧",
+    title: { en: "Handyman", fr: "Artisans", he: "בעל מקצוע" },
+    to: "/d/home-help",
+    row: 2,
+    aliases: [
+      "handyman",
+      "electrician",
+      "electricien",
+      "plumber",
+      "plombier",
+      "hardware",
+      "home center",
+      "ace",
+      "diy",
+      "ikea",
+      "furniture",
+      "meubles",
+      "חשמלאי",
+      "אינסטלטור",
+    ],
+  },
   { id: "internet", icon: "📶", title: { en: "SIM / Wi-Fi", fr: "SIM / Wi-Fi", he: "סלים / אינטרנט" }, to: "/d/phone-net", row: 2, aliases: ["sim", "internet", "cellcom", "hot", "partner", "golan"] },
   { id: "parking", icon: "🅿️", title: { en: "Parking", fr: "Parking", he: "חניה" }, to: "/d/drive", row: 2, aliases: ["parking", "pango", "waze"] },
   { id: "bank", icon: "🏦", title: { en: "Bank / bit", fr: "Banque / bit", he: "בנק / ביט" }, to: "/d/banks", row: 2, aliases: ["bank", "bit", "paybox"] },
   { id: "packages", icon: "📬", title: { en: "Packages", fr: "Colis", he: "חבילות" }, to: "/d/packages", row: 2, aliases: ["dhl", "fedex", "ups", "amazon", "forward"] },
-  { id: "bills", icon: "🏠", title: { en: "Bills", fr: "Factures", he: "חשבונות" }, to: "/d/home-setup", row: 2, aliases: ["arnona", "electricity", "water", "gas"] },
-  { id: "garbage", icon: "♻️", title: { en: "Garbage", fr: "Poubelle", he: "אשפה" }, to: "/d/home-setup", row: 2, aliases: ["garbage", "recycling", "trash"] },
-  { id: "school", icon: "🎒", title: { en: "School", fr: "École", he: "בית ספר" }, to: "/d/schools", row: 3, aliases: ["school", "kindergarten", "mashov"] },
-  { id: "kids", icon: "🧸", title: { en: "Kids", fr: "Enfants", he: "ילדים" }, to: "/d/kids", row: 3, aliases: ["kids", "after school", "camp", "daycare"] },
+  {
+    id: "bills",
+    icon: "🏠",
+    title: { en: "Home & bills", fr: "Maison & factures", he: "בית וחשבונות" },
+    to: "/d/home-setup",
+    row: 2,
+    aliases: ["arnona", "electricity", "water", "gas", "garbage", "recycling", "trash", "bills"],
+  },
+  {
+    id: "school",
+    icon: "🎒",
+    title: { en: "Kids & school", fr: "École & enfants", he: "בית ספר וילדים" },
+    to: "/d/schools",
+    row: 3,
+    aliases: ["school", "kindergarten", "mashov", "kids", "after school", "camp", "daycare", "école"],
+  },
   { id: "synagogue", icon: "✡️", title: { en: "Synagogue", fr: "Synagogue", he: "בית כנסת" }, to: "/d/synagogues", row: 3, aliases: ["synagogue", "minyan", "shul"] },
   { id: "bus", icon: "🚌", title: { en: "Bus / train", fr: "Bus / train", he: "אוטובוס / רכבת" }, to: "/d/transit", row: 3, aliases: ["bus", "train", "rav-kav", "moovit"] },
   { id: "shelter", icon: "🛡️", title: { en: "Shelter", fr: "Abri", he: "מקלט" }, to: "/d/shelters", row: 3, aliases: ["shelter", "alert", "rocket", "מקלט"] },
@@ -43,7 +85,6 @@ export const NEEDS: Need[] = [
   { id: "mall", icon: "🛍️", title: { en: "Mall / shops", fr: "Centre commercial", he: "קניון" }, to: "/d/shops", row: 3, aliases: ["mall", "renanim", "shopping"] },
   { id: "sports", icon: "🏊", title: { en: "Pool / sport", fr: "Piscine", he: "בריכה" }, to: "/d/sports", row: 3, aliases: ["pool", "swim", "tennis", "sport"] },
   { id: "park", icon: "🌳", title: { en: "Park", fr: "Parc", he: "פארק" }, to: "/d/parks", row: 3, aliases: ["park", "playground"] },
-  { id: "dentist", icon: "🦷", title: { en: "Dentist", fr: "Dentiste", he: "רופא שיניים" }, to: "/d/home-help", row: 3, aliases: ["dentist", "dentiste", "שיניים"] },
   { id: "mikvah", icon: "💧", title: { en: "Mikvah", fr: "Mikvé", he: "מקווה" }, to: "/d/community", row: 3, aliases: ["mikvah", "mikveh", "מקווה"] },
   { id: "translate", icon: "🌐", title: { en: "Translate", fr: "Traduire", he: "תרגום" }, to: "/d/apps", row: 3, aliases: ["translate", "google translate"] },
   { id: "find", icon: "🔎", title: { en: "Find anyone", fr: "Trouver quelqu'un", he: "למצוא מישהו" }, to: "/d/directories", row: 3, aliases: ["easy", "google maps", "directory"] },
@@ -53,13 +94,12 @@ export const NEEDS: Need[] = [
 export const LIVE_LOOKUP_IDS = ["TRN-026", "DIR-007", "DIR-008"] as const;
 
 export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
-  { test: /electricien|electrician|חשמלאי|חשמל/i, extra: ["midrag", "home center"] },
-  { test: /plombier|plumber|אינסטלטור/i, extra: ["midrag"] },
+  { test: /electricien|electrician|חשמלאי|חשמל|handyman|plombier|plumber|אינסטלטור/i, extra: ["midrag", "home center"] },
   { test: /hardware|bricolage|diy|home depot|כלי עבודה/i, extra: ["home center", "ace"] },
   { test: /dentist|dentiste|שיניים/i, extra: ["midrag", "google maps"] },
   { test: /hairdresser|coiffeur|salon|ספר/i, extra: ["midrag", "easy"] },
   { test: /nanny|babysit|nounou|מטפלת/i, extra: ["midrag"] },
-  { test: /kupah|kupat|caisse maladie|קופת חולים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit"] },
+  { test: /kupah|kupat|caisse maladie|קופת חולים|hospital|hôpital|בית חולים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit"] },
   { test: /pharmacy|pharmacie|בית מרקחת|superpharm|super-pharm/i, extra: ["super-pharm"] },
   { test: /dinner|dîner|souper|ארוחת ערב|tonight/i, extra: ["wolt", "restaurant"] },
   { test: /vet|vétérinaire|וטרינר/i, extra: ["veterinary"] },
@@ -68,9 +108,10 @@ export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
   { test: /licence|license|permis de conduire|רישיון/i, extra: ["driving licence", "ministry of transport"] },
   { test: /ikea|furniture|meuble|רהיט/i, extra: ["ikea"] },
   { test: /garbage|trash|poubelle|אשפה|recycling/i, extra: ["garbage", "recycling"] },
+  { test: /school|école|kindergarten|גן ילדים|mashov/i, extra: ["school", "education"] },
 ];
 
-const THIN_TRADE = /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|nanny|babysit|חשמלאי|אינסטלטור|שיניים/i;
+const THIN_TRADE = /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|nanny|babysit|handyman|חשמלאי|אינסטלטור|שיניים/i;
 
 export function isThinTradeQuery(query: string): boolean {
   return THIN_TRADE.test(query);
