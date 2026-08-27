@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
@@ -6,11 +7,30 @@ import { getFolder } from "../lib/directory";
 
 const LANGS: Lang[] = ["en", "fr", "he"];
 
+function scrollToTop() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
 export function Layout() {
   const { lang, setLang, online } = useStore();
   const loc = useLocation();
   const folder = loc.pathname.startsWith("/d/") ? getFolder(loc.pathname.slice(3)) : undefined;
   const foodOn = loc.pathname === "/food" || folder?.group === "food";
+
+  useEffect(() => {
+    if (loc.hash) {
+      const el = document.getElementById(decodeURIComponent(loc.hash.slice(1)));
+      if (el) {
+        el.scrollIntoView();
+        return;
+      }
+    }
+    scrollToTop();
+    const frame = requestAnimationFrame(scrollToTop);
+    return () => cancelAnimationFrame(frame);
+  }, [loc.pathname, loc.hash]);
 
   return (
     <div className="app-shell">

@@ -65,6 +65,12 @@ test("app is not gated on kids or driving questions", () => {
   assert.match(store, /drives: true, kids: true/);
 });
 
+test("route changes scroll the window back to the top", () => {
+  const layout = readFileSync(join(root, "src/components/Layout.tsx"), "utf8");
+  assert.match(layout, /scrollTo\(0, 0\)/);
+  assert.match(layout, /loc\.pathname/);
+});
+
 test("at least 30 I-need shortcuts point at real folders or pages", () => {
   const needsSrc = readFileSync(join(root, "src/lib/needs.ts"), "utf8");
   const dirSrc = readFileSync(join(root, "src/lib/directory.ts"), "utf8");
