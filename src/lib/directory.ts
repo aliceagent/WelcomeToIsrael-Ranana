@@ -434,7 +434,7 @@ export function homeLaunchers(group: Exclude<FolderGroup, "food">): Launcher[] {
     group: f.group,
     to: `/d/${f.id}`,
   }));
-  return [...fromFolders, ...PAGE_LAUNCHERS.filter((p) => p.group === group)];
+  return [...PAGE_LAUNCHERS.filter((p) => p.group === group), ...fromFolders];
 }
 
 export function foodHomeFolders(): Folder[] {
