@@ -1,6 +1,6 @@
 import { createAgentUIStreamResponse } from "ai";
-import type { Lang } from "../lib/types";
-import { createAskAgent, isAskConfigured } from "./ask-agent";
+import type { Lang } from "../lib/types.js";
+import { createAskAgent, isAskConfigured } from "./ask-agent.js";
 
 const MAX_MESSAGES = 16;
 const MAX_CHARS = 4000;

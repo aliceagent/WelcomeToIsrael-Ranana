@@ -1,6 +1,6 @@
-import type { Lang, Resource } from "./types";
-import { records, getById } from "./data";
-import { priorityScore } from "./format";
+import type { Lang, Resource } from "./types.js";
+import { records, getById } from "./data.js";
+import { priorityScore } from "./format.js";
 
 export type FolderGroup = "food" | "daily" | "family" | "city" | "help";
 

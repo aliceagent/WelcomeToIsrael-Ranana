@@ -26,7 +26,10 @@ test("ask bot searches the directory and never ships a Kimi key", () => {
   assert.match(vite, /navigateFallbackDenylist/);
   assert.match(vite, /api/);
   assert.match(gitignore, /\.env\.local/);
+  const askApi = readFileSync(join(root, "api/ask.ts"), "utf8");
   assert.equal(existsSync(join(root, "api/ask.ts")), true);
+  assert.match(askApi, /handle-ask\.js/);
+  assert.match(askApi, /node-http\.js/);
   assert.equal(existsSync(join(root, ".env.example")), true);
   const tracked = [
     agent,

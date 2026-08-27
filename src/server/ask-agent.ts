@@ -1,8 +1,8 @@
 import { ToolLoopAgent, tool, isStepCount, InferAgentUIMessage } from "ai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { z } from "zod";
-import type { Lang } from "../lib/types";
-import { getCompactRecord, searchCatalog } from "../lib/catalog-hits";
+import type { Lang } from "../lib/types.js";
+import { getCompactRecord, searchCatalog } from "../lib/catalog-hits.js";
 
 const KIMI_BASE_URL = process.env.KIMI_BASE_URL || "https://api.kimi.com/coding/v1";
 const MODEL = process.env.KIMI_MODEL || "k3-256k";

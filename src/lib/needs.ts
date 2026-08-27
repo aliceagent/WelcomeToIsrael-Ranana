@@ -1,4 +1,4 @@
-import type { Lang } from "./types";
+import type { Lang } from "./types.js";
 
 export type Copy = { en: string; fr: string; he: string };
 

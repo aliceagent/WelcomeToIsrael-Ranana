@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { handleAsk } from "../src/server/handle-ask";
-import { nodeToWebRequest, webToNodeResponse } from "../src/server/node-http";
+import { handleAsk } from "../src/server/handle-ask.js";
+import { nodeToWebRequest, webToNodeResponse } from "../src/server/node-http.js";
 
 export const config = { maxDuration: 60 };
 

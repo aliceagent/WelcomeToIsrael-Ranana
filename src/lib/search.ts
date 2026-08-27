@@ -1,8 +1,8 @@
 import MiniSearch from "minisearch";
-import type { Resource } from "./types";
-import { priorityScore } from "./format";
-import { expandQuery, isThinTradeQuery, LIVE_LOOKUP_IDS } from "./needs";
-import { getById } from "./data";
+import type { Resource } from "./types.js";
+import { priorityScore } from "./format.js";
+import { expandQuery, isThinTradeQuery, LIVE_LOOKUP_IDS } from "./needs.js";
+import { getById } from "./data.js";
 
 function fold(s: string): string {
   return s

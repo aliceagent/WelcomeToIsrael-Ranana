@@ -1,4 +1,4 @@
-import type { Lang, Resource } from "./types";
+import type { Lang, Resource } from "./types.js";
 
 const PRIORITY_SCORE: Record<string, number> = {
   Critical: 100,

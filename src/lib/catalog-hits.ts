@@ -1,9 +1,9 @@
-import type { Lang, Resource } from "./types";
-import { records, getById } from "./data";
-import { displayDescription, displayName } from "./format";
-import { FOLDERS, folderLabel, getFolder } from "./directory";
-import { matchNeed } from "./needs";
-import { buildSearch, searchRecords } from "./search";
+import type { Lang, Resource } from "./types.js";
+import { records, getById } from "./data.js";
+import { displayDescription, displayName } from "./format.js";
+import { FOLDERS, folderLabel, getFolder } from "./directory.js";
+import { matchNeed } from "./needs.js";
+import { buildSearch, searchRecords } from "./search.js";
 
 export type CompactHit = {
   record_id: string;

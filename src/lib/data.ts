@@ -1,7 +1,7 @@
-import recordsJson from "../data/records.json";
-import metaJson from "../data/meta.json";
-import type { AppMeta, Resource } from "./types";
-import { slugifyCategory } from "./format";
+import recordsJson from "../data/records.json" with { type: "json" };
+import metaJson from "../data/meta.json" with { type: "json" };
+import type { AppMeta, Resource } from "./types.js";
+import { slugifyCategory } from "./format.js";
 
 export const records = recordsJson as Resource[];
 export const meta = metaJson as AppMeta;
