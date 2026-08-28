@@ -65,7 +65,7 @@ export function Layout() {
         )}
         <div className="lang-switch" role="group" aria-label={t(lang, "language")}>
           {LANGS.map((l) => (
-            <button key={l} className={l === lang ? "on" : ""} onClick={() => setLang(l)}>
+            <button key={l} lang={l} aria-pressed={l === lang} className={l === lang ? "on" : ""} onClick={() => setLang(l)}>
               {l.toUpperCase()}
             </button>
           ))}

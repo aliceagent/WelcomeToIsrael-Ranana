@@ -40,21 +40,21 @@ export function FolderPage() {
       </p>
       {folder.chips?.length ? (
         <div className="filters">
-          <button className={chip === "all" ? "on" : ""} onClick={() => setChip("all")}>
+          <button aria-pressed={chip === "all"} className={chip === "all" ? "on" : ""} onClick={() => setChip("all")}>
             {t(lang, "any")}
           </button>
           {folder.chips.map((c) => (
-            <button key={c.id} className={chip === c.id ? "on" : ""} onClick={() => setChip(c.id)}>
+            <button key={c.id} aria-pressed={chip === c.id} className={chip === c.id ? "on" : ""} onClick={() => setChip(c.id)}>
               {c.title[lang]}
             </button>
           ))}
         </div>
       ) : null}
       <div className="filters">
-        <button className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
+        <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
           {t(lang, "raananaOnly")}
         </button>
-        <button className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
+        <button aria-pressed={physical} className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
           {t(lang, "physicalOnly")}
         </button>
       </div>

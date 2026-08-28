@@ -53,7 +53,7 @@ export function SearchPage() {
           {need ? (
             <p>
               <Link className="need-chip inline" to={need.to}>
-                <span className="need-ico">{need.icon}</span> {t(lang, "seeFolder")} {needLabel(need, lang)}
+                <span className="need-ico" aria-hidden="true">{need.icon}</span> {t(lang, "seeFolder")} {needLabel(need, lang)}
               </Link>
             </p>
           ) : null}

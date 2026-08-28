@@ -48,13 +48,13 @@ export function CategoryPage() {
         {items.length} {t(lang, "results")}
       </p>
       <div className="filters">
-        <button className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
+        <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
           {t(lang, "raananaOnly")}
         </button>
-        <button className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
+        <button aria-pressed={physical} className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
           {t(lang, "physicalOnly")}
         </button>
-        <button className={near ? "on" : ""} onClick={() => setNear((v) => !v)}>
+        <button aria-pressed={near} className={near ? "on" : ""} onClick={() => setNear((v) => !v)}>
           {t(lang, "sortNear")}
         </button>
         {types.length > 1 ? (

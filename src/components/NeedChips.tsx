@@ -14,7 +14,7 @@ export function NeedChips() {
         <div className="need-row" key={row}>
           {needsInRow(row).map((need) => (
             <Link className="need-chip" key={need.id} to={need.to}>
-              <span className="need-ico">{need.icon}</span>
+              <span className="need-ico" aria-hidden="true">{need.icon}</span>
               {needLabel(need, lang)}
             </Link>
           ))}

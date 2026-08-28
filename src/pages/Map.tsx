@@ -24,16 +24,16 @@ export function MapPage() {
     <div>
       <h1 className="chrome-title">{t(lang, "map")}</h1>
       <div className="filters">
-        <button className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>
+        <button aria-pressed={mode === "all"} className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>
           {t(lang, "any")}
         </button>
-        <button className={mode === "shelter" ? "on" : ""} onClick={() => setMode("shelter")}>
+        <button aria-pressed={mode === "shelter"} className={mode === "shelter" ? "on" : ""} onClick={() => setMode("shelter")}>
           {t(lang, "shelters")}
         </button>
-        <button className={mode === "shul" ? "on" : ""} onClick={() => setMode("shul")}>
+        <button aria-pressed={mode === "shul"} className={mode === "shul" ? "on" : ""} onClick={() => setMode("shul")}>
           {t(lang, "synagogues")}
         </button>
-        <button className={mode === "shop" ? "on" : ""} onClick={() => setMode("shop")}>
+        <button aria-pressed={mode === "shop"} className={mode === "shop" ? "on" : ""} onClick={() => setMode("shop")}>
           {t(lang, "aroundTown")}
         </button>
       </div>
