@@ -4,6 +4,15 @@ Date: 2026-08-28. Method: full read of every page/component (`src/pages/*`, `src
 
 The app's bones are genuinely strong — offline-first, trilingual, one-tap emergency dialing, distance-from-home on every card, shareable everything. The list below is where the experience falls short of what a newcomer reaches for daily, plus concrete UI defects found in code.
 
+## Implementation status (2026-08-28)
+
+All items below were implemented on this branch, with three qualifications:
+
+- **Item 1 (hours)** ships as far as the data allows: only 16 of 377 hours notes contain actual times (mostly "24/7"), so the badge covers those (Open 24/7 / Open now / Closed now, chagim counted as closed) and the parser is ready for structured hours as they get added. The Shabbat layer (item 2) carries the "is it open today" weight meanwhile.
+- **Item 9 (WhatsApp groups)** — only 5 records carry a WhatsApp contact, so this shipped as an upgraded Community folder that pulls in the olim organizations (ESRA, AACI, Telfed, Qualita…) with English/French chips and a "ask to join the local WhatsApp groups" hint, rather than a folder of fabricated join links.
+- **Item 11 (Hebrew descriptions)** — the RTL/bidi rendering fix shipped; authoring 561 `description_he` texts remains a data task.
+- **Item 21 (profile)** was dropped at the owner's request — the profile concept was removed from the code entirely (the family's situation is known; the app must not ask kids/driving questions, now enforced by a test).
+
 ## A. Daily-life gaps (highest impact)
 
 1. **"Open now" and structured hours.** Hours exist only as free text (`availability_hours_note`, 377 records) with a blanket "Hours change. Call ahead." caveat. The single most common daily question — *is it open right now?* — is unanswerable. Add structured per-day hours and an Open/Closed/Closes-soon badge on cards and folders, especially Friday-afternoon closing times.
