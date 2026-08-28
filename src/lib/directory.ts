@@ -54,6 +54,11 @@ function subHas(r: Resource, ...parts: string[]): boolean {
   return parts.some((p) => s.includes(norm(p)));
 }
 
+function nusachHas(r: Resource, ...parts: string[]): boolean {
+  const s = norm(r.denomination_nusach);
+  return !!s && parts.some((p) => s.includes(p));
+}
+
 function catOf(r: Resource, ...names: string[]): boolean {
   return names.includes(r.category);
 }
@@ -451,6 +456,28 @@ export const FOLDERS: Folder[] = [
     title: { en: "Synagogues", fr: "Synagogues", he: "בתי כנסת" },
     group: "family",
     match: (r) => r.record_type === "synagogue" || subOf(r, "Synagogue"),
+    chips: [
+      {
+        id: "ashkenaz",
+        title: { en: "Ashkenaz / Orthodox", fr: "Ashkénaze / orthodoxe", he: "אשכנז / אורתודוקסי" },
+        match: (r) => nusachHas(r, "orthodox", "ashkenaz"),
+      },
+      {
+        id: "sephardi",
+        title: { en: "Sephardi / Edot HaMizrach", fr: "Séfarade / Edot HaMizrah", he: "ספרדי / עדות המזרח" },
+        match: (r) => nusachHas(r, "sephardi", "mizrahi", "moroccan", "yemenite", "tunisian", "ladino"),
+      },
+      {
+        id: "chabad",
+        title: { en: "Chabad & Hasidic", fr: "Habad & hassidique", he: "חב״ד וחסידי" },
+        match: (r) => nusachHas(r, "chabad", "hasidic", "breslov"),
+      },
+      {
+        id: "other",
+        title: { en: "Other", fr: "Autres", he: "אחר" },
+        match: (r) => nusachHas(r, "masorti", "conservative", "reform"),
+      },
+    ],
   },
   {
     id: "community",

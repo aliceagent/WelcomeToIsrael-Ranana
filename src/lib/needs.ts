@@ -83,7 +83,7 @@ export const NEEDS: Need[] = [
   { id: "license", icon: "🪪", title: { en: "Driver licence", fr: "Permis", he: "רישיון נהיגה" }, to: "/d/government", row: 3, aliases: ["license", "licence", "driving", "permis"] },
   { id: "vet", icon: "🐾", title: { en: "Vet / pet", fr: "Vétérinaire", he: "וטרינר" }, to: "/d/pets", row: 3, aliases: ["vet", "pet", "dog", "veterinary"] },
   { id: "mall", icon: "🛍️", title: { en: "Mall / shops", fr: "Centre commercial", he: "קניון" }, to: "/d/shops", row: 3, aliases: ["mall", "renanim", "shopping"] },
-  { id: "sports", icon: "🏊", title: { en: "Pool / sport", fr: "Piscine", he: "בריכה" }, to: "/d/sports", row: 3, aliases: ["pool", "swim", "tennis", "sport"] },
+  { id: "sports", icon: "🏊", title: { en: "Pool / sport", fr: "Piscine", he: "בריכה" }, to: "/d/sports", row: 3, aliases: ["pool", "swim", "tennis", "sport", "gym", "fitness"] },
   { id: "park", icon: "🌳", title: { en: "Park", fr: "Parc", he: "פארק" }, to: "/d/parks", row: 3, aliases: ["park", "playground"] },
   { id: "mikvah", icon: "💧", title: { en: "Mikvah", fr: "Mikvé", he: "מקווה" }, to: "/d/community", row: 3, aliases: ["mikvah", "mikveh", "מקווה"] },
   { id: "translate", icon: "🌐", title: { en: "Translate", fr: "Traduire", he: "תרגום" }, to: "/d/apps", row: 3, aliases: ["translate", "google translate"] },
@@ -97,7 +97,7 @@ export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
   { test: /electricien|electrician|חשמלאי|חשמל|handyman|plombier|plumber|אינסטלטור/i, extra: ["midrag", "home center"] },
   { test: /hardware|bricolage|diy|home depot|כלי עבודה/i, extra: ["home center", "ace"] },
   { test: /dentist|dentiste|שיניים/i, extra: ["midrag", "google maps"] },
-  { test: /hairdresser|coiffeur|salon|ספר/i, extra: ["midrag", "easy"] },
+  { test: /hairdresser|coiffeur|salon|ספר|מספרה|barber/i, extra: ["midrag", "easy"] },
   { test: /nanny|babysit|nounou|מטפלת/i, extra: ["midrag"] },
   { test: /kupah|kupat|caisse maladie|קופת חולים|hospital|hôpital|בית חולים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit"] },
   { test: /pharmacy|pharmacie|בית מרקחת|superpharm|super-pharm/i, extra: ["super-pharm"] },
@@ -109,9 +109,20 @@ export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
   { test: /ikea|furniture|meuble|רהיט/i, extra: ["ikea"] },
   { test: /garbage|trash|poubelle|אשפה|recycling/i, extra: ["garbage", "recycling"] },
   { test: /school|école|kindergarten|גן ילדים|mashov/i, extra: ["school", "education"] },
+  { test: /water heater|boiler|hot water|dud shemesh|דוד שמש|chauffe-eau/i, extra: ["plumber", "home services", "midrag"] },
+  { test: /gym|fitness|workout|חדר כושר|musculation/i, extra: ["sports", "tennis", "swimming"] },
+  { test: /taxi|cab|מונית|monit/i, extra: ["gett", "taxi"] },
+  { test: /מכולת|makolet|épicerie/i, extra: ["supermarket", "grocery"] },
+  { test: /pediatrician|pédiatre|רופא ילדים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit", "tipat halav", "schneider"] },
+  { test: /garderie|daycare|צהרון/i, extra: ["kindergarten", "childcare"] },
+  { test: /pharmacie de garde|duty pharmacy/i, extra: ["super-pharm", "pharmacy"] },
+  { test: /cacher|casher/i, extra: ["kosher", "butcher"] },
+  { test: /locksmith|serrurier|מנעולן|aircon|air condition|מזגן/i, extra: ["midrag", "home services"] },
+  { test: /bus|אוטובוס|autobus/i, extra: ["moovit", "rav-kav"] },
 ];
 
-const THIN_TRADE = /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|nanny|babysit|handyman|חשמלאי|אינסטלטור|שיניים/i;
+const THIN_TRADE =
+  /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|nanny|babysit|handyman|חשמלאי|אינסטלטור|שיניים|water heater|boiler|dud shemesh|locksmith|serrurier|aircon|מזגן|מנעולן/i;
 
 export function isThinTradeQuery(query: string): boolean {
   return THIN_TRADE.test(query);

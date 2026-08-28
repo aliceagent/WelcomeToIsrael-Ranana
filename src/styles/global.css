@@ -32,6 +32,7 @@
   --star-on-line: #c9a227;
   --field-bg: #ffffff;
   --food-top: #f4ddb8;
+  --wa-green: #128c7e;
   --radius: 18px;
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
@@ -76,6 +77,20 @@
     --star-on-line: #8a6d1a;
     --field-bg: #232c25;
     --food-top: #2a2317;
+    --wa-green: #25d366; /* #128c7e fails AA on the dark surface; brand green at higher lightness passes */
+  }
+  /* Leaflet's own stylesheet hardcodes white controls; retint for dark mode. */
+  :root:not([data-theme="light"]) .leaflet-control-zoom a,
+  :root:not([data-theme="light"]) .leaflet-bar a {
+    background: var(--cream);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  :root:not([data-theme="light"]) .leaflet-control-zoom a:hover {
+    background: var(--paper-2);
+  }
+  :root:not([data-theme="light"]) .leaflet-bar {
+    border-color: var(--line);
   }
 }
 
@@ -753,7 +768,7 @@ button, a {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 0 2px 10px;
+  padding: 0 16px 10px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -801,6 +816,7 @@ button, a {
   padding: 12px 6px 10px;
   text-align: center;
   min-height: 104px;
+  min-width: 0; /* lets the grid track shrink text instead of pushing the tile past its column */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -810,9 +826,13 @@ button, a {
 }
 .food-tile .emoji { font-size: 2rem; line-height: 1; }
 .food-tile strong {
+  display: block;
+  width: 100%;
   font-size: 0.84rem;
   line-height: 1.2;
   font-weight: 750;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 .food-tile .count {
   font-size: 0.75rem;
@@ -977,6 +997,23 @@ button, a {
 .btn.danger { background: var(--terracotta); color: #fff; border-color: var(--terracotta); font-size: 1.05rem; min-height: 52px; flex: 1; }
 .btn.ghost { background: transparent; }
 
+.directions-group {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px 12px 12px;
+  margin-top: 10px;
+}
+.directions-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.directions-group .actions.compact { margin-top: 0; gap: 6px; }
+
 .wa-text {
   display: inline-flex;
   align-items: center;
@@ -986,7 +1023,7 @@ button, a {
   padding: 8px 6px;
   border: 0;
   background: none;
-  color: #128c7e;
+  color: var(--wa-green);
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -1012,6 +1049,9 @@ button, a {
   margin-bottom: 14px;
 }
 .call-hero .phone { font-family: var(--display); font-size: 2rem; letter-spacing: 0.02em; }
+
+/* Keeps digits/slashes/asterisks readable when embedded in RTL (Hebrew) text. */
+.phone-ltr { direction: ltr; unicode-bidi: isolate; }
 
 .banner {
   background: var(--banner-bg);
@@ -1121,11 +1161,20 @@ html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
 }
 .bottom-nav .ico svg { display: block; }
 
+.filters,
+.need-row {
+  /* Scroll hint: rows bleed into the 16px page gutters and the fade ramps
+     over that bleed, so a row that fits is untouched while overflowing chips
+     visibly dissolve at the screen edge. Symmetric, so RTL needs no mirroring. */
+  margin-inline: -16px;
+  mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+}
 .filters {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 0 12px;
+  padding: 4px 16px 12px;
 }
 .filters button, .filters select {
   border: 1px solid var(--line);
@@ -1161,6 +1210,17 @@ html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
 }
 .map-wrap.tall { height: min(58vh, 560px); }
 .map-wrap .leaflet-container { height: 100%; width: 100%; }
+
+/* Landscape phones are short: 58-62vh plus the fixed bottom nav hides pins
+   below the fold. Size against the actual space left after chrome instead. */
+@media (orientation: landscape) {
+  .map-wrap {
+    height: min(70vh, calc(100vh - var(--top-h) - var(--nav-h) - 16px));
+  }
+  .map-wrap.tall {
+    height: min(70vh, calc(100vh - var(--top-h) - var(--nav-h) - 16px));
+  }
+}
 
 .map-pin {
   display: grid;

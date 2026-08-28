@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { NearMeToggle } from "../components/NearMeToggle";
@@ -6,12 +6,14 @@ import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { getFolder, folderLabel, recordsInFolder, directorySorter } from "../lib/directory";
 import { effectiveKm } from "../lib/geo";
+import { openState } from "../lib/hours";
 import { shareContent, whatsappShareUrl, absoluteUrl } from "../lib/share";
 import type { Resource } from "../lib/types";
 
 export function FolderPage() {
   const { slug } = useParams();
   const { lang, origin, originIsDefault } = useStore();
+  const [msg, setMsg] = useState("");
   const folder = getFolder(slug);
   // Filters live in the URL so back-navigation keeps them and lists stay shareable.
   const [params, setParams] = useSearchParams();
@@ -75,21 +77,34 @@ export function FolderPage() {
         </button>
       </div>
       <div className="actions" style={{ marginBottom: 12 }}>
-        <button className="btn" onClick={() => shareContent(title, folder.hint?.[lang] || `${title} — Welcome to Ra'anana.`, url, `/og/d/${folder.id}.png`)}>
+        <button
+          className="btn"
+          onClick={async () => {
+            const shareText = folder.hint?.[lang] || t(lang, "shareFolderFallback").replace("{name}", title);
+            const res = await shareContent(title, shareText, url, `/og/d/${folder.id}.png`);
+            if (res === "copied") setMsg(t(lang, "copied"));
+          }}
+        >
           {t(lang, "shareCategory")}
         </button>
         <a className="wa-text" href={whatsappShareUrl(title, url, folder.hint?.[lang] || title)}>
           {t(lang, "whatsapp")}
         </a>
+        {msg ? <span className="muted">{msg}</span> : null}
       </div>
       {folder.caveat === "shelter" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
       {folder.caveat === "hours" ? <div className="banner">{t(lang, "hoursCaveat")}</div> : null}
       {folder.caveat === "kosher" ? <div className="banner">{t(lang, "kosherCaveat")}</div> : null}
       {folder.pinIds?.length ? <div className="banner">{t(lang, "tryLiveHelp")}</div> : null}
       {items.length === 0 ? <div className="empty">{t(lang, "noResults")}</div> : null}
-      {items.map((r) => (
-        <RecordCard key={r.record_id} r={r} compact />
-      ))}
+      {items.map((r) => {
+        const closed = openState(r) === "closed";
+        return (
+          <div key={r.record_id} className={closed ? "closed-wrap" : undefined}>
+            <RecordCard r={r} compact />
+          </div>
+        );
+      })}
     </div>
   );
 }

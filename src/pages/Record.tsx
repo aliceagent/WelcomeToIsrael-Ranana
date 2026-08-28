@@ -5,12 +5,13 @@ import { BOOKING_HINTS } from "../lib/booking";
 import { SpeakButton } from "../components/SpeakButton";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, priorityLabel, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
 import { Distance, OpenChip } from "../components/RecordCard";
 import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
 import { PlacesMapLazy } from "../components/PlacesMapLazy";
 import { sameUrl } from "../lib/urls";
+import { Phone } from "../components/Phone";
 
 export function RecordPage() {
   const { slug } = useParams();
@@ -26,6 +27,9 @@ export function RecordPage() {
     r.record_type === "important_phone_or_emergency_service" ||
     r.category === "Government, Aliyah & Rights" ||
     r.category === "Health & Family";
+  // In Hebrew, the glossary term's own Hebrew-term block already carries the
+  // heading; showing displayName's name_he again in an <h1> below would repeat it.
+  const showGlossaryHeHeading = r.record_type === "glossary_term" && lang === "he" && !!r.name_he;
 
   return (
     <article className="detail">
@@ -44,15 +48,22 @@ export function RecordPage() {
         </button>
       </div>
       {r.record_type === "glossary_term" && r.name_he ? (
-        <p className="glossary-he">
-          {r.name_he} <SpeakButton text={r.name_he} />
-        </p>
+        showGlossaryHeHeading ? (
+          <h1 className="glossary-he">
+            {r.name_he} <SpeakButton text={r.name_he} />
+          </h1>
+        ) : (
+          <p className="glossary-he">
+            {r.name_he} <SpeakButton text={r.name_he} />
+          </p>
+        )
       ) : null}
       {r.name_he && r.record_type !== "glossary_term" ? <p className="he-name">{r.name_he}</p> : null}
-      <h1>{name}</h1>
+      {!showGlossaryHeHeading ? <h1>{name}</h1> : null}
       {r.name_fr && lang === "en" ? <p className="muted">{r.name_fr}</p> : null}
+      {showGlossaryHeHeading && r.name_en ? <p className="muted">{r.name_en}</p> : null}
       <div className="chips">
-        {r.priority ? <span className="chip hot">{r.priority}</span> : null}
+        {r.priority ? <span className="chip hot">{priorityLabel(r.priority, lang)}</span> : null}
         {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
         <OpenChip r={r} />
@@ -63,11 +74,13 @@ export function RecordPage() {
       {r.record_type === "important_phone_or_emergency_service" && r.phone_primary ? (
         <div className="call-hero">
           <div>{name}</div>
-          <div className="phone">{r.phone_primary}</div>
+          <div className="phone">
+            <Phone n={r.phone_primary} />
+          </div>
           {r.availability_hours_note ? <div>{r.availability_hours_note}</div> : null}
           {phoneNumbers(r.phone_primary).map((num) => (
             <a key={num} className="btn danger" href={telHref(num)}>
-              {t(lang, "call")} {num}
+              {t(lang, "call")} <Phone n={num} />
             </a>
           ))}
         </div>
@@ -85,7 +98,8 @@ export function RecordPage() {
         <p>
           <strong>{t(lang, "hours")}: </strong>
           {r.availability_hours_note}
-          <span className="muted"> — {t(lang, "hoursCaveat")}</span>
+          {/* "Call ahead" only makes sense when there is a number to call. */}
+          {r.phone_primary || r.phone_secondary ? <span className="muted"> — {t(lang, "hoursCaveat")}</span> : null}
         </p>
       ) : null}
 
@@ -151,13 +165,13 @@ export function RecordPage() {
         {r.record_type !== "important_phone_or_emergency_service"
           ? phoneNumbers(r.phone_primary).map((num) => (
               <a key={num} className="btn primary" href={telHref(num)}>
-                {t(lang, "call")} {num}
+                {t(lang, "call")} <Phone n={num} />
               </a>
             ))
           : null}
         {phoneNumbers(r.phone_secondary).map((num) => (
           <a key={num} className="btn" href={telHref(num)}>
-            {num}
+            <Phone n={num} />
           </a>
         ))}
         {r.whatsapp_sms ? (
@@ -185,28 +199,32 @@ export function RecordPage() {
             {t(lang, "order")}
           </a>
         ) : null}
-        {r.is_physical_location || r.address_en ? (
-          <>
-            <a className="btn" href={mapsSearchUrl(r)} target="_blank" rel="noreferrer">
+      </div>
+
+      {r.is_physical_location || r.address_en ? (
+        <div className="directions-group">
+          <div className="directions-label">{t(lang, "gettingThere")}</div>
+          <div className="actions compact">
+            <a className="btn small" href={mapsSearchUrl(r)} target="_blank" rel="noreferrer">
               {t(lang, "openInMaps")}
             </a>
-            <a className="btn" href={directionsUrl(r, home, "walking")} target="_blank" rel="noreferrer">
+            <a className="btn small" href={directionsUrl(r, home, "walking")} target="_blank" rel="noreferrer">
               {t(lang, "walk")}
             </a>
-            <a className="btn" href={directionsUrl(r, home, "driving")} target="_blank" rel="noreferrer">
+            <a className="btn small" href={directionsUrl(r, home, "driving")} target="_blank" rel="noreferrer">
               {t(lang, "drive")}
             </a>
             {wazeUrl(r) ? (
-              <a className="btn" href={wazeUrl(r)!} target="_blank" rel="noreferrer">
+              <a className="btn small" href={wazeUrl(r)!} target="_blank" rel="noreferrer">
                 {t(lang, "waze")}
               </a>
             ) : null}
-            <a className="btn" href={appleMapsUrl(r, home)} target="_blank" rel="noreferrer">
-              Apple Maps
+            <a className="btn small" href={appleMapsUrl(r, home)} target="_blank" rel="noreferrer">
+              {t(lang, "appleMaps")}
             </a>
-          </>
-        ) : null}
-      </div>
+          </div>
+        </div>
+      ) : null}
 
       <ShareBar r={r} />
 
@@ -230,7 +248,9 @@ export function RecordPage() {
         {" · "}
         <a
           className="source-link"
-          href={`https://wa.me/?text=${encodeURIComponent(`Welcome to Ra'anana — correction for "${name}" (${r.record_id}): `)}`}
+          href={`https://wa.me/?text=${encodeURIComponent(
+            t(lang, "correctionText").replace("{name}", name).replace("{id}", r.record_id),
+          )}`}
           target="_blank"
           rel="noreferrer"
         >

@@ -6,6 +6,7 @@ import { useStore } from "../lib/store";
 import { t, categoryLabel } from "../lib/i18n";
 import { CATEGORY_ICONS, priorityScore, slugifyCategory } from "../lib/format";
 import { shareContent, whatsappShareUrl, categoryPath, absoluteUrl } from "../lib/share";
+import { openState } from "../lib/hours";
 
 export function CategoryPage() {
   const { slug } = useParams();
@@ -15,6 +16,7 @@ export function CategoryPage() {
   const [physical, setPhysical] = useState(false);
   const [near, setNear] = useState(true);
   const [type, setType] = useState("all");
+  const [msg, setMsg] = useState("");
 
   const items = useMemo(() => {
     if (!category) return [];
@@ -69,17 +71,33 @@ export function CategoryPage() {
         ) : null}
       </div>
       <div className="actions" style={{ marginBottom: 12 }}>
-        <button className="btn" onClick={() => shareContent(categoryLabel(lang, category), `Browse ${categoryLabel(lang, category)} in Welcome to Ra'anana.`, url, `/og/c/${slugifyCategory(category)}.png`)}>
+        <button
+          className="btn"
+          onClick={async () => {
+            const shareText = t(lang, "browseCategoryShare").replace("{name}", categoryLabel(lang, category));
+            const res = await shareContent(categoryLabel(lang, category), shareText, url, `/og/c/${slugifyCategory(category)}.png`);
+            if (res === "copied") setMsg(t(lang, "copied"));
+          }}
+        >
           {t(lang, "shareCategory")}
         </button>
-        <a className="wa-text" href={whatsappShareUrl(categoryLabel(lang, category), url, `Browse ${categoryLabel(lang, category)} in Welcome to Ra'anana.`)}>
+        <a
+          className="wa-text"
+          href={whatsappShareUrl(categoryLabel(lang, category), url, t(lang, "browseCategoryShare").replace("{name}", categoryLabel(lang, category)))}
+        >
           {t(lang, "whatsapp")}
         </a>
+        {msg ? <span className="muted">{msg}</span> : null}
       </div>
       {category === "Safety & Public Shelters" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
-      {items.map((r) => (
-        <RecordCard key={r.record_id} r={r} />
-      ))}
+      {items.map((r) => {
+        const closed = openState(r) === "closed";
+        return (
+          <div key={r.record_id} className={closed ? "closed-wrap" : undefined}>
+            <RecordCard r={r} />
+          </div>
+        );
+      })}
     </div>
   );
 }
