@@ -344,6 +344,11 @@ button, a {
   font-size: 0.86rem;
   line-height: 1.35;
 }
+.ask-progress-elapsed {
+  margin-top: 0.25rem !important;
+  font-size: 0.78rem !important;
+  opacity: 0.85;
+}
 .ask-progress-spinner {
   width: 18px;
   height: 18px;

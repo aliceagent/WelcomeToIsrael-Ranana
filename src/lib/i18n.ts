@@ -61,9 +61,24 @@ export const dict = {
     he: "מחפשים במדריך…",
   },
   askSearchingDetail: {
-    en: "Looking for matching places, folders, and services in Ra'anana.",
-    fr: "Recherche de lieux, dossiers et services à Ra'anana.",
-    he: "מחפשים מקומות, תיקיות ושירותים מתאימים ברעננה.",
+    en: "Scanning places, folders, and services in the Ra'anana directory.",
+    fr: "Parcours des lieux, dossiers et services de l'annuaire de Ra'anana.",
+    he: "סורקים מקומות, תיקיות ושירותים במדריך רעננה.",
+  },
+  askLoadingRecord: {
+    en: "Loading listing details…",
+    fr: "Chargement de la fiche…",
+    he: "טוענים פרטי רשומה…",
+  },
+  askLoadingRecordDetail: {
+    en: "Pulling phone, hours, and website from the directory entry.",
+    fr: "Récupération du téléphone, des horaires et du site depuis la fiche.",
+    he: "מושכים טלפון, שעות ואתר מהרשומה במדריך.",
+  },
+  askElapsed: {
+    en: "{s}s elapsed",
+    fr: "{s} s écoulées",
+    he: "{s} שניות",
   },
   askThinking: {
     en: "Thinking…",

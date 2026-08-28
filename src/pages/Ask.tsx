@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
@@ -8,7 +8,8 @@ import { AskIcon } from "../components/Icons";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { getById } from "../lib/data";
-import { askProgressPhase, textOf } from "../lib/ask-progress";
+import { askIsBusy, askProgressLabelKey, askProgressPhase, textOf } from "../lib/ask-progress";
+import type { DictKey } from "../lib/i18n";
 import { ASK_PROMPTS, ensureCatalogSearch, matchingFolders, searchCatalog } from "../lib/catalog-hits";
 
 ensureCatalogSearch();
@@ -61,6 +62,8 @@ export function AskPage() {
   );
 
   const { messages, sendMessage, status, error } = useChat({ transport });
+  const [startedAt, setStartedAt] = useState<number | undefined>();
+  const wasBusy = useRef(false);
 
   useEffect(() => {
     if (!initial || sentQueries.has(initial)) return;
@@ -85,9 +88,19 @@ export function AskPage() {
     setDraft("");
   }
 
-  const busy = status === "submitted" || status === "streaming";
+  const busy = askIsBusy(status, lastAssistant);
   const progressPhase = askProgressPhase(status, lastAssistant);
   const unavailable = error?.message?.includes("503") || /not_configured/i.test(error?.message || "");
+
+  useEffect(() => {
+    if (busy && !wasBusy.current) {
+      setStartedAt(Date.now());
+    }
+    if (!busy && wasBusy.current) {
+      setStartedAt(undefined);
+    }
+    wasBusy.current = busy;
+  }, [busy]);
 
   return (
     <div className="ask-page">
@@ -157,7 +170,9 @@ export function AskPage() {
             </div>
           );
         })}
-        {progressPhase ? <AskProgress phase={progressPhase} lang={lang} /> : null}
+        {progressPhase ? (
+          <AskProgress phase={progressPhase} lang={lang} assistant={lastAssistant} startedAt={startedAt} />
+        ) : null}
       </div>
 
       {unavailable || !online ? (
@@ -189,7 +204,11 @@ export function AskPage() {
           disabled={busy}
         />
         <button className="ask-go" type="submit" disabled={busy || !draft.trim()} aria-busy={busy}>
-          {busy ? t(lang, "askWorking") : t(lang, "askSend")}
+          {busy && progressPhase
+            ? t(lang, askProgressLabelKey(progressPhase) as DictKey)
+            : busy
+              ? t(lang, "askWorking")
+              : t(lang, "askSend")}
         </button>
       </form>
     </div>

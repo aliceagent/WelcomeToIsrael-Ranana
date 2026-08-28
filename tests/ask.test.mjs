@@ -18,7 +18,8 @@ test("ask bot searches the directory and never ships a Kimi key", () => {
   const gitignore = readFileSync(join(root, ".gitignore"), "utf8");
   assert.match(agent, /searchDirectory/);
   assert.match(agent, /api\.kimi\.com\/coding\/v1/);
-  assert.match(agent, /k3-256k/);
+  assert.match(agent, /kimi-for-coding-highspeed/);
+  assert.match(agent, /isStepCount\(3\)/);
   assert.match(handle, /createAgentUIStreamResponse/);
   assert.match(handle, /normalizeUIMessages/);
   assert.match(home, /AskBar/);

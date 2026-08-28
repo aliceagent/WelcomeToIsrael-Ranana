@@ -5,10 +5,20 @@ import type { Lang } from "../lib/types.js";
 import { getCompactRecord, searchCatalog } from "../lib/catalog-hits.js";
 
 const KIMI_BASE_URL = process.env.KIMI_BASE_URL || "https://api.kimi.com/coding/v1";
-const MODEL = process.env.KIMI_MODEL || "k3-256k";
+const DEFAULT_MODEL = "kimi-for-coding-highspeed";
+const MODEL = process.env.KIMI_MODEL || DEFAULT_MODEL;
 
 function kimiKey(): string | undefined {
   return process.env.KIMI_API_KEY || process.env.MOONSHOT_API_KEY;
+}
+
+function modelProviderOptions(model: string) {
+  if (!model.startsWith("k3")) return undefined;
+  return {
+    kimi: {
+      reasoning_effort: "low",
+    },
+  };
 }
 
 function instructions(lang: Lang): string {
@@ -16,7 +26,7 @@ function instructions(lang: Lang): string {
     lang === "fr" ? "French" : lang === "he" ? "Hebrew (you may mix Hebrew and English names)" : "English";
   return `You are the in-app helper for Welcome to Ra'anana, a living directory for English- and French-speaking newcomers in Ra'anana, Israel.
 
-Always search the directory first. Call searchDirectory before you answer any practical local question (health, school, plumber, food, bills, city hall, emergency, apps). Use getRecord if you need hours, a website, or a phone that was truncated.
+Always search the directory first. Call searchDirectory once before you answer any practical local question (health, school, plumber, food, bills, city hall, emergency, apps). Use getRecord only if you need hours, a website, or a phone that was truncated.
 
 Then answer in ${language}. Be short, warm, and concrete:
 - Lead with what to do next.
@@ -42,7 +52,8 @@ export function createAskAgent(lang: Lang) {
     id: "raanana-ask",
     model: kimi.chatModel(MODEL),
     instructions: instructions(lang),
-    stopWhen: isStepCount(6),
+    stopWhen: isStepCount(3),
+    providerOptions: modelProviderOptions(MODEL),
     tools: {
       searchDirectory: tool({
         description:
@@ -68,4 +79,8 @@ export type AskAgentUIMessage = InferAgentUIMessage<AskAgent>;
 
 export function isAskConfigured(): boolean {
   return Boolean(kimiKey());
+}
+
+export function askModelId(): string {
+  return MODEL;
 }
