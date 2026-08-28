@@ -1054,10 +1054,17 @@ html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
   border: 2px solid #fff;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
 }
+.map-filters { padding-bottom: 8px; }
+.map-filters:last-of-type { padding-bottom: 12px; }
 .map-filters button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+}
+.cat-count {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  font-weight: 700;
 }
 .cat-dot {
   display: grid;

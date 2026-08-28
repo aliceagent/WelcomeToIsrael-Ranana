@@ -8,7 +8,7 @@ import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { effectiveKm } from "../lib/geo";
 import { buildSearch, searchRecords } from "../lib/search";
-import { MAP_CATEGORIES, mapCategory } from "../lib/mapview";
+import { getMapCategory, MAP_ROWS } from "../lib/mapview";
 
 buildSearch(records);
 
@@ -25,9 +25,21 @@ export function MapPage() {
     const base = q.trim()
       ? searchRecords(q).filter((r) => r.is_physical_location && r.latitude_est != null && r.longitude_est != null)
       : physicalRecords;
-    if (cat === "all") return base;
-    return base.filter((r) => mapCategory(r).id === cat);
+    const category = cat === "all" ? undefined : getMapCategory(cat);
+    return category ? base.filter(category.match) : base;
   }, [cat, q]);
+
+  // How many mappable places each section holds; empty sections hide.
+  const counts = useMemo(() => {
+    const tally = new Map<string, number>();
+    for (const row of MAP_ROWS) {
+      for (const id of row) {
+        const category = getMapCategory(id);
+        if (category) tally.set(id, physicalRecords.filter(category.match).length);
+      }
+    }
+    return tally;
+  }, []);
 
   const nearest = useMemo(
     () =>
@@ -60,29 +72,40 @@ export function MapPage() {
           aria-label={t(lang, "search")}
         />
       </form>
-      <div className="filters map-filters">
-        <NearMeToggle />
-        <button aria-pressed={cat === "all"} className={cat === "all" ? "on" : ""} onClick={() => { setCat("all"); setSelected(null); setLimit(PAGE); }}>
-          {t(lang, "any")}
-        </button>
-        {MAP_CATEGORIES.map((c) => (
-          <button
-            key={c.id}
-            aria-pressed={cat === c.id}
-            className={cat === c.id ? "on" : ""}
-            onClick={() => {
-              setCat(c.id);
-              setSelected(null);
-              setLimit(PAGE);
-            }}
-          >
-            <span className="cat-dot" style={{ background: c.color }} aria-hidden="true">
-              {c.icon}
-            </span>
-            {c.label(lang)}
-          </button>
-        ))}
-      </div>
+      {MAP_ROWS.map((row, i) => (
+        <div className="filters map-filters" key={i}>
+          {i === 0 ? (
+            <>
+              <NearMeToggle />
+              <button aria-pressed={cat === "all"} className={cat === "all" ? "on" : ""} onClick={() => { setCat("all"); setSelected(null); setLimit(PAGE); }}>
+                {t(lang, "any")}
+              </button>
+            </>
+          ) : null}
+          {row.map((id) => {
+            const c = getMapCategory(id);
+            if (!c || !(counts.get(id) ?? 0)) return null;
+            return (
+              <button
+                key={c.id}
+                aria-pressed={cat === c.id}
+                className={cat === c.id ? "on" : ""}
+                onClick={() => {
+                  setCat((prev) => (prev === c.id ? "all" : c.id));
+                  setSelected(null);
+                  setLimit(PAGE);
+                }}
+              >
+                <span className="cat-dot" style={{ background: c.color }} aria-hidden="true">
+                  {c.icon}
+                </span>
+                {c.label(lang)}
+                <span className="cat-count">{counts.get(id)}</span>
+              </button>
+            );
+          })}
+        </div>
+      ))}
       {cat === "shelters" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
       {online ? (
         <PlacesMap places={places} selectedId={selected} onSelect={pick} tall />
