@@ -1,4 +1,4 @@
-import { createAgentUIStreamResponse } from "ai";
+import { createAgentUIStreamResponse, type UIMessage } from "ai";
 import type { Lang } from "../lib/types.js";
 import { createAskAgent, isAskConfigured } from "./ask-agent.js";
 
@@ -7,6 +7,17 @@ const MAX_CHARS = 4000;
 
 function asLang(value: unknown): Lang {
   return value === "fr" || value === "he" ? value : "en";
+}
+
+function normalizeUIMessages(messages: unknown[]): UIMessage[] {
+  return messages.map((raw, index) => {
+    const message = raw as Partial<UIMessage> & { parts?: UIMessage["parts"] };
+    return {
+      id: typeof message.id === "string" && message.id ? message.id : `msg-${index}-${crypto.randomUUID()}`,
+      role: message.role === "assistant" || message.role === "system" ? message.role : "user",
+      parts: Array.isArray(message.parts) ? message.parts : [],
+    };
+  });
 }
 
 export async function handleAsk(request: Request): Promise<Response> {
@@ -49,7 +60,7 @@ export async function handleAsk(request: Request): Promise<Response> {
   try {
     return await createAgentUIStreamResponse({
       agent,
-      uiMessages: messages,
+      uiMessages: normalizeUIMessages(messages),
     });
   } catch (err) {
     console.error(err);

@@ -20,6 +20,7 @@ test("ask bot searches the directory and never ships a Kimi key", () => {
   assert.match(agent, /api\.kimi\.com\/coding\/v1/);
   assert.match(agent, /k3-256k/);
   assert.match(handle, /createAgentUIStreamResponse/);
+  assert.match(handle, /normalizeUIMessages/);
   assert.match(home, /AskBar/);
   assert.match(app, /path="\/ask"/);
   assert.match(vercel, /api\//);
