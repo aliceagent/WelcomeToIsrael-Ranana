@@ -97,7 +97,7 @@ export function parshaFor(g: { year: number; month: number; day: number; rd: num
   const hd = new HDate(new Date(g.year, g.month - 1, g.day));
   const reading = sedraFor(hd.getFullYear()).lookup(hd);
   const translit = reading.parsha.join("–");
-  const hebrewDate = hd.render("he");
+  const hebrewDate = hd.renderGematriya(true);
 
   if (reading.chag) {
     const chag = holidayForRd(g.rd);
