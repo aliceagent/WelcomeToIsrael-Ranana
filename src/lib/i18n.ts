@@ -109,6 +109,8 @@ export const dict = {
   askStepSearch: { en: "Search", fr: "Recherche", he: "חיפוש" },
   askStepAnswer: { en: "Answer", fr: "Réponse", he: "תשובה" },
   askLooking: { en: "Looking in the directory…", fr: "Recherche dans l'annuaire…", he: "מחפשים במדריך…" },
+  askReadMore: { en: "Read more", fr: "Lire la suite", he: "קראו עוד" },
+  askShowLess: { en: "Show less", fr: "Réduire", he: "הציגו פחות" },
   askFromDirectory: { en: "From the directory", fr: "Dans l'annuaire", he: "מהמדריך" },
   askOpenList: { en: "Open", fr: "Ouvrir", he: "פתח" },
   askUnavailable: {

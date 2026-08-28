@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
+import { AskAnswer } from "../components/AskAnswer";
 import { RecordCard } from "../components/RecordCard";
 import { AskProgress } from "../components/AskProgress";
 import { AskIcon } from "../components/Icons";
@@ -141,13 +142,7 @@ export function AskPage() {
           const body = textOf(message);
           return (
             <div className="ask-msg bot" key={message.id}>
-              {body
-                ? body.split(/\n{2,}/).map((para, idx) => (
-                    <p key={`${message.id}-${idx}`} className="ask-p">
-                      {para}
-                    </p>
-                  ))
-                : null}
+              {body ? <AskAnswer text={body} lang={lang} messageId={message.id} /> : null}
               {folders.length ? (
                 <div className="ask-folders">
                   {folders.map((folder) => (
