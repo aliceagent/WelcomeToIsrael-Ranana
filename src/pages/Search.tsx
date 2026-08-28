@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { records } from "../lib/data";
-import { buildSearch, searchRecords } from "../lib/search";
+import { buildSearch, liveLookupRecords, searchRecords } from "../lib/search";
 import { RecordCard } from "../components/RecordCard";
 import { NeedChips } from "../components/NeedChips";
 import { SearchBox } from "../components/SearchBox";
 import { AskIcon } from "../components/Icons";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { matchNeed, needLabel } from "../lib/needs";
+import { matchNeed, needLabel, suggestNeeds } from "../lib/needs";
 import { absoluteUrl, shareContent, whatsappShareUrl } from "../lib/share";
+import { openState } from "../lib/hours";
+import type { Resource } from "../lib/types";
 
 buildSearch(records);
 
@@ -84,6 +86,21 @@ export function SearchPage() {
   }, []);
 
   const results = useMemo(() => (q.trim() ? searchRecords(q) : []), [q]);
+  const live = useMemo(() => {
+    if (!q.trim()) return [];
+    return liveLookupRecords(q, results.length).filter(
+      (r) => !results.some((x) => x.record_id === r.record_id || (x.name_en && x.name_en === r.name_en)),
+    );
+  }, [q, results]);
+  const { openNow, rest } = useMemo(() => {
+    const open: Resource[] = [];
+    const other: Resource[] = [];
+    for (const r of results) {
+      const state = openState(r);
+      (state === "open" || state === "always" ? open : other).push(r);
+    }
+    return { openNow: open, rest: other };
+  }, [results]);
   const need = q.trim() ? matchNeed(q, lang) : undefined;
   const shareUrl = absoluteUrl(`/search?q=${encodeURIComponent(q.trim())}`);
   const shareTitle = `"${q.trim()}" — ${t(lang, "appName")}`;
@@ -153,25 +170,87 @@ export function SearchPage() {
               </span>
             ) : null}
           </div>
-          {results.length === 0 ? <div className="empty">{t(lang, "noResults")}</div> : null}
-          {results.slice(0, limit).map((r) => (
-            <RecordCard key={r.record_id} r={r} />
-          ))}
-          {results.length > limit ? (
-            <div className="actions" style={{ justifyContent: "center" }}>
-              <button className="btn" onClick={() => setLimit((n) => n + PAGE)}>
-                {t(lang, "showMore")} ({results.length - limit})
-              </button>
+
+          {results.length === 0 ? (
+            <div className="no-results">
+              <div className="no-results-ico" aria-hidden="true">
+                🔍
+              </div>
+              <h2>{t(lang, "noResultsFor").replace("{q}", q.trim())}</h2>
+              <p className="muted">{t(lang, "noResults")}</p>
+              <p className="try-label">{t(lang, "tryInstead")}</p>
+              <div className="try-chips">
+                {suggestNeeds(q, lang).map((n) => (
+                  <Link className="need-chip" key={n.id} to={n.to}>
+                    <span className="need-ico" aria-hidden="true">{n.icon}</span>
+                    {needLabel(n, lang)}
+                  </Link>
+                ))}
+                <Link className="need-chip ask" to={`/ask?q=${encodeURIComponent(q.trim())}`}>
+                  <span className="need-ico" aria-hidden="true">
+                    <AskIcon size={20} />
+                  </span>
+                  {t(lang, "askHelperCta")}
+                </Link>
+              </div>
             </div>
+          ) : (
+            <>
+              {openNow.length ? (
+                <>
+                  <div className="section-head tight">
+                    <h2>
+                      <span className="open-dot" aria-hidden="true" /> {t(lang, "openNow")} ({openNow.length})
+                    </h2>
+                  </div>
+                  {openNow.map((r) => (
+                    <RecordCard key={r.record_id} r={r} />
+                  ))}
+                  <div className="section-head tight">
+                    <h2>{t(lang, "allResults")}</h2>
+                  </div>
+                </>
+              ) : null}
+              {rest.slice(0, limit).map((r) => {
+                const closed = openState(r) === "closed";
+                return (
+                  <div key={r.record_id} className={closed ? "closed-wrap" : undefined}>
+                    <RecordCard r={r} />
+                  </div>
+                );
+              })}
+              {rest.length > limit ? (
+                <div className="actions" style={{ justifyContent: "center" }}>
+                  <button className="btn" onClick={() => setLimit((n) => n + PAGE)}>
+                    {t(lang, "showMore")} ({rest.length - limit})
+                  </button>
+                </div>
+              ) : null}
+            </>
+          )}
+
+          {live.length ? (
+            <>
+              <div className="section-head tight">
+                <h2>{t(lang, "tryLive")}</h2>
+              </div>
+              <p className="muted">{t(lang, "tryLiveHelp")}</p>
+              {live.map((r) => (
+                <RecordCard key={r.record_id} r={r} compact />
+              ))}
+            </>
           ) : null}
-          <p>
-            <Link className="need-chip inline" to={`/ask?q=${encodeURIComponent(q.trim())}`}>
-              <span className="need-ico" aria-hidden="true">
-                <AskIcon size={20} />
-              </span>
-              {t(lang, "askHelperCta")}
-            </Link>
-          </p>
+
+          {results.length ? (
+            <p>
+              <Link className="need-chip inline" to={`/ask?q=${encodeURIComponent(q.trim())}`}>
+                <span className="need-ico" aria-hidden="true">
+                  <AskIcon size={20} />
+                </span>
+                {t(lang, "askHelperCta")}
+              </Link>
+            </p>
+          ) : null}
         </>
       )}
     </div>

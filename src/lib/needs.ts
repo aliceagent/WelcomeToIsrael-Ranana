@@ -135,6 +135,28 @@ export function matchNeed(query: string, lang: Lang = "en"): Need | undefined {
   );
 }
 
+/** Up to four "try instead" chips for an empty result page. */
+export function suggestNeeds(query: string, lang: Lang = "en"): Need[] {
+  const q = query.trim().toLowerCase();
+  const scoredNeeds = NEEDS.map((n) => {
+    const terms = [n.title.en, n.title[lang], ...n.aliases].map((s) => s.toLowerCase());
+    let score = 0;
+    for (const term of terms) {
+      if (!q) break;
+      if (term === q) score = Math.max(score, 3);
+      else if (term.includes(q) || q.includes(term)) score = Math.max(score, 2);
+      else if (q.length >= 3 && term.startsWith(q.slice(0, 3))) score = Math.max(score, 1);
+    }
+    return { n, score };
+  })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.n);
+  if (scoredNeeds.length) return scoredNeeds.slice(0, 4);
+  const defaults = ["dinner", "pharmacy", "handyman", "groceries"];
+  return defaults.map((id) => NEEDS.find((n) => n.id === id)).filter((n): n is Need => !!n);
+}
+
 export function needsInRow(row: 1 | 2 | 3): Need[] {
   return NEEDS.filter((n) => n.row === row);
 }

@@ -314,6 +314,65 @@ button, a {
   padding: 6px 14px;
   font-size: 0.88rem;
 }
+.no-results {
+  text-align: center;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 26px 16px 20px;
+  margin: 6px 0 16px;
+  box-shadow: var(--shadow);
+}
+.no-results-ico { font-size: 2.2rem; margin-bottom: 6px; }
+.no-results h2 {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.no-results .muted { margin: 0 0 14px; }
+.try-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+.try-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.need-chip.ask { border-color: var(--olive-2); color: var(--olive-text); }
+
+.open-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2f9e63;
+  margin-inline-end: 2px;
+  vertical-align: baseline;
+}
+.closed-wrap .card { opacity: 0.68; }
+.closed-wrap .card .chip.hot { opacity: 1; }
+
+.ask-nohits {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--banner-warn-bg);
+  border: 1px solid var(--banner-warn-line);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-weight: 650;
+  margin-bottom: 10px;
+}
+
 .recent-block { margin: 4px 0 10px; }
 .recent-clear {
   border: 0;

@@ -101,7 +101,7 @@ function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[
     raw = index.search(fold(query), { combineWith: "OR" });
   }
   const emergency = /emergenc|urgence|חירום|rocket|alert|מקלט|shelter|ambulance|police/i.test(query);
-  return raw
+  const scored = raw
     .map((hit) => {
       const rec = byId.get(String(hit.id));
       if (!rec) return null;
@@ -113,40 +113,47 @@ function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[
       return { rec, score };
     })
     .filter((x): x is { rec: Resource; score: number } => x !== null)
-    .sort((a, b) => b.score - a.score)
-    .map((x) => x.rec);
+    .sort((a, b) => b.score - a.score);
+  // Fuzzy matching produces a long tail of near-noise (shelters for
+  // "plumber"); keep only hits in the same league as the best one.
+  const top = scored[0]?.score ?? 0;
+  return scored.filter((x) => x.score >= top * 0.3).map((x) => x.rec);
 }
 
+/**
+ * Directory matches only, deduplicated by id AND by display name (the
+ * dataset carries e.g. two Midrag records). Live-directory fallbacks are
+ * NOT mixed in — the UI shows them in their own labeled section via
+ * liveLookupRecords().
+ */
 export function searchRecords(query: string): Resource[] {
   const queries = expandQuery(query);
   const seen = new Set<string>();
+  const seenNames = new Set<string>();
   const merged: Resource[] = [];
+  const push = (rec: Resource) => {
+    if (seen.has(rec.record_id)) return;
+    const nameKey = fold(rec.name_en || rec.name_he || rec.record_id).replace(/[^a-z0-9֐-׿]/g, "");
+    if (nameKey && seenNames.has(nameKey)) return;
+    seen.add(rec.record_id);
+    if (nameKey) seenNames.add(nameKey);
+    merged.push(rec);
+  };
   queries.forEach((q) => {
-    for (const rec of searchOnce(q)) {
-      if (seen.has(rec.record_id)) continue;
-      seen.add(rec.record_id);
-      merged.push(rec);
-    }
+    for (const rec of searchOnce(q)) push(rec);
   });
   if (merged.length === 0) {
     // Latin-typed Hebrew ("misrad", "makolet"): retry against the skeletons.
     const skeleton = stripVowels(query);
     if (skeleton !== query) {
-      for (const rec of searchOnce(skeleton)) {
-        if (seen.has(rec.record_id)) continue;
-        seen.add(rec.record_id);
-        merged.push(rec);
-      }
-    }
-  }
-  if (isThinTradeQuery(query) || merged.length === 0) {
-    for (const id of LIVE_LOOKUP_IDS) {
-      const rec = getById(id);
-      if (rec && !seen.has(rec.record_id)) {
-        seen.add(rec.record_id);
-        merged.push(rec);
-      }
+      for (const rec of searchOnce(skeleton)) push(rec);
     }
   }
   return merged;
+}
+
+/** The live-directory cards (Midrag, Easy, Google Maps) for the fallback section. */
+export function liveLookupRecords(query: string, resultCount: number): Resource[] {
+  if (resultCount > 0 && !isThinTradeQuery(query)) return [];
+  return LIVE_LOOKUP_IDS.map(getById).filter((r): r is Resource => !!r);
 }

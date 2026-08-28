@@ -183,8 +183,16 @@ export function AskPage() {
           const ids = recordIdsFrom(message);
           const folders = folderHitsFrom(message);
           const body = textOf(message);
+          const searched = message.parts.some((part) => part.type === "tool-searchDirectory");
+          const noHits = searched && ids.length === 0 && folders.length === 0 && !!body && !busy;
           return (
             <div className="ask-msg bot" key={message.id}>
+              {noHits ? (
+                <div className="ask-nohits">
+                  <span aria-hidden="true">📭</span>
+                  {t(lang, "askNoHits")}
+                </div>
+              ) : null}
               {body ? <AskAnswer text={body} lang={lang} messageId={message.id} /> : null}
               {folders.length ? (
                 <div className="ask-folders">

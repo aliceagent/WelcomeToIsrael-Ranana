@@ -210,6 +210,14 @@ export const dict = {
   showOnMap: { en: "Show on map", fr: "Voir sur la carte", he: "הצגה במפה" },
   clearSearch: { en: "Clear", fr: "Effacer", he: "ניקוי" },
   recentSearches: { en: "Recent searches", fr: "Recherches récentes", he: "חיפושים אחרונים" },
+  allResults: { en: "All results", fr: "Tous les résultats", he: "כל התוצאות" },
+  noResultsFor: { en: "No results for “{q}”", fr: "Aucun résultat pour « {q} »", he: "אין תוצאות עבור „{q}”" },
+  tryInstead: { en: "Try instead", fr: "Essayez plutôt", he: "נסו במקום זאת" },
+  askNoHits: {
+    en: "Nothing matching in the directory — the advice below is general.",
+    fr: "Rien de correspondant dans l'annuaire — les conseils ci-dessous sont généraux.",
+    he: "אין התאמה במדריך — העצות שבהמשך כלליות.",
+  },
   locationError: { en: "No location access", fr: "Position indisponible", he: "אין גישה למיקום" },
   tapToSetPin: {
     en: "Tap the map to move your home pin.",
