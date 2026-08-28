@@ -3,23 +3,17 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { RecordCard } from "../components/RecordCard";
+import { AskProgress } from "../components/AskProgress";
 import { AskIcon } from "../components/Icons";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { getById } from "../lib/data";
+import { askProgressPhase, textOf } from "../lib/ask-progress";
 import { ASK_PROMPTS, ensureCatalogSearch, matchingFolders, searchCatalog } from "../lib/catalog-hits";
 
 ensureCatalogSearch();
 
 const sentQueries = new Set<string>();
-
-function textOf(message: UIMessage): string {
-  return message.parts
-    .filter((part): part is { type: "text"; text: string } => part.type === "text")
-    .map((part) => part.text)
-    .join("\n")
-    .trim();
-}
 
 function recordIdsFrom(message: UIMessage): string[] {
   const ids: string[] = [];
@@ -49,15 +43,6 @@ function folderHitsFrom(message: UIMessage): { path: string; icon: string; title
     }
   }
   return folders;
-}
-
-function searching(message: UIMessage): boolean {
-  return message.parts.some(
-    (part) =>
-      (part.type === "tool-searchDirectory" || part.type === "tool-getRecord") &&
-      "state" in part &&
-      (part.state === "input-available" || part.state === "input-streaming"),
-  );
 }
 
 export function AskPage() {
@@ -101,6 +86,7 @@ export function AskPage() {
   }
 
   const busy = status === "submitted" || status === "streaming";
+  const progressPhase = askProgressPhase(status, lastAssistant);
   const unavailable = error?.message?.includes("503") || /not_configured/i.test(error?.message || "");
 
   return (
@@ -142,9 +128,6 @@ export function AskPage() {
           const body = textOf(message);
           return (
             <div className="ask-msg bot" key={message.id}>
-              {searching(message) || (busy && !body && ids.length === 0) ? (
-                <p className="muted">{t(lang, "askLooking")}</p>
-              ) : null}
               {body
                 ? body.split(/\n{2,}/).map((para, idx) => (
                     <p key={`${message.id}-${idx}`} className="ask-p">
@@ -174,6 +157,7 @@ export function AskPage() {
             </div>
           );
         })}
+        {progressPhase ? <AskProgress phase={progressPhase} lang={lang} /> : null}
       </div>
 
       {unavailable || !online ? (
@@ -204,8 +188,8 @@ export function AskPage() {
           aria-label={t(lang, "askHeadline")}
           disabled={busy}
         />
-        <button className="ask-go" type="submit" disabled={busy || !draft.trim()}>
-          {t(lang, "askSend")}
+        <button className="ask-go" type="submit" disabled={busy || !draft.trim()} aria-busy={busy}>
+          {busy ? t(lang, "askWorking") : t(lang, "askSend")}
         </button>
       </form>
     </div>

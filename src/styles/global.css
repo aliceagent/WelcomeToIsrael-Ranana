@@ -318,6 +318,93 @@ button, a {
   box-shadow: var(--shadow);
   margin-top: 8px;
 }
+.ask-progress {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  animation: ask-progress-in 0.2s ease;
+}
+.ask-progress-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.ask-progress-copy {
+  min-width: 0;
+}
+.ask-progress-copy strong {
+  display: block;
+  font-size: 0.98rem;
+  margin-bottom: 2px;
+}
+.ask-progress-copy p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+.ask-progress-spinner {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 2px solid rgba(28, 74, 60, 0.18);
+  border-top-color: var(--olive);
+  border-radius: 50%;
+  flex: none;
+  animation: ask-spin 0.8s linear infinite;
+}
+.ask-progress-steps {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.ask-progress-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+}
+.ask-progress-step.active {
+  color: var(--olive);
+}
+.ask-progress-step.done {
+  color: var(--ink);
+}
+.ask-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(28, 74, 60, 0.18);
+  flex: none;
+}
+.ask-progress-step.active .ask-progress-dot {
+  background: var(--terracotta);
+  box-shadow: 0 0 0 4px rgba(181, 93, 58, 0.14);
+}
+.ask-progress-step.done .ask-progress-dot {
+  background: var(--olive);
+}
+@keyframes ask-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ask-progress-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .screen-title {
   font-family: var(--font);
