@@ -6,6 +6,7 @@ const LANG_KEY = "raanana.lang";
 const FAV_KEY = "raanana.favs";
 const CHECK_KEY = "raanana.checks";
 const HOME_KEY = "raanana.home";
+const ADDRESS_KEY = "raanana.address";
 
 type Store = {
   lang: Lang;
@@ -17,6 +18,9 @@ type Store = {
   home: HomePin;
   setHome: (p: HomePin) => void;
   resetHome: () => void;
+  /** Street address for the SOS "read this out" card; stays on this phone. */
+  address: string;
+  setAddress: (a: string) => void;
   /** Device location, session-only — never persisted. */
   gps: HomePin | null;
   setGps: (p: HomePin | null) => void;
@@ -48,6 +52,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
+  const [address, setAddress] = useState<string>(() => readJson(ADDRESS_KEY, ""));
   const [gps, setGps] = useState<HomePin | null>(null);
   const [useGps, setUseGps] = useState(false);
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
@@ -67,6 +72,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(HOME_KEY, JSON.stringify(home));
   }, [home]);
+  useEffect(() => {
+    localStorage.setItem(ADDRESS_KEY, JSON.stringify(address));
+  }, [address]);
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -109,6 +117,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       home,
       setHome: setHomeState,
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
+      address,
+      setAddress,
       gps,
       setGps,
       useGps,
@@ -118,7 +128,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       originIsDefault,
       online,
     }),
-    [lang, favorites, checks, home, gps, useGps, origin, originIsGps, originIsDefault, online],
+    [lang, favorites, checks, home, address, gps, useGps, origin, originIsGps, originIsDefault, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

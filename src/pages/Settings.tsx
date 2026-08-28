@@ -17,7 +17,7 @@ function ClickToMove({ onPick }: { onPick: (p: HomePin) => void }) {
 }
 
 export function SettingsPage() {
-  const { lang, home, setHome, resetHome, online } = useStore();
+  const { lang, home, setHome, resetHome, online, address, setAddress } = useStore();
   const [draft, setDraft] = useState<HomePin>(home);
   // Remount the map when a button (not a map tap) moves the pin, so it recenters.
   const [mapKey, setMapKey] = useState(0);
@@ -117,6 +117,14 @@ export function SettingsPage() {
             {t(lang, "useDefaultPin")}
           </button>
         </div>
+      </div>
+      <div className="sheet">
+        <h2>{t(lang, "addressSetting")}</h2>
+        <p className="muted">{t(lang, "addressSettingHelp")}</p>
+        <label className="field">
+          {t(lang, "address")}
+          <input dir="auto" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="רחוב אחוזה 1, רעננה" />
+        </label>
       </div>
       <p className="muted">{meta.privacy_note}</p>
     </div>

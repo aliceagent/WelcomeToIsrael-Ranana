@@ -1012,6 +1012,81 @@ button, a {
   color: var(--ink-soft);
 }
 
+.address-card h2 { margin: 0 0 6px; font-size: 1rem; }
+.address-big {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 0;
+}
+.phrase { padding: 12px 14px; }
+.phrase-he {
+  font-size: 1.35rem;
+  font-weight: 750;
+  color: var(--olive-text);
+}
+.phrase-translit { font-style: italic; }
+
+.onboard {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+.onboard-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 26px 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.onboard-card h2 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+.onboard-card .muted { margin: 0; }
+.onboard-card .actions { justify-content: center; margin-top: 4px; }
+.onboard-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--olive);
+  color: #f6efdc;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0 auto;
+}
+.onboard-langs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.onboard-skip {
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 6px;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .star {
   border: 1px solid var(--line);
   background: var(--cream);
