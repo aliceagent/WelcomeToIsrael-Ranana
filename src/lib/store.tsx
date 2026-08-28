@@ -7,12 +7,16 @@ const FAV_KEY = "raanana.favs";
 const CHECK_KEY = "raanana.checks";
 const HOME_KEY = "raanana.home";
 const ADDRESS_KEY = "raanana.address";
+const NOTES_KEY = "raanana.notes";
 
 type Store = {
   lang: Lang;
   setLang: (l: Lang) => void;
   favorites: Set<string>;
   toggleFav: (id: string) => void;
+  /** Personal notes on saved cards ("our pediatrician"), by record id. */
+  notes: Record<string, string>;
+  setNote: (id: string, note: string) => void;
   checks: Set<string>;
   toggleCheck: (id: string) => void;
   home: HomePin;
@@ -53,6 +57,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
   const [address, setAddress] = useState<string>(() => readJson(ADDRESS_KEY, ""));
+  const [notes, setNotes] = useState<Record<string, string>>(() => readJson(NOTES_KEY, {}));
   const [gps, setGps] = useState<HomePin | null>(null);
   const [useGps, setUseGps] = useState(false);
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
@@ -75,6 +80,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(ADDRESS_KEY, JSON.stringify(address));
   }, [address]);
+  useEffect(() => {
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  }, [notes]);
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -106,6 +114,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           else next.add(id);
           return next;
         }),
+      notes,
+      setNote: (id, note) =>
+        setNotes((prev) => {
+          const next = { ...prev };
+          if (note.trim()) next[id] = note;
+          else delete next[id];
+          return next;
+        }),
       checks,
       toggleCheck: (id) =>
         setChecks((prev) => {
@@ -128,7 +144,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       originIsDefault,
       online,
     }),
-    [lang, favorites, checks, home, address, gps, useGps, origin, originIsGps, originIsDefault, online],
+    [lang, favorites, notes, checks, home, address, gps, useGps, origin, originIsGps, originIsDefault, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

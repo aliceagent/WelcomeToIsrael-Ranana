@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
@@ -18,12 +18,17 @@ export function FoodPage() {
   const [q, setQ] = useState("");
   const folders = foodAllFolders();
 
+  const [limit, setLimit] = useState(12);
   const results = useMemo(() => {
     const query = q.trim();
-    if (query) return searchRecords(query).filter(isFoodRecord).slice(0, 40);
+    if (query) return searchRecords(query).filter(isFoodRecord);
     const kmOf = (r: Resource) => effectiveKm(r, origin, originIsDefault);
-    return records.filter(isFoodRecord).sort(directorySorter(kmOf)).slice(0, 12);
+    return records.filter(isFoodRecord).sort(directorySorter(kmOf));
   }, [q, origin, originIsDefault]);
+
+  useEffect(() => {
+    setLimit(12);
+  }, [q]);
 
   return (
     <div>
@@ -54,9 +59,16 @@ export function FoodPage() {
         {!q.trim() ? <Link to="/d/food">{t(lang, "seeAll")}</Link> : null}
       </div>
       {results.length === 0 ? <div className="empty">{t(lang, "noResults")}</div> : null}
-      {results.map((r) => (
+      {results.slice(0, limit).map((r) => (
         <RecordCard key={r.record_id} r={r} compact />
       ))}
+      {results.length > limit ? (
+        <div className="actions" style={{ justifyContent: "center" }}>
+          <button className="btn" onClick={() => setLimit((n) => n + 12)}>
+            {t(lang, "showMore")} ({results.length - limit})
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -266,6 +266,12 @@ export const dict = {
   installFirst: { en: "Install these first", fr: "Installer en premier", he: "להתקין קודם" },
   nearby: { en: "Near home", fr: "Près de la maison", he: "ליד הבית" },
   seeAll: { en: "See all", fr: "Tout voir", he: "הכל" },
+  showMore: { en: "Show more", fr: "Afficher plus", he: "הצג עוד" },
+  askHelperCta: { en: "Ask the helper instead", fr: "Demander à l'assistant", he: "לשאול את העוזר" },
+  recentAnswers: { en: "Recent answers", fr: "Réponses récentes", he: "תשובות אחרונות" },
+  reportProblem: { en: "Report a problem", fr: "Signaler une erreur", he: "דיווח על טעות" },
+  mayBeOutdated: { en: "may be out of date", fr: "peut être obsolète", he: "ייתכן שאינו מעודכן" },
+  addNote: { en: "Add a note — e.g. “our pediatrician”", fr: "Ajouter une note — ex. « notre pédiatre »", he: "הוסיפו הערה — למשל “רופא הילדים שלנו”" },
   language: { en: "Language", fr: "Langue", he: "שפה" },
   homePin: { en: "Home pin", fr: "Point maison", he: "נקודת הבית" },
   homePinHelp: {

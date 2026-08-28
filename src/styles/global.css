@@ -1027,6 +1027,36 @@ button, a {
 }
 .phrase-translit { font-style: italic; }
 
+.ask-recent { margin-top: 16px; }
+.ask-hist {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.ask-hist summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+.ask-hist .ask-p {
+  margin-top: 8px;
+  font-size: 0.92rem;
+}
+
+.fav-entry { margin-bottom: 14px; }
+.fav-entry .card { margin-bottom: 4px; }
+.fav-note {
+  width: 100%;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: transparent;
+  padding: 8px 12px;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+.fav-note::placeholder { color: var(--ink-soft); opacity: 0.7; }
+
 .speak {
   border: 1px solid var(--line);
   background: var(--cream);

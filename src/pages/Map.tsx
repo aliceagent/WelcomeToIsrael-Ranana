@@ -10,6 +10,7 @@ import { effectiveKm } from "../lib/geo";
 export function MapPage() {
   const { lang, online, origin, originIsDefault } = useStore();
   const [mode, setMode] = useState<"all" | "shelter" | "shul" | "shop">("all");
+  const [limit, setLimit] = useState(20);
   const places = useMemo(() => {
     return physicalRecords.filter((r) => {
       if (mode === "shelter") return r.record_type === "public_shelter";
@@ -43,9 +44,16 @@ export function MapPage() {
       </div>
       {mode === "shelter" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
       {online ? <PlacesMap places={places} /> : <div className="banner off">{t(lang, "mapsNeedNetwork")}</div>}
-      {nearest.slice(0, 20).map((r) => (
+      {nearest.slice(0, limit).map((r) => (
         <RecordCard key={r.record_id} r={r} compact />
       ))}
+      {nearest.length > limit ? (
+        <div className="actions" style={{ justifyContent: "center" }}>
+          <button className="btn" onClick={() => setLimit((n) => n + 20)}>
+            {t(lang, "showMore")} ({nearest.length - limit})
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

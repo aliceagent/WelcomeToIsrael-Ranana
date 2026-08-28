@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { NearMeToggle } from "../components/NearMeToggle";
 import { useStore } from "../lib/store";
@@ -13,9 +13,20 @@ export function FolderPage() {
   const { slug } = useParams();
   const { lang, origin, originIsDefault } = useStore();
   const folder = getFolder(slug);
-  const [raanana, setRaanana] = useState(false);
-  const [physical, setPhysical] = useState(false);
-  const [chip, setChip] = useState("all");
+  // Filters live in the URL so back-navigation keeps them and lists stay shareable.
+  const [params, setParams] = useSearchParams();
+  const raanana = params.get("raanana") === "1";
+  const physical = params.get("physical") === "1";
+  const chip = params.get("chip") || "all";
+
+  function patchParams(patch: Record<string, string | null>) {
+    const next = new URLSearchParams(params);
+    for (const [key, value] of Object.entries(patch)) {
+      if (value == null) next.delete(key);
+      else next.set(key, value);
+    }
+    setParams(next, { replace: true });
+  }
 
   const items = useMemo(() => {
     if (!folder) return [];
@@ -44,11 +55,11 @@ export function FolderPage() {
       </p>
       {folder.chips?.length ? (
         <div className="filters">
-          <button aria-pressed={chip === "all"} className={chip === "all" ? "on" : ""} onClick={() => setChip("all")}>
+          <button aria-pressed={chip === "all"} className={chip === "all" ? "on" : ""} onClick={() => patchParams({ chip: null })}>
             {t(lang, "any")}
           </button>
           {folder.chips.map((c) => (
-            <button key={c.id} aria-pressed={chip === c.id} className={chip === c.id ? "on" : ""} onClick={() => setChip(c.id)}>
+            <button key={c.id} aria-pressed={chip === c.id} className={chip === c.id ? "on" : ""} onClick={() => patchParams({ chip: c.id })}>
               {c.title[lang]}
             </button>
           ))}
@@ -56,10 +67,10 @@ export function FolderPage() {
       ) : null}
       <div className="filters">
         <NearMeToggle />
-        <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
+        <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => patchParams({ raanana: raanana ? null : "1" })}>
           {t(lang, "raananaOnly")}
         </button>
-        <button aria-pressed={physical} className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
+        <button aria-pressed={physical} className={physical ? "on" : ""} onClick={() => patchParams({ physical: physical ? null : "1" })}>
           {t(lang, "physicalOnly")}
         </button>
       </div>

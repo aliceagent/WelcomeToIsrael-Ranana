@@ -214,6 +214,11 @@ export function RecordPage() {
 
       <p className="muted">
         {t(lang, "lastVerified")}: {r.last_verified || t(lang, "unknown")}
+        {r.last_verified &&
+        r.recommended_review_days != null &&
+        (Date.now() - Date.parse(r.last_verified)) / 86400000 > r.recommended_review_days ? (
+          <> — {t(lang, "mayBeOutdated")}</>
+        ) : null}
         {r.source_url_primary ? (
           <>
             {" · "}
@@ -222,6 +227,15 @@ export function RecordPage() {
             </a>
           </>
         ) : null}
+        {" · "}
+        <a
+          className="source-link"
+          href={`https://wa.me/?text=${encodeURIComponent(`Welcome to Ra'anana — correction for "${name}" (${r.record_id}): `)}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t(lang, "reportProblem")}
+        </a>
       </p>
       {r.verification_status ? <p className="muted">{r.verification_status}</p> : null}
     </article>
