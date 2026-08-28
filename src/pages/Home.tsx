@@ -7,6 +7,7 @@ import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { NeedChips } from "../components/NeedChips";
 import { AskBar } from "../components/AskBar";
+import { Phone } from "../components/Phone";
 import { ShabbatBanner } from "../components/ShabbatBanner";
 import {
   QUICK_APPS,
@@ -45,7 +46,9 @@ export function HomePage() {
           const short = SOS_SHORT[r.record_id];
           const body = (
             <>
-              <span className="num">{short?.num || r.phone_primary}</span>
+              <span className="num">
+                <Phone n={short?.num || r.phone_primary || ""} />
+              </span>
               <span className="lbl">{short?.label[lang] || displayName(r, lang)}</span>
             </>
           );
