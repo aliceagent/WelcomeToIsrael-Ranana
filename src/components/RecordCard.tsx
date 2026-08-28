@@ -6,6 +6,7 @@ import { t } from "../lib/i18n";
 import { useStore } from "../lib/store";
 import { estimateTravel, haversineKm, isLowConfidence } from "../lib/geo";
 import { openState } from "../lib/hours";
+import { Phone } from "./Phone";
 
 export function OpenChip({ r }: { r: Resource }) {
   const { lang } = useStore();
@@ -73,7 +74,11 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
                 <span className={`chip ${/Critical|Essential/i.test(r.priority) ? "hot" : ""}`}>{priorityLabel(r.priority, lang)}</span>
               ) : null}
               {type ? <span className="chip">{type}</span> : null}
-              {r.phone_primary ? <span className="chip ok">{r.phone_primary}</span> : null}
+              {r.phone_primary ? (
+                <span className="chip ok">
+                  <Phone n={r.phone_primary} />
+                </span>
+              ) : null}
               <OpenChip r={r} />
               <Distance r={r} />
             </div>

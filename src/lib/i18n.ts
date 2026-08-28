@@ -44,6 +44,7 @@ export const dict = {
     he: "בית ספר, אינסטלטור, קופה, ארוחת ערב…",
   },
   askSend: { en: "Ask", fr: "Demander", he: "שאלו" },
+  askTopbarTitle: { en: "Ask", fr: "Demander", he: "שאלו" },
   askWorking: { en: "Working…", fr: "En cours…", he: "עובד…" },
   askProcessing: {
     en: "Processing your request…",
@@ -389,6 +390,28 @@ export const dict = {
   notes: { en: "Notes", fr: "Notes", he: "הערות" },
   unknown: { en: "Not recorded", fr: "Non renseigné", he: "לא נרשם" },
   browseType: { en: "Type", fr: "Type", he: "סוג" },
+  gettingThere: { en: "Getting there", fr: "S'y rendre", he: "איך מגיעים" },
+  appleMaps: { en: "Apple Maps", fr: "Apple Maps", he: "Apple Maps" },
+  browseCategoryShare: {
+    en: "Browse {name} in Welcome to Ra'anana.",
+    fr: "Découvrez {name} sur Bienvenue à Ra'anana.",
+    he: "גלו את {name} במדריך ברוכים הבאים לרעננה.",
+  },
+  shareFolderFallback: {
+    en: "{name} — Welcome to Ra'anana.",
+    fr: "{name} — Bienvenue à Ra'anana.",
+    he: "{name} — ברוכים הבאים לרעננה.",
+  },
+  shareRecordFallback: {
+    en: "{name} — {type}. Welcome to Ra'anana.",
+    fr: "{name} — {type}. Bienvenue à Ra'anana.",
+    he: "{name} — {type}. ברוכים הבאים לרעננה.",
+  },
+  correctionText: {
+    en: 'Welcome to Ra\'anana — correction for "{name}" ({id}): ',
+    fr: 'Bienvenue à Ra\'anana — correction pour « {name} » ({id}) : ',
+    he: 'ברוכים הבאים לרעננה — תיקון עבור "{name}" ({id}): ',
+  },
 } as const;
 
 export type DictKey = keyof typeof dict;

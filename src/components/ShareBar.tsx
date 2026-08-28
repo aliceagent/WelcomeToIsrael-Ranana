@@ -11,7 +11,7 @@ export function ShareBar({ r }: { r: Resource }) {
   const title = displayName(r, lang);
   const url = absoluteUrl(recordPath(r));
   const type = TYPE_LABELS[r.record_type]?.[lang] || r.category;
-  const text = displayDescription(r, lang) || `${title} — ${type}. Welcome to Ra'anana.`;
+  const text = displayDescription(r, lang) || t(lang, "shareRecordFallback").replace("{name}", title).replace("{type}", type);
 
   return (
     <div className="actions">

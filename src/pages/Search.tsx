@@ -43,6 +43,7 @@ export function SearchPage() {
   const [q, setQ] = useState(params.get("q") || "");
   const [limit, setLimit] = useState(PAGE);
   const [recent, setRecent] = useState<string[]>(readRecent);
+  const [shareMsg, setShareMsg] = useState("");
   const latestQ = useRef(q);
 
   function remember(query: string) {
@@ -161,9 +162,10 @@ export function SearchPage() {
                 <button
                   type="button"
                   className="btn small"
-                  onClick={() => {
+                  onClick={async () => {
                     remember(q);
-                    shareContent(shareTitle, shareText, shareUrl);
+                    const res = await shareContent(shareTitle, shareText, shareUrl);
+                    if (res === "copied") setShareMsg(t(lang, "copied"));
                   }}
                 >
                   {t(lang, "share")}
@@ -171,6 +173,7 @@ export function SearchPage() {
                 <a className="wa-text" href={whatsappShareUrl(shareTitle, shareUrl, shareText)} target="_blank" rel="noreferrer">
                   {t(lang, "whatsapp")}
                 </a>
+                {shareMsg ? <span className="muted">{shareMsg}</span> : null}
               </span>
             ) : null}
           </div>

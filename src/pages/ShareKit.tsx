@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getById, meta, records } from "../lib/data";
 import { useStore } from "../lib/store";
@@ -8,6 +9,7 @@ import { RecordCard } from "../components/RecordCard";
 
 export function ShareKitPage() {
   const { lang } = useStore();
+  const [msg, setMsg] = useState("");
   const week1 = ["CHK-001", "CHK-002", ...meta.install_first].map(getById).filter(Boolean);
   const emergency = meta.emergency_strip.map(getById).filter(Boolean);
   const origin = absoluteUrl("/");
@@ -17,12 +19,19 @@ export function ShareKitPage() {
       <h1 className="chrome-title">{t(lang, "shareKit")}</h1>
       <p>{t(lang, "tagline")}</p>
       <div className="actions">
-        <button className="btn primary" onClick={() => shareContent(t(lang, "appName"), t(lang, "tagline"), origin, "/og/default.png")}>
+        <button
+          className="btn primary"
+          onClick={async () => {
+            const res = await shareContent(t(lang, "appName"), t(lang, "tagline"), origin, "/og/default.png");
+            if (res === "copied") setMsg(t(lang, "copied"));
+          }}
+        >
           {t(lang, "shareThis")}
         </button>
         <a className="wa-text" href={whatsappShareUrl(t(lang, "appName"), origin, t(lang, "tagline"))}>
           {t(lang, "whatsapp")}
         </a>
+        {msg ? <span className="muted">{msg}</span> : null}
       </div>
       <div className="sheet">
         <p className="muted">QR</p>
