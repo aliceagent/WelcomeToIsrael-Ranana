@@ -6,6 +6,7 @@ import { descriptionDir, displayDescription, displayName } from "../lib/format";
 import { Link } from "react-router-dom";
 import { recordPath } from "../lib/share";
 import { SpeakButton } from "../components/SpeakButton";
+import { SearchBox } from "../components/SearchBox";
 
 export function GlossaryPage() {
   const { lang } = useStore();
@@ -21,9 +22,7 @@ export function GlossaryPage() {
   return (
     <div>
       <h1 className="chrome-title">{t(lang, "glossary")}</h1>
-      <form className="search" onSubmit={(e) => e.preventDefault()}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t(lang, "glossarySearchHint")} aria-label={t(lang, "search")} />
-      </form>
+      <SearchBox value={q} onChange={setQ} placeholder={t(lang, "glossarySearchHint")} />
       {items.map((r) => (
         <Link className="card" key={r.record_id} to={recordPath(r)}>
           <div className="glossary-he" style={{ fontSize: "1.6rem" }}>

@@ -208,6 +208,8 @@ export const dict = {
   fromYou: { en: "from you", fr: "de votre position", he: "ממיקומך" },
   nearMe: { en: "Near me", fr: "Autour de moi", he: "קרוב אליי" },
   showOnMap: { en: "Show on map", fr: "Voir sur la carte", he: "הצגה במפה" },
+  clearSearch: { en: "Clear", fr: "Effacer", he: "ניקוי" },
+  recentSearches: { en: "Recent searches", fr: "Recherches récentes", he: "חיפושים אחרונים" },
   locationError: { en: "No location access", fr: "Position indisponible", he: "אין גישה למיקום" },
   tapToSetPin: {
     en: "Tap the map to move your home pin.",

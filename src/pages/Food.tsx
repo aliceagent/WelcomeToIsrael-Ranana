@@ -7,7 +7,7 @@ import { foodAllFolders, folderCount, folderLabel, isFoodRecord, directorySorter
 import { effectiveKm } from "../lib/geo";
 import type { Resource } from "../lib/types";
 import { records } from "../lib/data";
-import { SearchIcon } from "../components/Icons";
+import { SearchBox } from "../components/SearchBox";
 import { ShabbatBanner } from "../components/ShabbatBanner";
 import { buildSearch, searchRecords } from "../lib/search";
 
@@ -34,15 +34,7 @@ export function FoodPage() {
     <div>
       <h1 className="chrome-title">{t(lang, "food")}</h1>
       <ShabbatBanner />
-      <form className="search" onSubmit={(e) => e.preventDefault()}>
-        <SearchIcon size={22} />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t(lang, "foodSearchHint")}
-          aria-label={t(lang, "search")}
-        />
-      </form>
+      <SearchBox value={q} onChange={setQ} placeholder={t(lang, "foodSearchHint")} />
 
       <div className="food-grid" style={{ marginTop: 14 }}>
         {folders.map((f) => (
