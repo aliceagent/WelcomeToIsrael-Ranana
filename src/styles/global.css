@@ -7,7 +7,6 @@
   --olive: #1c4a3c;          /* brand surface: buttons, mark, active nav pills */
   --olive-text: #1c4a3c;     /* brand color used as text on cards */
   --olive-2: #2f6b56;
-  --leaf: #7aa077;
   --terracotta: #c45c3e;     /* action surface */
   --terracotta-text: #b04f33;
   --gold: #c9a227;
@@ -51,7 +50,6 @@
     --olive: #2f6b56;
     --olive-text: #82c9a7;
     --olive-2: #7fc9a4;
-    --leaf: #5c7a5a;
     --terracotta: #c45c3e;
     --terracotta-text: #e08a6a;
     --gold: #c9a227;
@@ -80,6 +78,31 @@
 }
 
 html[dir="rtl"] .chev { transform: scaleX(-1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 200;
+  background: var(--olive);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.skip-link:focus { top: calc(var(--safe-t) + 8px); }
+
+#main:focus { outline: none; }
 
 * { box-sizing: border-box; }
 html, body, #root { min-height: 100%; }

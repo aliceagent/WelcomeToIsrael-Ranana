@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { physicalRecords, records, getById } from "../lib/data";
-import { PlacesMap } from "../components/PlacesMap";
+import { PlacesMapLazy } from "../components/PlacesMapLazy";
 import { RecordCard } from "../components/RecordCard";
 import { NearMeToggle } from "../components/NearMeToggle";
 import { SearchIcon } from "../components/Icons";
@@ -108,7 +108,7 @@ export function MapPage() {
       ))}
       {cat === "shelters" ? <div className="banner warn">{t(lang, "shelterCaveat")}</div> : null}
       {online ? (
-        <PlacesMap places={places} selectedId={selected} onSelect={pick} tall />
+        <PlacesMapLazy places={places} selectedId={selected} onSelect={pick} tall />
       ) : (
         <div className="banner off">{t(lang, "mapsNeedNetwork")}</div>
       )}

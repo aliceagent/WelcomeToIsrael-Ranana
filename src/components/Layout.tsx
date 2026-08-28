@@ -34,6 +34,8 @@ export function Layout() {
       }
     }
     scrollToTop();
+    // Land screen-reader/keyboard focus on the new page's content.
+    document.getElementById("main")?.focus({ preventScroll: true });
     const frame = requestAnimationFrame(scrollToTop);
     return () => cancelAnimationFrame(frame);
   }, [loc.pathname, loc.hash]);
@@ -45,6 +47,9 @@ export function Layout() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main">
+        {t(lang, "skipToContent")}
+      </a>
       <Onboarding />
       <header className={`topbar ${tab ? "tab" : "stack"}`}>
         {tab ? (
@@ -74,7 +79,9 @@ export function Layout() {
         </div>
       </header>
       {!online && <div className="banner off">{t(lang, "offline")}</div>}
-      <Outlet />
+      <main id="main" tabIndex={-1}>
+        <Outlet />
+      </main>
       <nav className="bottom-nav">
         <NavLink to="/" end className={({ isActive }) => (isActive ? "on" : "")}>
           {({ isActive }) => (
