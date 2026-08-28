@@ -1,5 +1,8 @@
-import { useParams } from "react-router-dom";
-import { getBySlug } from "../lib/data";
+import { Link, useParams } from "react-router-dom";
+import { getById, getBySlug } from "../lib/data";
+import { recordPath } from "../lib/share";
+import { BOOKING_HINTS } from "../lib/booking";
+import { SpeakButton } from "../components/SpeakButton";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
@@ -40,7 +43,11 @@ export function RecordPage() {
           {favorites.has(r.record_id) ? `★ ${t(lang, "savedOn")}` : `☆ ${t(lang, "save")}`}
         </button>
       </div>
-      {r.record_type === "glossary_term" && r.name_he ? <p className="glossary-he">{r.name_he}</p> : null}
+      {r.record_type === "glossary_term" && r.name_he ? (
+        <p className="glossary-he">
+          {r.name_he} <SpeakButton text={r.name_he} />
+        </p>
+      ) : null}
       {r.name_he && r.record_type !== "glossary_term" ? <p className="he-name">{r.name_he}</p> : null}
       <h1>{name}</h1>
       {r.name_fr && lang === "en" ? <p className="muted">{r.name_fr}</p> : null}
@@ -80,6 +87,23 @@ export function RecordPage() {
           {r.availability_hours_note}
           <span className="muted"> — {t(lang, "hoursCaveat")}</span>
         </p>
+      ) : null}
+
+      {BOOKING_HINTS[r.record_id] ? (
+        <div className="banner">
+          <strong>{t(lang, "howToBook")}: </strong>
+          {BOOKING_HINTS[r.record_id].copy[lang]}
+          {(() => {
+            const viaId = BOOKING_HINTS[r.record_id].via;
+            const via = viaId ? getById(viaId) : undefined;
+            return via ? (
+              <>
+                {" "}
+                <Link to={recordPath(via)}>{displayName(via, lang)} →</Link>
+              </>
+            ) : null;
+          })()}
+        </div>
       ) : null}
 
       {r.record_type === "checklist" ? (

@@ -456,9 +456,27 @@ export const FOLDERS: Folder[] = [
     id: "community",
     icon: "👥",
     title: { en: "Community", fr: "Communauté", he: "קהילה" },
+    hint: {
+      en: "Community centers and olim organizations. Ask any of them to add you to the local WhatsApp groups — that's where daily life happens.",
+      fr: "Centres communautaires et organisations d'olim. Demandez-leur de vous ajouter aux groupes WhatsApp locaux — la vie quotidienne s'y passe.",
+      he: "מרכזי קהילה וארגוני עולים. בקשו מהם להצטרף לקבוצות הוואטסאפ המקומיות.",
+    },
     group: "family",
     match: (r) =>
-      catOf(r, "Religion & Community") && r.record_type !== "synagogue" && !subOf(r, "Synagogue"),
+      (catOf(r, "Religion & Community") && r.record_type !== "synagogue" && !subOf(r, "Synagogue")) ||
+      subOf(r, "Aliyah", "Employment for olim"),
+    chips: [
+      {
+        id: "anglo",
+        title: { en: "English speakers", fr: "Anglophones", he: "דוברי אנגלית" },
+        match: (r) => /esra|aaci|telfed|english|anglo/i.test(blob(r)),
+      },
+      {
+        id: "french",
+        title: { en: "French speakers", fr: "Francophones", he: "דוברי צרפתית" },
+        match: (r) => /french|francophone|français|qualita/i.test(blob(r)),
+      },
+    ],
   },
   {
     id: "city-hall",

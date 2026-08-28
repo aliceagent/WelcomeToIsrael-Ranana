@@ -1027,6 +1027,18 @@ button, a {
 }
 .phrase-translit { font-style: italic; }
 
+.speak {
+  border: 1px solid var(--line);
+  background: var(--cream);
+  border-radius: 999px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  vertical-align: middle;
+}
+
 .onboard {
   position: fixed;
   inset: 0;

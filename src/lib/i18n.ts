@@ -322,6 +322,8 @@ export const dict = {
     he: "המפה צריכה רשת. הנה הרשימה הקרובה במקום.",
   },
   moreComing: { en: "More", fr: "Encore", he: "עוד" },
+  details: { en: "Details", fr: "Détails", he: "פרטים" },
+  howToBook: { en: "How to book", fr: "Prendre rendez-vous", he: "איך קובעים תור" },
   close: { en: "Close", fr: "Fermer", he: "סגור" },
   whatsapp: { en: "WhatsApp", fr: "WhatsApp", he: "וואטסאפ" },
   email: { en: "Email", fr: "E-mail", he: "דוא״ל" },

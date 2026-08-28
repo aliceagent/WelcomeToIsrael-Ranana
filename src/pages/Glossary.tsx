@@ -5,6 +5,7 @@ import { t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName } from "../lib/format";
 import { Link } from "react-router-dom";
 import { recordPath } from "../lib/share";
+import { SpeakButton } from "../components/SpeakButton";
 
 export function GlossaryPage() {
   const { lang } = useStore();
@@ -26,7 +27,7 @@ export function GlossaryPage() {
       {items.map((r) => (
         <Link className="card" key={r.record_id} to={recordPath(r)}>
           <div className="glossary-he" style={{ fontSize: "1.6rem" }}>
-            {r.name_he}
+            {r.name_he} {r.name_he ? <SpeakButton text={r.name_he} /> : null}
           </div>
           <h3>{displayName(r, lang)}</h3>
           <p className="muted" dir={descriptionDir(r, lang)} style={{ margin: 0 }}>
