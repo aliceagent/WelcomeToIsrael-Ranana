@@ -17,7 +17,40 @@ function ClickToMove({ onPick }: { onPick: (p: HomePin) => void }) {
 }
 
 export function SettingsPage() {
-  const { lang, home, setHome, resetHome, online, address, setAddress } = useStore();
+  const { lang, home, setHome, resetHome, online, address, setAddress, favorites, notes, checks, mergeImport } = useStore();
+  const [importText, setImportText] = useState("");
+  const [syncMsg, setSyncMsg] = useState("");
+
+  async function shareFamilyData() {
+    const payload = JSON.stringify({ v: 1, favs: [...favorites], notes, checks: [...checks], address });
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: t(lang, "familySync"), text: payload });
+        return;
+      }
+    } catch {
+      /* fall through to clipboard */
+    }
+    try {
+      await navigator.clipboard.writeText(payload);
+      setSyncMsg(t(lang, "copied"));
+    } catch {
+      setSyncMsg(payload);
+    }
+  }
+
+  function importFamilyData() {
+    try {
+      const start = importText.indexOf("{");
+      const end = importText.lastIndexOf("}");
+      const data = JSON.parse(importText.slice(start, end + 1));
+      mergeImport(data);
+      setImportText("");
+      setSyncMsg(t(lang, "importDone"));
+    } catch {
+      setSyncMsg(t(lang, "importFailed"));
+    }
+  }
   const [draft, setDraft] = useState<HomePin>(home);
   // Remount the map when a button (not a map tap) moves the pin, so it recenters.
   const [mapKey, setMapKey] = useState(0);
@@ -125,6 +158,31 @@ export function SettingsPage() {
           {t(lang, "address")}
           <input dir="auto" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="רחוב אחוזה 1, רעננה" />
         </label>
+      </div>
+      <div className="sheet">
+        <h2>{t(lang, "familySync")}</h2>
+        <p className="muted">{t(lang, "familySyncHelp")}</p>
+        <div className="actions">
+          <button className="btn primary" onClick={shareFamilyData}>
+            {t(lang, "exportData")}
+          </button>
+        </div>
+        <label className="field">
+          {t(lang, "importData")}
+          <textarea
+            className="import-box"
+            value={importText}
+            onChange={(e) => setImportText(e.target.value)}
+            placeholder='{"v":1,…}'
+            rows={3}
+          />
+        </label>
+        <div className="actions">
+          <button className="btn" onClick={importFamilyData} disabled={!importText.trim()}>
+            {t(lang, "importData")}
+          </button>
+          {syncMsg ? <span className="muted">{syncMsg}</span> : null}
+        </div>
       </div>
       <p className="muted">{meta.privacy_note}</p>
     </div>

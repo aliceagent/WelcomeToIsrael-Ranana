@@ -156,6 +156,8 @@ export const dict = {
   parshaLabel: { en: "Torah portion (Israel)", fr: "Paracha (Israël)", he: "פרשת השבוע" },
   candles: { en: "Candle lighting", fr: "Allumage des bougies", he: "הדלקת נרות" },
   havdalah: { en: "Shabbat ends", fr: "Sortie de Chabbat", he: "צאת השבת" },
+  comingWeeks: { en: "Coming weeks", fr: "Prochaines semaines", he: "שבתות קרובות" },
+  upcomingChagim: { en: "Upcoming holidays", fr: "Fêtes à venir", he: "חגים קרובים" },
   shabbatTimesNote: {
     en: "Times are for the Ra'anana home pin: candles 20 minutes before sunset, ends 40 minutes after sunset. Follow your community's calendar for customs.",
     fr: "Horaires pour le point maison à Ra'anana : bougies 20 minutes avant le coucher du soleil, sortie 40 minutes après. Suivez le calendrier de votre communauté.",
@@ -205,6 +207,7 @@ export const dict = {
   fromHome: { en: "from home", fr: "depuis la maison", he: "מהבית" },
   fromYou: { en: "from you", fr: "de votre position", he: "ממיקומך" },
   nearMe: { en: "Near me", fr: "Autour de moi", he: "קרוב אליי" },
+  showOnMap: { en: "Show on map", fr: "Voir sur la carte", he: "הצגה במפה" },
   locationError: { en: "No location access", fr: "Position indisponible", he: "אין גישה למיקום" },
   tapToSetPin: {
     en: "Tap the map to move your home pin.",
@@ -268,6 +271,16 @@ export const dict = {
     he: "הוסיפו כתובת בהגדרות כדי שתופיע כאן.",
   },
   addressSetting: { en: "Emergency address card", fr: "Carte d'adresse d'urgence", he: "כרטיס כתובת לחירום" },
+  familySync: { en: "Family sync", fr: "Synchronisation familiale", he: "סנכרון משפחתי" },
+  familySyncHelp: {
+    en: "Send your saved places, notes, and checklist progress to another phone — share the text (WhatsApp works), then paste it there and tap Import. Nothing leaves your devices otherwise.",
+    fr: "Envoyez vos favoris, notes et listes vers un autre téléphone — partagez le texte (WhatsApp convient), collez-le là-bas et touchez Importer. Rien ne quitte vos appareils sinon.",
+    he: "שולחים את השמורים, ההערות והרשימות לטלפון אחר — משתפים את הטקסט (וואטסאפ עובד), מדביקים שם ולוחצים ייבוא.",
+  },
+  exportData: { en: "Share family data", fr: "Partager les données", he: "שיתוף הנתונים" },
+  importData: { en: "Import", fr: "Importer", he: "ייבוא" },
+  importDone: { en: "Imported ✓", fr: "Importé ✓", he: "יובא ✓" },
+  importFailed: { en: "Couldn't read that — paste the shared text exactly.", fr: "Illisible — collez le texte partagé tel quel.", he: "לא ניתן לקרוא — הדביקו את הטקסט כפי ששותף." },
   addressSettingHelp: {
     en: "Shown large on the SOS page to read to a dispatcher. Best in Hebrew. Stays on this phone.",
     fr: "Affichée en grand sur la page SOS pour la lire à un opérateur. De préférence en hébreu. Reste sur ce téléphone.",
@@ -318,6 +331,11 @@ export const dict = {
     en: "Distances and walking times are measured from your home pin. It stays on this phone. You can fine-tune it any time in Settings.",
     fr: "Les distances sont mesurées depuis votre point maison. Il reste sur ce téléphone. Réglable à tout moment dans Réglages.",
     he: "מרחקים נמדדים מנקודת הבית. היא נשמרת במכשיר בלבד וניתנת לשינוי בהגדרות.",
+  },
+  onboardAddressBody: {
+    en: "Optional: your address, best in Hebrew. It shows large on the SOS page, ready to read to a dispatcher. Stays on this phone only.",
+    fr: "Facultatif : votre adresse, de préférence en hébreu. Affichée en grand sur la page SOS, prête à lire à un opérateur. Reste sur ce téléphone.",
+    he: "לא חובה: הכתובת שלכם. תוצג בגדול בדף החירום, מוכנה להקראה למוקדן. נשמרת במכשיר בלבד.",
   },
   onboardInstallTitle: { en: "Keep it on your phone", fr: "Gardez-le sur votre téléphone", he: "שמרו על המסך" },
   onboardInstallBody: {

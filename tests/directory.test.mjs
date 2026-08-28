@@ -135,3 +135,14 @@ test("I-need shortcuts group occasional jobs under broader chips", () => {
   const home = readFileSync(join(root, "src/pages/Home.tsx"), "utf8");
   assert.match(home, /NeedChips/);
 });
+
+test("journey related-record links all resolve", () => {
+  const records = JSON.parse(readFileSync(join(root, "src/data/records.json"), "utf8"));
+  const ids = new Set(records.map((r) => r.record_id));
+  const journeys = readFileSync(join(root, "src/lib/journeys.ts"), "utf8");
+  const related = [...journeys.matchAll(/"((?:APP|GOV|HLT|EDU|EMG|FIN|MUN|TRN|DEL|GLO|REL|LOC)-\d+)"/g)].map((m) => m[1]);
+  assert.ok(related.length > 30, "related links present");
+  for (const id of related) {
+    assert.ok(ids.has(id), `unknown record id ${id} in journeys.ts`);
+  }
+});

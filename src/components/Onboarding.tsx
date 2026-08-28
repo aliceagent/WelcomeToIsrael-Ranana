@@ -13,7 +13,7 @@ const LANG_CHOICES: { code: Lang; label: string }[] = [
 
 /** Three-screen first-run setup: language, home pin, install hint. */
 export function Onboarding() {
-  const { lang, setLang, setHome } = useStore();
+  const { lang, setLang, setHome, address, setAddress } = useStore();
   const [open, setOpen] = useState(() => {
     try {
       return !localStorage.getItem(DONE_KEY);
@@ -102,6 +102,25 @@ export function Onboarding() {
 
         {step === 2 ? (
           <>
+            <h2>{t(lang, "addressSetting")}</h2>
+            <p className="muted">{t(lang, "onboardAddressBody")}</p>
+            <input
+              className="onboard-input"
+              dir="auto"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="רחוב אחוזה 1, רעננה"
+            />
+            <div className="actions">
+              <button className="btn primary" onClick={() => setStep(3)}>
+                {t(lang, "next")}
+              </button>
+            </div>
+          </>
+        ) : null}
+
+        {step === 3 ? (
+          <>
             <h2>{t(lang, "onboardInstallTitle")}</h2>
             <p className="muted">{t(lang, "onboardInstallBody")}</p>
             <div className="actions">
@@ -112,7 +131,7 @@ export function Onboarding() {
           </>
         ) : null}
 
-        {step < 2 ? (
+        {step < 3 ? (
           <button className="onboard-skip" onClick={finish}>
             {t(lang, "skip")}
           </button>
