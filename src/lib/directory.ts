@@ -456,9 +456,27 @@ export const FOLDERS: Folder[] = [
     id: "community",
     icon: "👥",
     title: { en: "Community", fr: "Communauté", he: "קהילה" },
+    hint: {
+      en: "Community centers and olim organizations. Ask any of them to add you to the local WhatsApp groups — that's where daily life happens.",
+      fr: "Centres communautaires et organisations d'olim. Demandez-leur de vous ajouter aux groupes WhatsApp locaux — la vie quotidienne s'y passe.",
+      he: "מרכזי קהילה וארגוני עולים. בקשו מהם להצטרף לקבוצות הוואטסאפ המקומיות.",
+    },
     group: "family",
     match: (r) =>
-      catOf(r, "Religion & Community") && r.record_type !== "synagogue" && !subOf(r, "Synagogue"),
+      (catOf(r, "Religion & Community") && r.record_type !== "synagogue" && !subOf(r, "Synagogue")) ||
+      subOf(r, "Aliyah", "Employment for olim"),
+    chips: [
+      {
+        id: "anglo",
+        title: { en: "English speakers", fr: "Anglophones", he: "דוברי אנגלית" },
+        match: (r) => /esra|aaci|telfed|english|anglo/i.test(blob(r)),
+      },
+      {
+        id: "french",
+        title: { en: "French speakers", fr: "Francophones", he: "דוברי צרפתית" },
+        match: (r) => /french|francophone|français|qualita/i.test(blob(r)),
+      },
+    ],
   },
   {
     id: "city-hall",
@@ -583,8 +601,8 @@ export function foodAllFolders(): Folder[] {
   return FOLDERS.filter((f) => f.group === "food" && f.id !== "food");
 }
 
-export function recordsInFolder(folder: Folder): Resource[] {
-  const matched = records.filter(folder.match).sort(sortDirectory);
+export function recordsInFolder(folder: Folder, km?: (r: Resource) => number | null): Resource[] {
+  const matched = records.filter(folder.match).sort(directorySorter(km));
   if (!folder.pinIds?.length) return matched;
   const pinned = folder.pinIds.map(getById).filter((r): r is Resource => !!r);
   const seen = new Set(pinned.map((r) => r.record_id));
@@ -595,12 +613,18 @@ export function folderCount(folder: Folder): number {
   return records.filter(folder.match).length;
 }
 
-export function sortDirectory(a: Resource, b: Resource): number {
-  const pa = a.is_physical_location ? 0 : 1;
-  const pb = b.is_physical_location ? 0 : 1;
-  if (pa !== pb) return pa - pb;
-  const da = a.distance_from_home_km_est ?? 999;
-  const db = b.distance_from_home_km_est ?? 999;
-  if (da !== db) return da - db;
-  return priorityScore(b.priority) - priorityScore(a.priority);
+/** Physical places first, nearest (to the given origin) first, then priority. */
+export function directorySorter(km?: (r: Resource) => number | null) {
+  const kmOf = km ?? ((r: Resource) => r.distance_from_home_km_est);
+  return (a: Resource, b: Resource): number => {
+    const pa = a.is_physical_location ? 0 : 1;
+    const pb = b.is_physical_location ? 0 : 1;
+    if (pa !== pb) return pa - pb;
+    const da = kmOf(a) ?? 999;
+    const db = kmOf(b) ?? 999;
+    if (da !== db) return da - db;
+    return priorityScore(b.priority) - priorityScore(a.priority);
+  };
 }
+
+export const sortDirectory = directorySorter();

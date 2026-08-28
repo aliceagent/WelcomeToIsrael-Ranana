@@ -19,6 +19,18 @@ export function estimateTravel(kmStraight: number) {
   return { walkKm, walkMin, driveMin };
 }
 
+/**
+ * Distance in km from the active origin: the dataset's precomputed estimate
+ * when measuring from the default family pin, a live haversine otherwise.
+ */
+export function effectiveKm(r: Resource, origin: HomePin, originIsDefault: boolean): number | null {
+  if (originIsDefault) return r.distance_from_home_km_est;
+  if (r.latitude_est != null && r.longitude_est != null) {
+    return haversineKm(origin, r.latitude_est, r.longitude_est);
+  }
+  return r.distance_from_home_km_est;
+}
+
 export function isLowConfidence(r: Resource): boolean {
   const c = (r.coordinate_confidence || "").toLowerCase();
   return c.includes("fallback") || c.includes("unavailable") || c.includes("city-center");
@@ -57,8 +69,17 @@ export function appleMapsUrl(r: Resource, home: HomePin): string {
   return `https://maps.apple.com/?saddr=${home.lat},${home.lng}&daddr=${d}&dirflg=w`;
 }
 
+/** Some records list alternates as "09-123 4567 / 106"; each deserves its own tel: link. */
+export function phoneNumbers(phone: string | null | undefined): string[] {
+  if (!phone) return [];
+  return phone
+    .split("/")
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export function telHref(phone: string): string {
-  const cleaned = phone.replace(/[^\d+*]/g, "");
+  const cleaned = phoneNumbers(phone)[0]?.replace(/[^\d+*]/g, "") ?? "";
   return `tel:${cleaned}`;
 }
 

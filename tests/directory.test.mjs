@@ -60,9 +60,12 @@ test("app is not gated on kids or driving questions", () => {
   const home = readFileSync(join(root, "src/pages/Home.tsx"), "utf8");
   const settings = readFileSync(join(root, "src/pages/Settings.tsx"), "utf8");
   const store = readFileSync(join(root, "src/lib/store.tsx"), "utf8");
+  const onboarding = readFileSync(join(root, "src/components/Onboarding.tsx"), "utf8");
   assert.equal(home.includes("Onboarding"), false);
   assert.equal(settings.includes("weHaveKids") || settings.includes("weDrive"), false);
-  assert.match(store, /drives: true, kids: true/);
+  // The profile concept (kids/drives/kupah/bank) was removed outright.
+  assert.equal(/profile/i.test(store), false);
+  assert.equal(/kids|drives/i.test(onboarding), false);
 });
 
 test("tab bar uses matched SVG icons instead of tiny unicode glyphs", () => {

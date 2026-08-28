@@ -1,26 +1,40 @@
 import { createContext, createElement, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { HomePin, Lang, Profile } from "./types";
+import type { HomePin, Lang } from "./types";
 import meta from "../data/meta.json";
 
 const LANG_KEY = "raanana.lang";
 const FAV_KEY = "raanana.favs";
 const CHECK_KEY = "raanana.checks";
 const HOME_KEY = "raanana.home";
-const PROFILE_KEY = "raanana.profile";
-const DEFAULT_PROFILE: Profile = { drives: true, kids: true, kupah: null, bank: null };
+const ADDRESS_KEY = "raanana.address";
+const NOTES_KEY = "raanana.notes";
 
 type Store = {
   lang: Lang;
   setLang: (l: Lang) => void;
   favorites: Set<string>;
   toggleFav: (id: string) => void;
+  /** Personal notes on saved cards ("our pediatrician"), by record id. */
+  notes: Record<string, string>;
+  setNote: (id: string, note: string) => void;
   checks: Set<string>;
   toggleCheck: (id: string) => void;
   home: HomePin;
   setHome: (p: HomePin) => void;
   resetHome: () => void;
-  profile: Profile;
-  setProfile: (p: Partial<Profile>) => void;
+  /** Street address for the SOS "read this out" card; stays on this phone. */
+  address: string;
+  setAddress: (a: string) => void;
+  /** Device location, session-only — never persisted. */
+  gps: HomePin | null;
+  setGps: (p: HomePin | null) => void;
+  useGps: boolean;
+  setUseGps: (v: boolean) => void;
+  /** Active measuring point: device location when enabled, else the home pin. */
+  origin: HomePin;
+  originIsGps: boolean;
+  /** True when distances can use the dataset's precomputed home estimates. */
+  originIsDefault: boolean;
   online: boolean;
 };
 
@@ -42,10 +56,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
-  const [profile, setProfileState] = useState<Profile>(() => {
-    const stored = readJson<Partial<Profile>>(PROFILE_KEY, {});
-    return { ...DEFAULT_PROFILE, ...stored, drives: true, kids: true };
-  });
+  const [address, setAddress] = useState<string>(() => readJson(ADDRESS_KEY, ""));
+  const [notes, setNotes] = useState<Record<string, string>>(() => readJson(NOTES_KEY, {}));
+  const [gps, setGps] = useState<HomePin | null>(null);
+  const [useGps, setUseGps] = useState(false);
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
 
   useEffect(() => {
@@ -64,8 +78,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(HOME_KEY, JSON.stringify(home));
   }, [home]);
   useEffect(() => {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  }, [profile]);
+    localStorage.setItem(ADDRESS_KEY, JSON.stringify(address));
+  }, [address]);
+  useEffect(() => {
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  }, [notes]);
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -77,6 +94,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("offline", off);
     };
   }, []);
+
+  const originIsGps = useGps && gps != null;
+  const origin = originIsGps && gps ? gps : home;
+  const originIsDefault =
+    !originIsGps &&
+    Math.abs(home.lat - meta.home_default.lat) < 0.0002 &&
+    Math.abs(home.lng - meta.home_default.lng) < 0.0002;
 
   const value = useMemo<Store>(
     () => ({
@@ -90,6 +114,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           else next.add(id);
           return next;
         }),
+      notes,
+      setNote: (id, note) =>
+        setNotes((prev) => {
+          const next = { ...prev };
+          if (note.trim()) next[id] = note;
+          else delete next[id];
+          return next;
+        }),
       checks,
       toggleCheck: (id) =>
         setChecks((prev) => {
@@ -101,11 +133,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       home,
       setHome: setHomeState,
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
-      profile,
-      setProfile: (p) => setProfileState((prev) => ({ ...prev, ...p, drives: true, kids: true })),
+      address,
+      setAddress,
+      gps,
+      setGps,
+      useGps,
+      setUseGps,
+      origin,
+      originIsGps,
+      originIsDefault,
       online,
     }),
-    [lang, favorites, checks, home, profile, online],
+    [lang, favorites, notes, checks, home, address, gps, useGps, origin, originIsGps, originIsDefault, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

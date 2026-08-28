@@ -11,7 +11,6 @@ import { ChecklistsPage } from "./pages/Checklists";
 import { GlossaryPage } from "./pages/Glossary";
 import { ShareKitPage } from "./pages/ShareKit";
 import { SettingsPage } from "./pages/Settings";
-import { MorePage } from "./pages/More";
 import { HubPage } from "./pages/Hub";
 import { FoodPage } from "./pages/Food";
 import { FolderPage } from "./pages/Folder";
@@ -35,7 +34,6 @@ export default function App() {
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/share" element={<ShareKitPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/more" element={<MorePage />} />
         <Route path="/hub/:id" element={<HubPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

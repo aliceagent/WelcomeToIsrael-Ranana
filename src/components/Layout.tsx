@@ -6,6 +6,7 @@ import type { Lang } from "../lib/types";
 import { getFolder } from "../lib/directory";
 import { fallbackParent, isTabPath, useChromeTitle } from "../lib/nav";
 import { FoodIcon, HomeIcon, SavedIcon, SearchIcon, SosIcon } from "./Icons";
+import { Onboarding } from "./Onboarding";
 
 const LANGS: Lang[] = ["en", "fr", "he"];
 
@@ -44,6 +45,7 @@ export function Layout() {
 
   return (
     <div className="app-shell">
+      <Onboarding />
       <header className={`topbar ${tab ? "tab" : "stack"}`}>
         {tab ? (
           <Link className="brand" to="/">
@@ -65,7 +67,7 @@ export function Layout() {
         )}
         <div className="lang-switch" role="group" aria-label={t(lang, "language")}>
           {LANGS.map((l) => (
-            <button key={l} className={l === lang ? "on" : ""} onClick={() => setLang(l)}>
+            <button key={l} lang={l} aria-pressed={l === lang} className={l === lang ? "on" : ""} onClick={() => setLang(l)}>
               {l.toUpperCase()}
             </button>
           ))}

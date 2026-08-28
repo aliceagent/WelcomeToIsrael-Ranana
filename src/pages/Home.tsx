@@ -7,6 +7,7 @@ import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { NeedChips } from "../components/NeedChips";
 import { AskBar } from "../components/AskBar";
+import { ShabbatBanner } from "../components/ShabbatBanner";
 import {
   QUICK_APPS,
   foodHomeFolders,
@@ -35,17 +36,27 @@ export function HomePage() {
     <div className="home-dir">
       <AskBar />
 
+      <ShabbatBanner />
+
       <NeedChips />
 
       <div className="sos-strip" aria-label={t(lang, "emergency")}>
         {sos.map((r) => {
           const short = SOS_SHORT[r.record_id];
-          const href = r.phone_primary ? telHref(r.phone_primary.split("/")[0].trim()) : "/emergency";
-          return (
-            <a className="sos-chip" key={r.record_id} href={href}>
+          const body = (
+            <>
               <span className="num">{short?.num || r.phone_primary}</span>
               <span className="lbl">{short?.label[lang] || displayName(r, lang)}</span>
+            </>
+          );
+          return r.phone_primary ? (
+            <a className="sos-chip" key={r.record_id} href={telHref(r.phone_primary)}>
+              {body}
             </a>
+          ) : (
+            <Link className="sos-chip" key={r.record_id} to="/emergency">
+              {body}
+            </Link>
           );
         })}
       </div>
@@ -53,7 +64,7 @@ export function HomePage() {
       <div className="quick-row" aria-label={t(lang, "quickApps")}>
         {quick.map((r) => (
           <Link className="quick-app" key={r.record_id} to={recordPath(r)}>
-            <span className="dot">{quickIcon(r.name_en || "")}</span>
+            <span className="dot" aria-hidden="true">{quickIcon(r.name_en || "")}</span>
             <span>{shortAppName(r.name_en || "")}</span>
           </Link>
         ))}
@@ -67,7 +78,7 @@ export function HomePage() {
         <div className="food-grid">
           {food.map((f) => (
             <Link className="food-tile" key={f.id} to={`/d/${f.id}`}>
-              <span className="emoji">{f.icon}</span>
+              <span className="emoji" aria-hidden="true">{f.icon}</span>
               <strong>{folderLabel(f, lang)}</strong>
               <span className="count">{folderCount(f)}</span>
             </Link>
@@ -83,7 +94,7 @@ export function HomePage() {
           <div className="app-grid">
             {homeLaunchers(group).map((item) => (
               <Link className="app-icon" key={item.id} to={item.to}>
-                <span className="well">{item.icon}</span>
+                <span className="well" aria-hidden="true">{item.icon}</span>
                 <span className="lbl">{item.title[lang]}</span>
               </Link>
             ))}

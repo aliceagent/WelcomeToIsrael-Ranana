@@ -17,6 +17,26 @@ ensureCatalogSearch();
 
 const sentQueries = new Set<string>();
 
+const HISTORY_KEY = "raanana.askHistory";
+type AskHistoryEntry = { q: string; a: string; ts: number };
+
+function readHistory(): AskHistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? (JSON.parse(raw) as AskHistoryEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(entries: AskHistoryEntry[]) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
+  } catch {
+    /* private mode: history is a convenience only */
+  }
+}
+
 function recordIdsFrom(message: UIMessage): string[] {
   const ids: string[] = [];
   for (const part of message.parts) {
@@ -65,6 +85,7 @@ export function AskPage() {
   const { messages, sendMessage, status, error } = useChat({ transport });
   const [startedAt, setStartedAt] = useState<number | undefined>();
   const wasBusy = useRef(false);
+  const [history, setHistory] = useState<AskHistoryEntry[]>(readHistory);
 
   useEffect(() => {
     if (!initial || sentQueries.has(initial)) return;
@@ -99,8 +120,19 @@ export function AskPage() {
     }
     if (!busy && wasBusy.current) {
       setStartedAt(undefined);
+      // Cache the finished answer so it can be reopened later, even offline.
+      const q = latestQuestion ? textOf(latestQuestion) : "";
+      const a = lastAssistant ? textOf(lastAssistant) : "";
+      if (q && a) {
+        setHistory((prev) => {
+          const next = [{ q, a, ts: Date.now() }, ...prev.filter((h) => h.q !== q)].slice(0, 10);
+          saveHistory(next);
+          return next;
+        });
+      }
     }
     wasBusy.current = busy;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs on busy transitions only
   }, [busy]);
 
   return (
@@ -125,6 +157,17 @@ export function AskPage() {
               </button>
             ))}
           </div>
+          {history.length ? (
+            <div className="ask-recent">
+              <p className="ask-cards-label">{t(lang, "recentAnswers")}</p>
+              {history.map((h) => (
+                <details className="ask-hist" key={h.ts}>
+                  <summary>{h.q}</summary>
+                  <p className="ask-p">{h.a}</p>
+                </details>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : null}
 

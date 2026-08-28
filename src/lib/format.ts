@@ -111,16 +111,11 @@ export const HUBS = {
   },
 } as const;
 
-export function matchesProfile(r: Resource, profile: { drives: boolean | null; kids: boolean | null; kupah: string | null; bank: string | null }): boolean {
-  const id = r.record_id;
-  if (profile.drives === false && (id === "APP-005" || id === "APP-006" || /driving|parking|pango|cello/i.test(r.search_text || ""))) {
-    if (r.subcategory?.toLowerCase().includes("parking") || r.name_en === "Pango" || r.name_en === "Cello") return false;
-  }
-  if (profile.kupah && r.priority === "Health fund option") {
-    return (r.name_en || "").toLowerCase().includes(profile.kupah.toLowerCase());
-  }
-  if (profile.bank && r.priority === "Bank option") {
-    return (r.name_en || "").toLowerCase().includes(profile.bank.toLowerCase());
-  }
-  return true;
+/**
+ * English (or French) fallback text rendered inside a Hebrew RTL page needs an
+ * explicit LTR island or punctuation/numbers scramble.
+ */
+export function descriptionDir(r: Resource, lang: Lang): "ltr" | undefined {
+  if (lang !== "he") return undefined;
+  return displayDescription(r, lang) ? "ltr" : undefined;
 }

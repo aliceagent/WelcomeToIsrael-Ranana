@@ -4,12 +4,12 @@ import { byCategory, categoryFromSlug } from "../lib/data";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t, categoryLabel } from "../lib/i18n";
-import { CATEGORY_ICONS, matchesProfile, priorityScore, slugifyCategory } from "../lib/format";
+import { CATEGORY_ICONS, priorityScore, slugifyCategory } from "../lib/format";
 import { shareContent, whatsappShareUrl, categoryPath, absoluteUrl } from "../lib/share";
 
 export function CategoryPage() {
   const { slug } = useParams();
-  const { lang, profile } = useStore();
+  const { lang } = useStore();
   const category = slug ? categoryFromSlug(slug) : undefined;
   const [raanana, setRaanana] = useState(false);
   const [physical, setPhysical] = useState(false);
@@ -18,7 +18,7 @@ export function CategoryPage() {
 
   const items = useMemo(() => {
     if (!category) return [];
-    let list = byCategory(category).filter((r) => matchesProfile(r, profile));
+    let list = byCategory(category);
     if (raanana) list = list.filter((r) => r.is_raanana);
     if (physical) list = list.filter((r) => r.is_physical_location);
     if (type !== "all") list = list.filter((r) => r.record_type === type);
@@ -31,7 +31,7 @@ export function CategoryPage() {
       return priorityScore(b.priority) - priorityScore(a.priority);
     });
     return list;
-  }, [category, raanana, physical, near, type, profile]);
+  }, [category, raanana, physical, near, type]);
 
   if (!slug) return <Navigate to="/" replace />;
   if (!category) return <div className="empty">{t(lang, "noResults")}</div>;
@@ -48,13 +48,13 @@ export function CategoryPage() {
         {items.length} {t(lang, "results")}
       </p>
       <div className="filters">
-        <button className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
+        <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
           {t(lang, "raananaOnly")}
         </button>
-        <button className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
+        <button aria-pressed={physical} className={physical ? "on" : ""} onClick={() => setPhysical((v) => !v)}>
           {t(lang, "physicalOnly")}
         </button>
-        <button className={near ? "on" : ""} onClick={() => setNear((v) => !v)}>
+        <button aria-pressed={near} className={near ? "on" : ""} onClick={() => setNear((v) => !v)}>
           {t(lang, "sortNear")}
         </button>
         {types.length > 1 ? (

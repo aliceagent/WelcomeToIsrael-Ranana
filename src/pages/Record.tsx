@@ -1,11 +1,14 @@
-import { useParams } from "react-router-dom";
-import { getBySlug } from "../lib/data";
+import { Link, useParams } from "react-router-dom";
+import { getById, getBySlug } from "../lib/data";
+import { recordPath } from "../lib/share";
+import { BOOKING_HINTS } from "../lib/booking";
+import { SpeakButton } from "../components/SpeakButton";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
-import { Distance } from "../components/RecordCard";
-import { appleMapsUrl, directionsUrl, mapsSearchUrl, telHref, wazeUrl, whatsappHref } from "../lib/geo";
+import { Distance, OpenChip } from "../components/RecordCard";
+import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
 import { PlacesMap } from "../components/PlacesMap";
 import { sameUrl } from "../lib/urls";
 
@@ -40,7 +43,11 @@ export function RecordPage() {
           {favorites.has(r.record_id) ? `★ ${t(lang, "savedOn")}` : `☆ ${t(lang, "save")}`}
         </button>
       </div>
-      {r.record_type === "glossary_term" && r.name_he ? <p className="glossary-he">{r.name_he}</p> : null}
+      {r.record_type === "glossary_term" && r.name_he ? (
+        <p className="glossary-he">
+          {r.name_he} <SpeakButton text={r.name_he} />
+        </p>
+      ) : null}
       {r.name_he && r.record_type !== "glossary_term" ? <p className="he-name">{r.name_he}</p> : null}
       <h1>{name}</h1>
       {r.name_fr && lang === "en" ? <p className="muted">{r.name_fr}</p> : null}
@@ -48,18 +55,21 @@ export function RecordPage() {
         {r.priority ? <span className="chip hot">{r.priority}</span> : null}
         {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
-        <Distance r={r} />
+        <OpenChip r={r} />
+        <Distance r={r} full />
       </div>
-      {desc ? <p>{desc}</p> : null}
+      {desc ? <p dir={descriptionDir(r, lang)}>{desc}</p> : null}
 
       {r.record_type === "important_phone_or_emergency_service" && r.phone_primary ? (
         <div className="call-hero">
           <div>{name}</div>
           <div className="phone">{r.phone_primary}</div>
           {r.availability_hours_note ? <div>{r.availability_hours_note}</div> : null}
-          <a className="btn danger" href={telHref(r.phone_primary)}>
-            {t(lang, "call")} {r.phone_primary}
-          </a>
+          {phoneNumbers(r.phone_primary).map((num) => (
+            <a key={num} className="btn danger" href={telHref(num)}>
+              {t(lang, "call")} {num}
+            </a>
+          ))}
         </div>
       ) : null}
 
@@ -77,6 +87,23 @@ export function RecordPage() {
           {r.availability_hours_note}
           <span className="muted"> — {t(lang, "hoursCaveat")}</span>
         </p>
+      ) : null}
+
+      {BOOKING_HINTS[r.record_id] ? (
+        <div className="banner">
+          <strong>{t(lang, "howToBook")}: </strong>
+          {BOOKING_HINTS[r.record_id].copy[lang]}
+          {(() => {
+            const viaId = BOOKING_HINTS[r.record_id].via;
+            const via = viaId ? getById(viaId) : undefined;
+            return via ? (
+              <>
+                {" "}
+                <Link to={recordPath(via)}>{displayName(via, lang)} →</Link>
+              </>
+            ) : null;
+          })()}
+        </div>
       ) : null}
 
       {r.record_type === "checklist" ? (
@@ -121,16 +148,18 @@ export function RecordPage() {
       {r.latitude_est != null && r.longitude_est != null ? <PlacesMap places={[r]} highlight={r.record_id} /> : null}
 
       <div className="actions">
-        {r.phone_primary && r.record_type !== "important_phone_or_emergency_service" ? (
-          <a className="btn primary" href={telHref(r.phone_primary)}>
-            {t(lang, "call")} {r.phone_primary}
+        {r.record_type !== "important_phone_or_emergency_service"
+          ? phoneNumbers(r.phone_primary).map((num) => (
+              <a key={num} className="btn primary" href={telHref(num)}>
+                {t(lang, "call")} {num}
+              </a>
+            ))
+          : null}
+        {phoneNumbers(r.phone_secondary).map((num) => (
+          <a key={num} className="btn" href={telHref(num)}>
+            {num}
           </a>
-        ) : null}
-        {r.phone_secondary ? (
-          <a className="btn" href={telHref(r.phone_secondary)}>
-            {r.phone_secondary}
-          </a>
-        ) : null}
+        ))}
         {r.whatsapp_sms ? (
           <a className="wa-text" href={whatsappHref(r.whatsapp_sms)}>
             {t(lang, "whatsapp")}
@@ -185,6 +214,11 @@ export function RecordPage() {
 
       <p className="muted">
         {t(lang, "lastVerified")}: {r.last_verified || t(lang, "unknown")}
+        {r.last_verified &&
+        r.recommended_review_days != null &&
+        (Date.now() - Date.parse(r.last_verified)) / 86400000 > r.recommended_review_days ? (
+          <> — {t(lang, "mayBeOutdated")}</>
+        ) : null}
         {r.source_url_primary ? (
           <>
             {" · "}
@@ -193,6 +227,15 @@ export function RecordPage() {
             </a>
           </>
         ) : null}
+        {" · "}
+        <a
+          className="source-link"
+          href={`https://wa.me/?text=${encodeURIComponent(`Welcome to Ra'anana — correction for "${name}" (${r.record_id}): `)}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t(lang, "reportProblem")}
+        </a>
       </p>
       {r.verification_status ? <p className="muted">{r.verification_status}</p> : null}
     </article>

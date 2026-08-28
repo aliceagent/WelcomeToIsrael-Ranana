@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { byType } from "../lib/data";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { displayDescription, displayName } from "../lib/format";
+import { descriptionDir, displayDescription, displayName } from "../lib/format";
 import { Link } from "react-router-dom";
 import { recordPath } from "../lib/share";
+import { SpeakButton } from "../components/SpeakButton";
 
 export function GlossaryPage() {
   const { lang } = useStore();
@@ -21,15 +22,15 @@ export function GlossaryPage() {
     <div>
       <h1 className="chrome-title">{t(lang, "glossary")}</h1>
       <form className="search" onSubmit={(e) => e.preventDefault()}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t(lang, "searchHint")} />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t(lang, "glossarySearchHint")} aria-label={t(lang, "search")} />
       </form>
       {items.map((r) => (
         <Link className="card" key={r.record_id} to={recordPath(r)}>
           <div className="glossary-he" style={{ fontSize: "1.6rem" }}>
-            {r.name_he}
+            {r.name_he} {r.name_he ? <SpeakButton text={r.name_he} /> : null}
           </div>
           <h3>{displayName(r, lang)}</h3>
-          <p className="muted" style={{ margin: 0 }}>
+          <p className="muted" dir={descriptionDir(r, lang)} style={{ margin: 0 }}>
             {displayDescription(r, lang)}
           </p>
         </Link>
