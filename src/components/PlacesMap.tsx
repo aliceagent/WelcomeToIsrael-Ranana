@@ -8,6 +8,7 @@ import type { Resource } from "../lib/types";
 import { useStore } from "../lib/store";
 import { meta } from "../lib/data";
 import { mapCategory } from "../lib/mapview";
+import { isLowConfidence } from "../lib/geo";
 
 export const homeIcon = L.divIcon({
   className: "",
@@ -25,9 +26,10 @@ const youIcon = L.divIcon({
 
 function pinIcon(r: Resource, active: boolean) {
   const cat = mapCategory(r);
+  const approx = isLowConfidence(r) ? " approx" : "";
   return L.divIcon({
     className: "",
-    html: `<span class="map-pin${active ? " active" : ""}" style="background:${cat.color}">${cat.icon}</span>`,
+    html: `<span class="map-pin${active ? " active" : ""}${approx}" style="background:${cat.color}">${cat.icon}</span>`,
     iconSize: active ? [40, 40] : [30, 30],
     iconAnchor: active ? [20, 20] : [15, 15],
   });

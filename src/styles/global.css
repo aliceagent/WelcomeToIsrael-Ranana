@@ -1058,6 +1058,7 @@ html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
   line-height: 1;
   transition: transform 0.12s ease;
 }
+.map-pin.approx { border-style: dashed; }
 .map-pin.active {
   width: 40px;
   height: 40px;

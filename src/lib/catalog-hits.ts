@@ -125,7 +125,7 @@ export function getCompactRecord(recordId: string, lang: Lang) {
 }
 
 export const ASK_PROMPTS: { en: string; fr: string; he: string }[] = [
-  { en: "Where do I register for school?", fr: "Où inscrire les enfants à l'école ?", he: "איפה נרשמים לבית ספר?" },
+  { en: "Where is the best place to order clothing online?", fr: "Où commander des vêtements en ligne ?", he: "איפה הכי כדאי להזמין בגדים אונליין?" },
   { en: "I need a plumber tonight", fr: "J'ai besoin d'un plombier ce soir", he: "צריך אינסטלטור הערב" },
   { en: "How does a kupah work?", fr: "Comment marche une kupah ?", he: "איך עובדת קופת חולים?" },
   { en: "Where is the nearest pharmacy?", fr: "Où est la pharmacie la plus proche ?", he: "איפה בית מרקחת קרוב?" },
