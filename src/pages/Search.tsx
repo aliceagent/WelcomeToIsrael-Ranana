@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { records } from "../lib/data";
-import { buildSearch, liveLookupRecords, searchRecords } from "../lib/search";
+import { buildSearch, liveLookupRecords, searchWithMeta } from "../lib/search";
 import { RecordCard } from "../components/RecordCard";
 import { NeedChips } from "../components/NeedChips";
 import { SearchBox } from "../components/SearchBox";
@@ -85,13 +85,17 @@ export function SearchPage() {
     };
   }, []);
 
-  const results = useMemo(() => (q.trim() ? searchRecords(q) : []), [q]);
+  const { records: results, loose } = useMemo(
+    () => (q.trim() ? searchWithMeta(q) : { records: [] as Resource[], loose: false }),
+    [q],
+  );
   const live = useMemo(() => {
     if (!q.trim()) return [];
-    return liveLookupRecords(q, results.length).filter(
+    // Close matches are not an answer, so the live directories stay on offer.
+    return liveLookupRecords(q, loose ? 0 : results.length).filter(
       (r) => !results.some((x) => x.record_id === r.record_id || (x.name_en && x.name_en === r.name_en)),
     );
-  }, [q, results]);
+  }, [q, results, loose]);
   const { openNow, rest } = useMemo(() => {
     const open: Resource[] = [];
     const other: Resource[] = [];
@@ -170,6 +174,8 @@ export function SearchPage() {
               </span>
             ) : null}
           </div>
+
+          {loose ? <div className="banner">{t(lang, "closeMatches")}</div> : null}
 
           {results.length === 0 ? (
             <div className="no-results">

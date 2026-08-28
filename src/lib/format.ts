@@ -38,6 +38,45 @@ export function priorityScore(p: string | null): number {
   return PRIORITY_SCORE[p] ?? 40;
 }
 
+const PRIORITY_LABELS: Record<string, { fr: string; he: string }> = {
+  Critical: { fr: "Vital", he: "קריטי" },
+  "Critical local": { fr: "Vital sur place", he: "קריטי מקומי" },
+  Essential: { fr: "Essentiel", he: "חיוני" },
+  "Essential local": { fr: "Essentiel sur place", he: "חיוני מקומי" },
+  "Essential for new olim": { fr: "Essentiel pour les olim", he: "חיוני לעולים חדשים" },
+  "Essential if driving": { fr: "Essentiel si vous conduisez", he: "חיוני לנהגים" },
+  "Essential if using transit": { fr: "Essentiel en transports", he: "חיוני בתחבורה ציבורית" },
+  "Essential convenience": { fr: "Confort essentiel", he: "נוחות חיונית" },
+  "Essential for international orders": { fr: "Essentiel pour les commandes à l'étranger", he: "חיוני להזמנות מחו״ל" },
+  High: { fr: "Important", he: "חשוב" },
+  "High local value": { fr: "Très utile sur place", he: "ערך מקומי גבוה" },
+  "High for home setup": { fr: "Important pour s'installer", he: "חשוב להתארגנות בבית" },
+  "High for families": { fr: "Important pour les familles", he: "חשוב למשפחות" },
+  "High when applicable": { fr: "Important le cas échéant", he: "חשוב במקרים רלוונטיים" },
+  "High when relevant": { fr: "Important si concerné", he: "חשוב כשרלוונטי" },
+  "High for French citizens": { fr: "Important pour les citoyens français", he: "חשוב לאזרחים צרפתים" },
+  "High for U.S. citizens": { fr: "Important pour les citoyens américains", he: "חשוב לאזרחים אמריקאים" },
+  Recommended: { fr: "Recommandé", he: "מומלץ" },
+  "Useful local": { fr: "Utile sur place", he: "שימושי מקומי" },
+  Useful: { fr: "Utile", he: "שימושי" },
+  "Useful for families": { fr: "Utile pour les familles", he: "שימושי למשפחות" },
+  "Useful for French speakers": { fr: "Utile pour les francophones", he: "שימושי לדוברי צרפתית" },
+  "Useful for French shoppers": { fr: "Utile pour les acheteurs francophones", he: "שימושי לקונים דוברי צרפתית" },
+  "Community resource": { fr: "Ressource communautaire", he: "משאב קהילתי" },
+  "Bank option": { fr: "Option bancaire", he: "אפשרות בנק" },
+  "Health fund option": { fr: "Option de caisse maladie", he: "אפשרות קופת חולים" },
+  "Card-provider option": { fr: "Option de carte", he: "אפשרות חברת אשראי" },
+  "Install if instructed": { fr: "À installer si demandé", he: "להתקין לפי הנחיה" },
+  "Install/use if instructed": { fr: "À installer / utiliser si demandé", he: "להתקין או להשתמש לפי הנחיה" },
+  Optional: { fr: "Facultatif", he: "רשות" },
+};
+
+export function priorityLabel(p: string | null, lang: Lang): string | null {
+  if (!p) return null;
+  if (lang === "en") return p;
+  return PRIORITY_LABELS[p]?.[lang] ?? p;
+}
+
 export function displayName(r: Resource, lang: Lang): string {
   if (lang === "fr" && r.name_fr) return r.name_fr;
   if (lang === "he" && r.name_he) return r.name_he;

@@ -41,6 +41,66 @@ function stripVowels(q: string): string {
     .join(" ");
 }
 
+const HEBREW = /[֐-׿]/;
+
+/**
+ * Latin function words carry no signal and drag in noise ("bus TO tel aviv"
+ * matching "Wok TO Walk"). Hebrew prefixes are glued to their word, so Hebrew
+ * needs no list.
+ */
+const STOPWORDS = new Set([
+  "to", "the", "a", "an", "in", "of", "for", "at", "on", "is", "near", "me",
+  "de", "la", "le", "les", "du", "des", "un", "une", "et", "en", "au", "aux", "pour",
+]);
+
+/** MiniSearch's default tokenizer split, so query tokens line up with indexed ones. */
+const SPACE_OR_PUNCTUATION = /[\n\r\p{Z}\p{P}]+/u;
+
+function processTerm(term: string): string | null {
+  const folded = fold(term);
+  return STOPWORDS.has(folded) ? null : folded;
+}
+
+function queryTokens(query: string): string[] {
+  return query
+    .split(SPACE_OR_PUNCTUATION)
+    .map(processTerm)
+    .filter((t): t is string => !!t);
+}
+
+/**
+ * A hit is exact when an indexed term it matched is a query token or extends
+ * one (prefix); anything else came from fuzzy edit distance alone.
+ */
+function isExactHit(terms: string[], tokens: string[]): boolean {
+  return terms.some((term) => tokens.some((token) => term === token || term.startsWith(token)));
+}
+
+/** Loose results are a last resort, never a wall of near-noise. */
+const LOOSE_MAX = 5;
+const GLOSSARY_PENALTY = 4;
+
+const FUZZY = 0.2;
+/** Last-ditch pass for a typo the normal edit distance can't reach ("electrition"). */
+const FUZZY_WIDE = 0.34;
+
+function fuzzyFor(distance: number) {
+  return (term: string) => (HEBREW.test(term) ? false : distance);
+}
+
+/**
+ * A glossary card answers "what does this word mean", so it earns its place
+ * only when the query is the term itself. name_fr/description are translations
+ * of the meaning, not the card's name — "pédiatre" wants a doctor.
+ */
+function isTermQuery(rec: Resource, foldedQuery: string): boolean {
+  return [rec.name_en, rec.name_he].some((n) => !!n && fold(n) === foldedQuery);
+}
+
+function isDemotedGlossary(rec: Resource, foldedQuery: string): boolean {
+  return rec.record_type === "glossary_term" && !isTermQuery(rec, foldedQuery);
+}
+
 let index: MiniSearch<Resource> | null = null;
 let byId = new Map<string, Resource>();
 
@@ -62,6 +122,7 @@ export function buildSearch(records: Resource[]) {
       "phone_primary",
       "search_text",
       "he_translit",
+      "denomination_nusach",
     ],
     storeFields: ["record_id"],
     idField: "record_id",
@@ -85,20 +146,38 @@ export function buildSearch(records: Resource[]) {
         address_he: 3,
         search_text: 2,
         he_translit: 6,
+        denomination_nusach: 5,
       },
       prefix: true,
-      fuzzy: 0.2,
+      // Hebrew words are short and dense: one edit turns a real word into an
+      // unrelated one, so Hebrew gets prefix matching only.
+      fuzzy: fuzzyFor(FUZZY),
     },
-    processTerm: (term) => fold(term),
+    processTerm,
   });
   index.addAll(records);
 }
 
-function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[] {
-  if (!index || !query.trim()) return [];
-  let raw = index.search(fold(query), { combineWith });
-  if (raw.length === 0 && combineWith === "AND" && query.trim().split(/\s+/).length > 1) {
-    raw = index.search(fold(query), { combineWith: "OR" });
+/** Results of one index pass, with whether they are fuzzy-only ("loose"). */
+type Pass = { records: Resource[]; loose: boolean };
+
+const EMPTY_PASS: Pass = { records: [], loose: false };
+
+function searchOnce(query: string): Pass {
+  if (!index || !query.trim()) return EMPTY_PASS;
+  const tokens = queryTokens(query);
+  if (!tokens.length) return EMPTY_PASS;
+  const folded = fold(query);
+  let raw = index.search(folded, { combineWith: "AND" });
+  let orFallback = false;
+  let typoRetry = false;
+  if (raw.length === 0 && tokens.length > 1) {
+    raw = index.search(folded, { combineWith: "OR" });
+    orFallback = true;
+  }
+  if (raw.length === 0) {
+    raw = index.search(folded, { combineWith: orFallback ? "OR" : "AND", fuzzy: fuzzyFor(FUZZY_WIDE) });
+    typoRetry = true;
   }
   const emergency = /emergenc|urgence|חירום|rocket|alert|מקלט|shelter|ambulance|police/i.test(query);
   const scored = raw
@@ -110,14 +189,22 @@ function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[
       if (rec.is_raanana) score += 2;
       if (emergency && rec.category === "Emergency & Important Numbers") score += 50;
       if (emergency && rec.record_type === "public_shelter") score += 20;
-      return { rec, score };
+      // Flashcards are for looking a word up, not for answering "who can help".
+      if (isDemotedGlossary(rec, folded)) score -= GLOSSARY_PENALTY;
+      // A single matched token out of a multi-word query is a weak signal.
+      const loose =
+        typoRetry || !isExactHit(hit.terms, tokens) || (orFallback && hit.queryTerms.length < 2);
+      return { rec, score, loose };
     })
-    .filter((x): x is { rec: Resource; score: number } => x !== null)
+    .filter((x): x is { rec: Resource; score: number; loose: boolean } => x !== null)
     .sort((a, b) => b.score - a.score);
+  const exact = scored.filter((x) => !x.loose);
+  const kept = exact.length ? exact : scored.slice(0, LOOSE_MAX);
   // Fuzzy matching produces a long tail of near-noise (shelters for
   // "plumber"); keep only hits in the same league as the best one.
-  const top = scored[0]?.score ?? 0;
-  return scored.filter((x) => x.score >= top * 0.3).map((x) => x.rec);
+  const top = kept[0]?.score ?? 0;
+  const floor = top > 0 ? top * 0.3 : -Infinity;
+  return { records: kept.filter((x) => x.score >= floor).map((x) => x.rec), loose: !exact.length };
 }
 
 /**
@@ -125,12 +212,16 @@ function searchOnce(query: string, combineWith: "AND" | "OR" = "AND"): Resource[
  * dataset carries e.g. two Midrag records). Live-directory fallbacks are
  * NOT mixed in — the UI shows them in their own labeled section via
  * liveLookupRecords().
+ *
+ * `loose` means nothing matched the query as typed and the records below are
+ * fuzzy near-misses, which the search page says out loud.
  */
-export function searchRecords(query: string): Resource[] {
+export function searchWithMeta(query: string): { records: Resource[]; loose: boolean } {
   const queries = expandQuery(query);
   const seen = new Set<string>();
   const seenNames = new Set<string>();
   const merged: Resource[] = [];
+  let loose = true;
   const push = (rec: Resource) => {
     if (seen.has(rec.record_id)) return;
     const nameKey = fold(rec.name_en || rec.name_he || rec.record_id).replace(/[^a-z0-9֐-׿]/g, "");
@@ -139,17 +230,30 @@ export function searchRecords(query: string): Resource[] {
     if (nameKey) seenNames.add(nameKey);
     merged.push(rec);
   };
-  queries.forEach((q) => {
-    for (const rec of searchOnce(q)) push(rec);
-  });
+  const take = (pass: Pass) => {
+    if (!pass.records.length) return;
+    if (!pass.loose) loose = false;
+    for (const rec of pass.records) push(rec);
+  };
+  queries.forEach((q) => take(searchOnce(q)));
   if (merged.length === 0) {
     // Latin-typed Hebrew ("misrad", "makolet"): retry against the skeletons.
     const skeleton = stripVowels(query);
-    if (skeleton !== query) {
-      for (const rec of searchOnce(skeleton)) push(rec);
-    }
+    if (skeleton !== query) take(searchOnce(skeleton));
   }
-  return merged;
+  if (!merged.length) return { records: [], loose: false };
+  // Scores only rank within one pass, so the demotion also has to hold across
+  // the merged passes: a flashcard never outranks a place that can help.
+  const folded = fold(query);
+  const ordered = [
+    ...merged.filter((r) => !isDemotedGlossary(r, folded)),
+    ...merged.filter((r) => isDemotedGlossary(r, folded)),
+  ];
+  return { records: loose ? ordered.slice(0, LOOSE_MAX) : ordered, loose };
+}
+
+export function searchRecords(query: string): Resource[] {
+  return searchWithMeta(query).records;
 }
 
 /** The live-directory cards (Midrag, Easy, Google Maps) for the fallback section. */

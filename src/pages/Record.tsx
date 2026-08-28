@@ -5,7 +5,7 @@ import { BOOKING_HINTS } from "../lib/booking";
 import { SpeakButton } from "../components/SpeakButton";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, priorityLabel, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
 import { Distance, OpenChip } from "../components/RecordCard";
 import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
@@ -52,7 +52,7 @@ export function RecordPage() {
       <h1>{name}</h1>
       {r.name_fr && lang === "en" ? <p className="muted">{r.name_fr}</p> : null}
       <div className="chips">
-        {r.priority ? <span className="chip hot">{r.priority}</span> : null}
+        {r.priority ? <span className="chip hot">{priorityLabel(r.priority, lang)}</span> : null}
         {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
         <OpenChip r={r} />

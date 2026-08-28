@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Resource } from "../lib/types";
-import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, priorityLabel, TYPE_LABELS } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { t } from "../lib/i18n";
 import { useStore } from "../lib/store";
@@ -69,7 +69,9 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
             <h3>{name}</h3>
             {!compact && desc ? <p className="muted" dir={descriptionDir(r, lang)} style={{ margin: 0 }}>{desc}</p> : null}
             <div className="chips">
-              {r.priority ? <span className={`chip ${/Critical|Essential/i.test(r.priority) ? "hot" : ""}`}>{r.priority}</span> : null}
+              {r.priority ? (
+                <span className={`chip ${/Critical|Essential/i.test(r.priority) ? "hot" : ""}`}>{priorityLabel(r.priority, lang)}</span>
+              ) : null}
               {type ? <span className="chip">{type}</span> : null}
               {r.phone_primary ? <span className="chip ok">{r.phone_primary}</span> : null}
               <OpenChip r={r} />

@@ -1,0 +1,143 @@
+{
+ "comment": "Hebrew and French names for every newcomer checklist, plus Hebrew descriptions for the ones that lacked them, authored 2026-08-28.",
+ "patch": [
+  {
+   "record_id": "CHK-001",
+   "name_he": "24 השעות הראשונות",
+   "name_fr": "Les premières 24 heures"
+  },
+  {
+   "record_id": "CHK-002",
+   "name_he": "השבוע הראשון אחרי הנחיתה",
+   "name_fr": "La première semaine après l'arrivée"
+  },
+  {
+   "record_id": "CHK-003",
+   "name_he": "החודש הראשון אחרי הנחיתה",
+   "name_fr": "Le premier mois après l'arrivée",
+   "description_he": "בדקו מעמד בביטוח לאומי וקצבאות ילדים, הירשמו לאולפן, עדכנו הזדהות ממשלתית, פתחו ארנונה וחשבונות בית, הנפיקו רב-קו ובדקו את כללי המרת רישיון הנהיגה."
+  },
+  {
+   "record_id": "CHK-004",
+   "name_he": "תוכנית חירום משפחתית",
+   "name_fr": "Plan d'urgence familial"
+  },
+  {
+   "record_id": "CHK-005",
+   "name_he": "התארגנות מול מערכת הבריאות",
+   "name_fr": "Mise en place du système de santé"
+  },
+  {
+   "record_id": "CHK-006",
+   "name_he": "רישום לבית ספר ולמסגרות לילדים",
+   "name_fr": "Inscription à l'école et à la garde d'enfants"
+  },
+  {
+   "record_id": "CHK-007",
+   "name_he": "פתיחת בנק ואמצעי תשלום",
+   "name_fr": "Banque et moyens de paiement",
+   "description_he": "בררו עמלות ושירות באנגלית, הפעילו את אפליקציית הבנק, הזמינו כרטיסי חיוב ואשראי, התקינו ביט ופייבוקס והכירו העברות והוראות קבע."
+  },
+  {
+   "record_id": "CHK-008",
+   "name_he": "רישום כתושב בעירייה",
+   "name_fr": "Inscription comme résident à la mairie",
+   "description_he": "עדכנו בעירייה את כתובת המשפחה, פתחו תיק ארנונה, בקשו הנחות ותו חניה לתושב והצטרפו לערוצי העירייה. מוקד *9107."
+  },
+  {
+   "record_id": "CHK-009",
+   "name_he": "התארגנות לתחבורה ציבורית",
+   "name_fr": "Mise en place des transports en commun",
+   "description_he": "הנפיקו רב-קו אישי לכל נוסע, עדכנו פרופיל ילד, נוער או עולה, התקינו רב-קו אונליין ומוביט ולמדו את כללי התיקוף. מידע: *8787."
+  },
+  {
+   "record_id": "CHK-010",
+   "name_he": "נהיגה ורכב",
+   "name_fr": "Conduite et voiture",
+   "description_he": "בדקו את תוקף הרישיון הזר ואת כללי ההמרה, סדרו ביטוח ישראלי, התקינו ווייז ופנגו והכירו חניה כחול-לבן, כבישי אגרה, טסט שנתי וגרירה."
+  },
+  {
+   "record_id": "CHK-011",
+   "name_he": "חיבור שירותי הבית",
+   "name_fr": "Mise en service du logement",
+   "description_he": "העבירו על שמכם חשמל, מים, גז, אינטרנט וארנונה, צלמו את קריאות המונים, שמרו מספרי לקוח ובדקו גלאי עשן וציוד במרחב המוגן."
+  },
+  {
+   "record_id": "CHK-012",
+   "name_he": "קניות אונליין ויבוא אישי",
+   "name_fr": "Achats en ligne et importation",
+   "description_he": "ודאו שהמוכר שולח לישראל, השוו מחיר כולל משלוח, בדקו את מחשבון מסי היבוא האישי ופריטים אסורים, ושמרו כתובת עם מעקב וחשבוניות."
+  },
+  {
+   "record_id": "CHK-013",
+   "name_he": "תיק מסמכים",
+   "name_fr": "Dossier de documents"
+  },
+  {
+   "record_id": "CHK-014",
+   "name_he": "חובות לאזרחים אמריקאים",
+   "name_fr": "Obligations des citoyens américains",
+   "description_he": "הירשמו ל-STEP, שמרו דרכונים אמריקאים בתוקף והתייעצו עם איש מקצוע על דיווחי מס, FBAR/FATCA, השקעות ומסמכי האזרחות של הילדים."
+  },
+  {
+   "record_id": "CHK-015",
+   "name_he": "חובות לאזרחים צרפתים",
+   "name_fr": "Obligations des citoyens français",
+   "description_he": "הירשמו בקונסוליה הצרפתית לפי הצורך, שמרו דרכונים ומסמכי מעמד אישי בתוקף ובדקו הצבעה, בתי ספר ושירותי חירום קונסולריים."
+  },
+  {
+   "record_id": "CHK-016",
+   "name_he": "היערכות לשבת ולחגים",
+   "name_fr": "Organisation pour Chabbat et les fêtes",
+   "description_he": "בדקו שעות פתיחה ותחבורה לפני שבת וחג, הזמינו מצרכים ותרופות מראש, בררו את גבולות העירוב ושמרו בבית נרות, שעון שבת ואוכל למקרה הצורך."
+  },
+  {
+   "record_id": "CHK-017",
+   "name_he": "בדיקת כשרות",
+   "name_fr": "Vérification de la cacherout",
+   "description_he": "במסעדות ובעסקי מזון בקשו לראות תעודת כשרות פיזית בתוקף ואת הגוף המפקח — אל תסתמכו על אתר ישן או על סמל באפליקציית משלוחים."
+  },
+  {
+   "record_id": "CHK-018",
+   "name_he": "בטיחות בטלפון של הילדים",
+   "name_fr": "Sécurité du téléphone des enfants",
+   "description_he": "התקינו פיקוד העורף בטלפון של כל ילד, הפעילו מיקום והתרעות קריטיות, שמרו אנשי קשר לחירום, סכמו נהלי איסוף ומקלט והגדירו בקרת הורים."
+  },
+  {
+   "record_id": "CHK-019",
+   "name_he": "זהות דיגיטלית ואבטחה",
+   "name_fr": "Identité numérique et sécurité",
+   "description_he": "פתחו הזדהות ממשלתית בזהירות, השתמשו במנהל סיסמאות ובאימות דו-שלבי, אל תשתפו קודים חד-פעמיים וודאו שהאתר רשמי לפני העלאת מסמכים."
+  },
+  {
+   "record_id": "CHK-020",
+   "name_he": "עבודה והכרה בתארים",
+   "name_fr": "Travail et reconnaissance des diplômes",
+   "description_he": "הכינו קורות חיים בעברית ובאנגלית או צרפתית, אספו תעודות, רישיונות והמלצות, בדקו אם המקצוע דורש רישוי ופנו לתוכניות תעסוקה לעולים."
+  },
+  {
+   "record_id": "CHK-021",
+   "name_he": "תוכנית ללימוד עברית",
+   "name_fr": "Plan d'apprentissage de l'hébreu",
+   "description_he": "בחרו מסגרת אולפן, למדו קודם מילים לחירום, בריאות, בית ספר, בנק וקניות, ותרגלו קריאת כתובות ומענה קולי בטלפון."
+  },
+  {
+   "record_id": "CHK-022",
+   "name_he": "התארגנות לחיית מחמד",
+   "name_fr": "Installation avec un animal de compagnie",
+   "description_he": "העבירו את התיק הווטרינרי, ודאו שבב וחיסון כלבת, רשמו את הכלב בעירייה ואתרו וטרינר חירום ומשלוח מזון לחיות."
+  },
+  {
+   "record_id": "CHK-023",
+   "name_he": "רשימת ציוד הבית ואחריות",
+   "name_fr": "Inventaire du foyer et garanties",
+   "description_he": "צלמו מכשירי חשמל ומספרים סידוריים, שמרו קבלות ותעודות אחריות, רשמו מה שייך לבעל הדירה ובררו מי אחראי לתיקוני הבניין ולוועד הבית."
+  },
+  {
+   "record_id": "CHK-024",
+   "name_he": "בדיקה שנתית",
+   "name_fr": "Révision annuelle",
+   "description_he": "עברו פעם בשנה על דרכונים, רישיונות, ביטוחים, רישום לבתי ספר, פרטי קופת חולים, הנחות עירוניות, פרופילי רב-קו, הוראות קבע וציוד חירום."
+  }
+ ]
+}

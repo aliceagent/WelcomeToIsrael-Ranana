@@ -212,6 +212,11 @@ export const dict = {
   recentSearches: { en: "Recent searches", fr: "Recherches récentes", he: "חיפושים אחרונים" },
   allResults: { en: "All results", fr: "Tous les résultats", he: "כל התוצאות" },
   noResultsFor: { en: "No results for “{q}”", fr: "Aucun résultat pour « {q} »", he: "אין תוצאות עבור „{q}”" },
+  closeMatches: {
+    en: "No exact match — showing close matches.",
+    fr: "Pas de résultat exact — voici des correspondances proches.",
+    he: "אין התאמה מדויקת — מציגים תוצאות קרובות.",
+  },
   tryInstead: { en: "Try instead", fr: "Essayez plutôt", he: "נסו במקום זאת" },
   askNoHits: {
     en: "Nothing matching in the directory — the advice below is general.",
