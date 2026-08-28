@@ -6,6 +6,15 @@ import { t } from "../lib/i18n";
 import { useStore } from "../lib/store";
 import { estimateTravel, haversineKm, isLowConfidence } from "../lib/geo";
 import { meta } from "../lib/data";
+import { openState } from "../lib/hours";
+
+export function OpenChip({ r }: { r: Resource }) {
+  const { lang } = useStore();
+  const state = openState(r);
+  if (!state) return null;
+  const key = state === "always" ? "open247" : state === "open" ? "openNow" : "closedNow";
+  return <span className={`chip ${state === "closed" ? "hot" : "ok"}`}>{t(lang, key)}</span>;
+}
 
 export function Distance({ r }: { r: Resource }) {
   const { lang, home } = useStore();
@@ -53,6 +62,7 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
               {r.priority ? <span className={`chip ${/Critical|Essential/i.test(r.priority) ? "hot" : ""}`}>{r.priority}</span> : null}
               {type ? <span className="chip">{type}</span> : null}
               {r.phone_primary ? <span className="chip ok">{r.phone_primary}</span> : null}
+              <OpenChip r={r} />
               <Distance r={r} />
             </div>
           </div>

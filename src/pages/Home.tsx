@@ -7,6 +7,7 @@ import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { NeedChips } from "../components/NeedChips";
 import { AskBar } from "../components/AskBar";
+import { ShabbatBanner } from "../components/ShabbatBanner";
 import {
   QUICK_APPS,
   foodHomeFolders,
@@ -34,6 +35,8 @@ export function HomePage() {
   return (
     <div className="home-dir">
       <AskBar />
+
+      <ShabbatBanner />
 
       <NeedChips />
 

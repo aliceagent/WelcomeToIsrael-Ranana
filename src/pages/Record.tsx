@@ -4,7 +4,7 @@ import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
-import { Distance } from "../components/RecordCard";
+import { Distance, OpenChip } from "../components/RecordCard";
 import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
 import { PlacesMap } from "../components/PlacesMap";
 import { sameUrl } from "../lib/urls";
@@ -48,6 +48,7 @@ export function RecordPage() {
         {r.priority ? <span className="chip hot">{r.priority}</span> : null}
         {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
+        <OpenChip r={r} />
         <Distance r={r} />
       </div>
       {desc ? <p dir={descriptionDir(r, lang)}>{desc}</p> : null}

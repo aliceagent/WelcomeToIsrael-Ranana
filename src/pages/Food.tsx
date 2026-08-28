@@ -6,6 +6,7 @@ import { t } from "../lib/i18n";
 import { foodAllFolders, folderCount, folderLabel, isFoodRecord, sortDirectory } from "../lib/directory";
 import { records } from "../lib/data";
 import { SearchIcon } from "../components/Icons";
+import { ShabbatBanner } from "../components/ShabbatBanner";
 import { buildSearch, searchRecords } from "../lib/search";
 
 buildSearch(records);
@@ -24,6 +25,7 @@ export function FoodPage() {
   return (
     <div>
       <h1 className="chrome-title">{t(lang, "food")}</h1>
+      <ShabbatBanner />
       <form className="search" onSubmit={(e) => e.preventDefault()}>
         <SearchIcon size={22} />
         <input

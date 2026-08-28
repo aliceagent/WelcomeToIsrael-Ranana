@@ -884,6 +884,7 @@ button, a {
 }
 .banner.warn { background: var(--banner-warn-bg); border-color: var(--banner-warn-line); }
 .banner.off { background: var(--banner-off-bg); }
+.banner.shabbat { font-weight: 650; }
 
 .bottom-nav {
   position: fixed;

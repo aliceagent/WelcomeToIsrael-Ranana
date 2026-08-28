@@ -1,0 +1,117 @@
+import {
+  holidayForRd,
+  rdFromGregorian,
+  sunsetUtcMs,
+  weekdayOfRd,
+  type HolidayCode,
+} from "./hebcal.mjs";
+import type { HomePin, Lang } from "./types.js";
+
+export const HOLIDAY_NAMES: Record<HolidayCode, { en: string; fr: string; he: string }> = {
+  rosh_hashana: { en: "Rosh Hashanah", fr: "Roch Hachana", he: "ראש השנה" },
+  yom_kippur: { en: "Yom Kippur", fr: "Yom Kippour", he: "יום כיפור" },
+  sukkot: { en: "Sukkot", fr: "Souccot", he: "סוכות" },
+  shemini_atzeret: { en: "Shemini Atzeret / Simchat Torah", fr: "Chemini Atseret / Simhat Torah", he: "שמיני עצרת / שמחת תורה" },
+  pesach: { en: "Pesach", fr: "Pessah", he: "פסח" },
+  pesach_7: { en: "Pesach (7th day)", fr: "Pessah (7e jour)", he: "שביעי של פסח" },
+  shavuot: { en: "Shavuot", fr: "Chavouot", he: "שבועות" },
+};
+
+const CANDLE_OFFSET_MIN = 20;
+const HAVDALAH_OFFSET_MIN = 40;
+
+type JDay = { year: number; month: number; day: number; rd: number; weekday: number };
+
+/** The civil date currently in effect in Israel, wherever the device is. */
+export function jerusalemDay(now: Date = new Date()): JDay {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jerusalem",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(now);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+  const year = get("year");
+  const month = get("month");
+  const day = get("day");
+  const rd = rdFromGregorian(year, month, day);
+  return { year, month, day, rd, weekday: weekdayOfRd(rd) };
+}
+
+/** Minutes since midnight, Israel wall clock. */
+export function jerusalemMinutes(now: Date = new Date()): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jerusalem",
+    hour: "numeric",
+    minute: "numeric",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+  return get("hour") * 60 + get("minute");
+}
+
+export function isChag(now: Date = new Date()): boolean {
+  return holidayForRd(jerusalemDay(now).rd)?.kind === "chag";
+}
+
+/** Shabbat or a full holiday: the days most of the city is closed. */
+export function isRestDay(now: Date = new Date()): boolean {
+  const d = jerusalemDay(now);
+  return d.weekday === 6 || holidayForRd(d.rd)?.kind === "chag";
+}
+
+export function formatJerusalemTime(ms: number, lang: Lang): string {
+  const locale = lang === "he" ? "he-IL" : lang === "fr" ? "fr-FR" : "en-GB";
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: "Asia/Jerusalem",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(ms));
+}
+
+export type ShabbatNotice = {
+  kind: "eve" | "rest";
+  name: { en: string; fr: string; he: string } | null;
+  timeMs: number | null;
+};
+
+function restDayAt(rd: number): boolean {
+  return weekdayOfRd(rd) === 6 || holidayForRd(rd)?.kind === "chag";
+}
+
+/**
+ * What the home screen should say today: candle-lighting notice on Friday and
+ * erev chag, a "closed until ~havdalah" notice on Shabbat and chagim, nothing
+ * on a plain weekday.
+ */
+export function shabbatNotice(now: Date, pin: HomePin): ShabbatNotice | null {
+  const d = jerusalemDay(now);
+  const hol = holidayForRd(d.rd);
+
+  if (d.weekday === 6 || hol?.kind === "chag") {
+    // Rest ends after the last consecutive rest day (RH day two, chag into Shabbat…).
+    let last = d;
+    for (let i = 1; i <= 2; i++) {
+      if (!restDayAt(d.rd + i)) break;
+      const g = new Date(now.getTime() + i * 86400000);
+      last = jerusalemDay(g);
+    }
+    const sunset = sunsetUtcMs(last.year, last.month, last.day, pin.lat, pin.lng);
+    return {
+      kind: "rest",
+      name: hol?.kind === "chag" ? HOLIDAY_NAMES[hol.code] : null,
+      timeMs: sunset != null ? sunset + HAVDALAH_OFFSET_MIN * 60000 : null,
+    };
+  }
+
+  if (d.weekday === 5 || hol?.kind === "erev") {
+    const sunset = sunsetUtcMs(d.year, d.month, d.day, pin.lat, pin.lng);
+    return {
+      kind: "eve",
+      name: hol?.kind === "erev" ? HOLIDAY_NAMES[hol.code] : null,
+      timeMs: sunset != null ? sunset - CANDLE_OFFSET_MIN * 60000 : null,
+    };
+  }
+
+  return null;
+}

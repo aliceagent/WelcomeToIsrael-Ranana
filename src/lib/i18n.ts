@@ -123,6 +123,29 @@ export const dict = {
     fr: "Hors ligne. Voici les fiches correspondantes déjà sur cet appareil.",
     he: "אין רשת. הנה כרטיסים תואמים ששמורים במכשיר.",
   },
+  open247: { en: "Open 24/7", fr: "Ouvert 24h/24", he: "פתוח 24/7" },
+  openNow: { en: "Open now", fr: "Ouvert", he: "פתוח עכשיו" },
+  closedNow: { en: "Closed now", fr: "Fermé", he: "סגור עכשיו" },
+  shabbatStartsAt: {
+    en: "Shabbat starts at {t} — most shops close early.",
+    fr: "Chabbat commence à {t} — la plupart des magasins ferment tôt.",
+    he: "שבת נכנסת ב־{t} — רוב החנויות סוגרות מוקדם.",
+  },
+  chagStartsAt: {
+    en: "{name} starts at {t} — most shops close early.",
+    fr: "{name} commence à {t} — la plupart des magasins ferment tôt.",
+    he: "{name} נכנס ב־{t} — רוב החנויות סוגרות מוקדם.",
+  },
+  shabbatUntil: {
+    en: "Shabbat — most places are closed until about {t}.",
+    fr: "Chabbat — la plupart des lieux sont fermés jusqu'à environ {t}.",
+    he: "שבת — רוב המקומות סגורים עד בערך {t}.",
+  },
+  chagUntil: {
+    en: "{name} — most places are closed until about {t}.",
+    fr: "{name} — la plupart des lieux sont fermés jusqu'à environ {t}.",
+    he: "{name} — רוב המקומות סגורים עד בערך {t}.",
+  },
   glossarySearchHint: {
     en: "Arnona, kupah, mashkanta…",
     fr: "Arnona, kupah, mashkanta…",
