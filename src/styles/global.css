@@ -13,6 +13,7 @@
   --cream: #fffaf1;
   --card-top: #fffdf8;
   --line: rgba(28, 43, 36, 0.12);
+  --search-line: rgba(28, 43, 36, 0.32);
   --shadow: 0 10px 30px rgba(28, 43, 36, 0.08);
   --glow-1: #e7d7b0;
   --glow-2: #d7e4d4;
@@ -56,6 +57,7 @@
     --cream: #1d2620;
     --card-top: #222c25;
     --line: rgba(232, 236, 230, 0.14);
+    --search-line: rgba(232, 236, 230, 0.38);
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     --glow-1: #1d2a1f;
     --glow-2: #17241e;
@@ -252,10 +254,10 @@ button, a {
   align-items: center;
   gap: 10px;
   background: var(--cream);
-  border: 1px solid var(--line);
+  border: 1.5px solid var(--search-line);
   border-radius: 999px;
-  padding: 12px 16px;
-  min-height: 48px;
+  padding: 10px 10px 10px 16px;
+  min-height: 50px;
   box-shadow: var(--shadow);
 }
 .search svg {
@@ -268,6 +270,61 @@ button, a {
   background: transparent;
   outline: none;
   min-width: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+.search.has-value {
+  border-color: var(--olive-2);
+  box-shadow: 0 0 0 3px var(--chip-ok-bg), var(--shadow);
+}
+.search-clear {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.search-sticky {
+  position: sticky;
+  top: calc(var(--top-h) + 8px);
+  z-index: 15;
+}
+.result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 10px;
+}
+.result-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn.small {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: 0.88rem;
+}
+.recent-block { margin: 4px 0 10px; }
+.recent-clear {
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 4px;
 }
 
 .ask-hero {

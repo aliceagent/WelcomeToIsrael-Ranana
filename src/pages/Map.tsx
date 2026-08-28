@@ -3,7 +3,7 @@ import { physicalRecords, records, getById } from "../lib/data";
 import { PlacesMapLazy } from "../components/PlacesMapLazy";
 import { RecordCard } from "../components/RecordCard";
 import { NearMeToggle } from "../components/NearMeToggle";
-import { SearchIcon } from "../components/Icons";
+import { SearchBox } from "../components/SearchBox";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { effectiveKm } from "../lib/geo";
@@ -68,19 +68,15 @@ export function MapPage() {
   return (
     <div>
       <h1 className="chrome-title">{t(lang, "map")}</h1>
-      <form className="search" onSubmit={(e) => e.preventDefault()}>
-        <SearchIcon size={22} />
-        <input
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
-            setSelected(null);
-            setLimit(PAGE);
-          }}
-          placeholder={t(lang, "searchHint")}
-          aria-label={t(lang, "search")}
-        />
-      </form>
+      <SearchBox
+        value={q}
+        onChange={(next) => {
+          setQ(next);
+          setSelected(null);
+          setLimit(PAGE);
+        }}
+        placeholder={t(lang, "searchHint")}
+      />
       {MAP_ROWS.map((row, i) => (
         <div className="filters map-filters" key={i}>
           {i === 0 ? (
