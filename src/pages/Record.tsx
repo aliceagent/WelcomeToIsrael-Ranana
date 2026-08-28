@@ -9,7 +9,7 @@ import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "..
 import { ShareBar } from "../components/ShareBar";
 import { Distance, OpenChip } from "../components/RecordCard";
 import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
-import { PlacesMap } from "../components/PlacesMap";
+import { PlacesMapLazy } from "../components/PlacesMapLazy";
 import { sameUrl } from "../lib/urls";
 
 export function RecordPage() {
@@ -145,7 +145,7 @@ export function RecordPage() {
         </p>
       ) : null}
 
-      {r.latitude_est != null && r.longitude_est != null ? <PlacesMap places={[r]} highlight={r.record_id} /> : null}
+      {r.latitude_est != null && r.longitude_est != null ? <PlacesMapLazy places={[r]} highlight={r.record_id} /> : null}
 
       <div className="actions">
         {r.record_type !== "important_phone_or_emergency_service"

@@ -8,6 +8,7 @@ import type { Resource } from "../lib/types";
 import { useStore } from "../lib/store";
 import { meta } from "../lib/data";
 import { mapCategory } from "../lib/mapview";
+import { isLowConfidence } from "../lib/geo";
 
 export const homeIcon = L.divIcon({
   className: "",
@@ -16,11 +17,19 @@ export const homeIcon = L.divIcon({
   iconAnchor: [11, 11],
 });
 
+const youIcon = L.divIcon({
+  className: "",
+  html: `<span style="display:block;width:18px;height:18px;border-radius:50%;background:#1d6fd1;border:3px solid #fff;box-shadow:0 0 0 6px rgba(29,111,209,0.25)"></span>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
 function pinIcon(r: Resource, active: boolean) {
   const cat = mapCategory(r);
+  const approx = isLowConfidence(r) ? " approx" : "";
   return L.divIcon({
     className: "",
-    html: `<span class="map-pin${active ? " active" : ""}" style="background:${cat.color}">${cat.icon}</span>`,
+    html: `<span class="map-pin${active ? " active" : ""}${approx}" style="background:${cat.color}">${cat.icon}</span>`,
     iconSize: active ? [40, 40] : [30, 30],
     iconAnchor: active ? [20, 20] : [15, 15],
   });
@@ -96,7 +105,7 @@ export function PlacesMap({
   onSelect?: (id: string) => void;
   tall?: boolean;
 }) {
-  const { home, origin } = useStore();
+  const { home, origin, originIsGps } = useStore();
   const center = useMemo<[number, number]>(() => [origin.lat, origin.lng], [origin]);
   const shown = places.filter((p) => p.latitude_est != null && p.longitude_est != null).slice(0, 400);
   const active = selectedId ?? highlight ?? null;
@@ -106,6 +115,7 @@ export function PlacesMap({
       <MapContainer center={center} zoom={14} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
         <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={[home.lat, home.lng]} icon={homeIcon} title={meta.home_default.label} />
+        {originIsGps ? <Marker position={[origin.lat, origin.lng]} icon={youIcon} zIndexOffset={900} /> : null}
         <ClusterLayer places={shown} selectedId={active} onSelect={onSelect} />
       </MapContainer>
     </div>

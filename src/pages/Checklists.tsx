@@ -4,7 +4,7 @@ import { t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName } from "../lib/format";
 import { Link } from "react-router-dom";
 import { recordPath } from "../lib/share";
-import { JOURNEYS } from "../lib/journeys";
+import { JOURNEYS, RELATED_RECORDS } from "../lib/journeys";
 import type { Resource } from "../lib/types";
 
 export function ChecklistsPage() {
@@ -15,6 +15,9 @@ export function ChecklistsPage() {
   const leftovers = all.filter((r) => !grouped.has(r.record_id));
 
   function renderItem(r: Resource) {
+    const related = (RELATED_RECORDS[r.record_id] || [])
+      .map(getById)
+      .filter((rec): rec is Resource => !!rec);
     return (
       <div key={r.record_id}>
         <button className={`check-item ${checks.has(r.record_id) ? "done" : ""}`} onClick={() => toggleCheck(r.record_id)}>
@@ -24,8 +27,15 @@ export function ChecklistsPage() {
             <div className="muted" dir={descriptionDir(r, lang)}>{displayDescription(r, lang)}</div>
           </span>
         </button>
-        <div style={{ margin: "-4px 0 12px 36px" }}>
-          <Link to={recordPath(r)}>{t(lang, "details")} →</Link>
+        <div className="check-links">
+          {related.map((rec) => (
+            <Link className="check-link" key={rec.record_id} to={recordPath(rec)}>
+              {displayName(rec, lang)}
+            </Link>
+          ))}
+          <Link className="check-link details" to={recordPath(r)}>
+            {t(lang, "details")} →
+          </Link>
         </div>
       </div>
     );

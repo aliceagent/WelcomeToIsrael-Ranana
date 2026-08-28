@@ -11,6 +11,7 @@ export interface Resource {
   name_fr: string | null;
   description_en: string | null;
   description_fr: string | null;
+  description_he?: string | null;
   audience: string | null;
   priority: string | null;
   scope: string | null;
@@ -41,6 +42,8 @@ export interface Resource {
   distance_from_home_display: string | null;
   travel_estimate_status: string | null;
   availability_hours_note: string | null;
+  /** Structured weekly hours: days 0=Sun..6=Sat, times "HH:MM". */
+  hours_structured?: { days: number[]; open: string; close: string }[] | null;
   eligibility_requirements: string | null;
   cost_fee_notes: string | null;
   delivery_coverage: string | null;

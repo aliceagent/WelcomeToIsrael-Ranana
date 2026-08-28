@@ -39,6 +39,7 @@ export const MAP_CATEGORIES: MapCategory[] = [
   fromFolder("parks", "#3e8a4e"),
   fromFolder("sports", "#2f7fa8"),
   fromFolder("shops", "#3d6ea8"),
+  fromFolder("banks", "#28607f"),
   fromFolder("home-help", "#8a6d3b"),
   fromFolder("synagogues", "#1c4a3c"),
   fromFolder("community", "#8a5a86"),
@@ -49,7 +50,7 @@ export const MAP_CATEGORIES: MapCategory[] = [
 /** Chip layout: first row food & daily, second row life & city. */
 export const MAP_ROWS: string[][] = [
   ["restaurants", "bakeries", "groceries", "butcher", "treats", "french-food", "pharmacy"],
-  ["health", "schools", "parks", "sports", "shops", "home-help", "synagogues", "community", "city-hall", "shelters"],
+  ["health", "schools", "parks", "sports", "shops", "banks", "home-help", "synagogues", "community", "city-hall", "shelters"],
 ];
 
 const OTHER: MapCategory = { id: "other", icon: "📍", color: "#8a8d7d", label: () => "•", match: () => true };
@@ -78,6 +79,7 @@ const GLYPH_ORDER = [
   "schools",
   "parks",
   "sports",
+  "banks",
   "home-help",
   "shops",
   "city-hall",

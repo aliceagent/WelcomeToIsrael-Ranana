@@ -46,6 +46,7 @@ export function displayName(r: Resource, lang: Lang): string {
 
 export function displayDescription(r: Resource, lang: Lang): string {
   if (lang === "fr" && r.description_fr) return r.description_fr;
+  if (lang === "he" && r.description_he) return r.description_he;
   return r.description_en || r.description_fr || "";
 }
 
@@ -117,5 +118,6 @@ export const HUBS = {
  */
 export function descriptionDir(r: Resource, lang: Lang): "ltr" | undefined {
   if (lang !== "he") return undefined;
+  if (r.description_he) return undefined; // real Hebrew renders RTL
   return displayDescription(r, lang) ? "ltr" : undefined;
 }

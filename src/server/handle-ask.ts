@@ -4,6 +4,22 @@ import { createAskAgent, isAskConfigured } from "./ask-agent.js";
 
 const MAX_MESSAGES = 16;
 const MAX_CHARS = 4000;
+const MAX_BODY_BYTES = 120_000;
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+
+// Best-effort per-instance throttle; enough to stop a casual script from
+// burning the model budget through this public endpoint.
+const recentByIp = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const kept = (recentByIp.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  kept.push(now);
+  recentByIp.set(ip, kept);
+  if (recentByIp.size > 5000) recentByIp.clear();
+  return kept.length > RATE_LIMIT;
+}
 
 function asLang(value: unknown): Lang {
   return value === "fr" || value === "he" ? value : "en";
@@ -29,6 +45,15 @@ export async function handleAsk(request: Request): Promise<Response> {
   }
   if (request.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
+  }
+
+  const declaredBytes = Number(request.headers.get("content-length") || 0);
+  if (declaredBytes > MAX_BODY_BYTES) {
+    return Response.json({ error: "too_large" }, { status: 413 });
+  }
+  const ip = (request.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
+  if (rateLimited(ip)) {
+    return Response.json({ error: "rate_limited" }, { status: 429 });
   }
 
   let body: { messages?: unknown; lang?: unknown };

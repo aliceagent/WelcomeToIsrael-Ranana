@@ -25,6 +25,8 @@ type Store = {
   /** Street address for the SOS "read this out" card; stays on this phone. */
   address: string;
   setAddress: (a: string) => void;
+  /** Merge a family-export payload from another phone; local values win. */
+  mergeImport: (data: FamilyExport) => void;
   /** Device location, session-only — never persisted. */
   gps: HomePin | null;
   setGps: (p: HomePin | null) => void;
@@ -36,6 +38,14 @@ type Store = {
   /** True when distances can use the dataset's precomputed home estimates. */
   originIsDefault: boolean;
   online: boolean;
+};
+
+export type FamilyExport = {
+  v?: number;
+  favs?: unknown;
+  notes?: unknown;
+  checks?: unknown;
+  address?: unknown;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -135,6 +145,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
       address,
       setAddress,
+      mergeImport: (data) => {
+        if (Array.isArray(data.favs)) {
+          const incoming = data.favs.filter((x): x is string => typeof x === "string");
+          setFavorites((prev) => new Set([...prev, ...incoming]));
+        }
+        if (Array.isArray(data.checks)) {
+          const incoming = data.checks.filter((x): x is string => typeof x === "string");
+          setChecks((prev) => new Set([...prev, ...incoming]));
+        }
+        if (data.notes && typeof data.notes === "object") {
+          const incoming: Record<string, string> = {};
+          for (const [k, v] of Object.entries(data.notes as Record<string, unknown>)) {
+            if (typeof v === "string") incoming[k] = v;
+          }
+          setNotes((prev) => ({ ...incoming, ...prev }));
+        }
+        if (typeof data.address === "string" && data.address) {
+          setAddress((prev) => prev || (data.address as string));
+        }
+      },
       gps,
       setGps,
       useGps,

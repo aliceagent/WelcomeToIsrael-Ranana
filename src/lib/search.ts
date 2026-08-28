@@ -13,6 +13,34 @@ function fold(s: string): string {
     .toLowerCase();
 }
 
+/**
+ * Consonant skeleton of a Hebrew string in latin letters (משרד → "msrd").
+ * Indexed alongside each record so a vowel-stripped latin query can hit
+ * Hebrew-only names typed without a Hebrew keyboard.
+ */
+const HE_LATIN: Record<string, string> = {
+  א: "", ב: "b", ג: "g", ד: "d", ה: "h", ו: "v", ז: "z", ח: "ch", ט: "t",
+  י: "y", כ: "k", ך: "k", ל: "l", מ: "m", ם: "m", נ: "n", ן: "n", ס: "s",
+  ע: "", פ: "p", ף: "p", צ: "tz", ץ: "tz", ק: "k", ר: "r", ש: "sh", ת: "t",
+};
+
+export function hebrewSkeleton(s: string | null | undefined): string {
+  if (!s) return "";
+  return s
+    .split(/\s+/)
+    .map((word) => [...word].map((ch) => HE_LATIN[ch] ?? "").join(""))
+    .filter((w) => w.length >= 2)
+    .join(" ");
+}
+
+/** Strip latin vowels so "misrad" can match the indexed skeleton "msrd". */
+function stripVowels(q: string): string {
+  return q
+    .split(/\s+/)
+    .map((w) => (/^[a-z']+$/i.test(w) && w.length > 3 ? w.replace(/[aeiou']/gi, "") : w))
+    .join(" ");
+}
+
 let index: MiniSearch<Resource> | null = null;
 let byId = new Map<string, Resource>();
 
@@ -33,9 +61,14 @@ export function buildSearch(records: Resource[]) {
       "address_he",
       "phone_primary",
       "search_text",
+      "he_translit",
     ],
     storeFields: ["record_id"],
     idField: "record_id",
+    extractField: (doc, fieldName) =>
+      fieldName === "he_translit"
+        ? hebrewSkeleton((doc as Resource).name_he)
+        : ((doc as unknown as Record<string, unknown>)[fieldName] as string),
     searchOptions: {
       boost: {
         name_en: 10,
@@ -51,6 +84,7 @@ export function buildSearch(records: Resource[]) {
         address_en: 3,
         address_he: 3,
         search_text: 2,
+        he_translit: 6,
       },
       prefix: true,
       fuzzy: 0.2,
@@ -94,6 +128,17 @@ export function searchRecords(query: string): Resource[] {
       merged.push(rec);
     }
   });
+  if (merged.length === 0) {
+    // Latin-typed Hebrew ("misrad", "makolet"): retry against the skeletons.
+    const skeleton = stripVowels(query);
+    if (skeleton !== query) {
+      for (const rec of searchOnce(skeleton)) {
+        if (seen.has(rec.record_id)) continue;
+        seen.add(rec.record_id);
+        merged.push(rec);
+      }
+    }
+  }
   if (isThinTradeQuery(query) || merged.length === 0) {
     for (const id of LIVE_LOOKUP_IDS) {
       const rec = getById(id);

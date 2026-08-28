@@ -85,10 +85,8 @@ export type ShabbatTimes = {
   havdalahMs: number | null;
 };
 
-/** The current Shabbat (when it's Shabbat in Israel now) or the upcoming one. */
-export function upcomingShabbat(now: Date, pin: HomePin): ShabbatTimes {
-  const today = jerusalemDay(now);
-  const satRd = today.rd + ((6 - today.weekday + 7) % 7);
+/** Candle-lighting/havdalah times for the Shabbat whose Saturday is satRd. */
+export function shabbatTimesForRd(satRd: number, pin: HomePin): ShabbatTimes {
   const satG = gregorianFromRd(satRd);
   const friG = gregorianFromRd(satRd - 1);
   const friSunset = sunsetUtcMs(friG.year, friG.month, friG.day, pin.lat, pin.lng);
@@ -99,6 +97,33 @@ export function upcomingShabbat(now: Date, pin: HomePin): ShabbatTimes {
     candlesMs: friSunset != null ? friSunset - CANDLE_OFFSET_MIN * 60000 : null,
     havdalahMs: satSunset != null ? satSunset + HAVDALAH_OFFSET_MIN * 60000 : null,
   };
+}
+
+/** The current Shabbat (when it's Shabbat in Israel now) or the upcoming one. */
+export function upcomingShabbat(now: Date, pin: HomePin): ShabbatTimes {
+  const today = jerusalemDay(now);
+  return shabbatTimesForRd(today.rd + ((6 - today.weekday + 7) % 7), pin);
+}
+
+/** First days of upcoming chagim (multi-day runs collapse to their start). */
+export function upcomingChagim(now: Date, limit = 8): { code: HolidayCode; rd: number }[] {
+  const start = jerusalemDay(now).rd;
+  const out: { code: HolidayCode; rd: number }[] = [];
+  for (let rd = start; rd < start + 420 && out.length < limit; rd++) {
+    const h = holidayForRd(rd);
+    if (h?.kind !== "chag") continue;
+    const prev = holidayForRd(rd - 1);
+    if (prev?.kind === "chag" && prev.code === h.code) continue;
+    out.push({ code: h.code, rd });
+  }
+  return out;
+}
+
+/** Candle-lighting time on the eve before the given day. */
+export function eveCandlesForRd(rd: number, pin: HomePin): number | null {
+  const eve = gregorianFromRd(rd - 1);
+  const sunset = sunsetUtcMs(eve.year, eve.month, eve.day, pin.lat, pin.lng);
+  return sunset != null ? sunset - CANDLE_OFFSET_MIN * 60000 : null;
 }
 
 /** "Friday, 4 Sep" (or the locale's equivalent) for a civil date in Israel. */

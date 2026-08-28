@@ -66,6 +66,11 @@ export default defineConfig(({ mode }) => {
               purpose: "maskable",
             },
           ],
+          shortcuts: [
+            { name: "SOS", url: "/emergency", icons: [{ src: "/icon-192.png", sizes: "192x192" }] },
+            { name: "Map", url: "/map", icons: [{ src: "/icon-192.png", sizes: "192x192" }] },
+            { name: "Shabbat", url: "/shabbat", icons: [{ src: "/icon-192.png", sizes: "192x192" }] },
+          ],
         },
         workbox: {
           globPatterns: ["**/*.{js,css,html,svg,woff2,json}", "icon-*.png", "apple-touch-icon.png"],
@@ -73,9 +78,50 @@ export default defineConfig(({ mode }) => {
           navigateFallback: "/index.html",
           navigateFallbackDenylist: [/^\/og\//, /^\/api\//],
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "osm-tiles",
+                expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: "StaleWhileRevalidate",
+              options: { cacheName: "google-fonts-css" },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "google-fonts-files",
+                expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+          ],
         },
       }),
     ],
-    build: { target: "es2020" },
+    build: {
+      target: "es2020",
+      rollupOptions: {
+        output: {
+          // Keep the 1.5 MB dataset, map stack, calendar, and AI SDK out of
+          // the entry chunk so they download in parallel and cache separately.
+          manualChunks(id: string) {
+            if (id.includes("src/data/records.json")) return "records";
+            if (id.includes("leaflet")) return "leaflet";
+            if (id.includes("@hebcal")) return "hebcal";
+            if (id.includes("@ai-sdk") || id.includes("node_modules/ai/")) return "ai";
+            if (id.includes("node_modules/react")) return "react";
+            return undefined;
+          },
+        },
+      },
+    },
   };
 });

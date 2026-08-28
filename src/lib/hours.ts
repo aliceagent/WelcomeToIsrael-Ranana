@@ -32,8 +32,25 @@ export function parseHours(note: string | null | undefined): ParsedHours | null 
   return { always: false, days, open, close };
 }
 
-/** null when the note holds no parseable schedule — then show no badge at all. */
+function minutesOf(hhmm: string): number {
+  const [h, m] = hhmm.split(":").map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+/** null when no schedule is known — then show no badge at all. */
 export function openState(r: Resource, now: Date = new Date()): OpenState | null {
+  // Structured hours (from the dataset overlays) win over the free-text note.
+  if (r.hours_structured?.length) {
+    if (isChag(now)) return "closed";
+    const d = jerusalemDay(now);
+    const mins = jerusalemMinutes(now);
+    for (const range of r.hours_structured) {
+      if (range.days.includes(d.weekday) && mins >= minutesOf(range.open) && mins < minutesOf(range.close)) {
+        return "open";
+      }
+    }
+    return "closed";
+  }
   const p = parseHours(r.availability_hours_note);
   if (!p) return null;
   if (p.always) return "always";
