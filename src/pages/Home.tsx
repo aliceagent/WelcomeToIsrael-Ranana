@@ -40,12 +40,20 @@ export function HomePage() {
       <div className="sos-strip" aria-label={t(lang, "emergency")}>
         {sos.map((r) => {
           const short = SOS_SHORT[r.record_id];
-          const href = r.phone_primary ? telHref(r.phone_primary.split("/")[0].trim()) : "/emergency";
-          return (
-            <a className="sos-chip" key={r.record_id} href={href}>
+          const body = (
+            <>
               <span className="num">{short?.num || r.phone_primary}</span>
               <span className="lbl">{short?.label[lang] || displayName(r, lang)}</span>
+            </>
+          );
+          return r.phone_primary ? (
+            <a className="sos-chip" key={r.record_id} href={telHref(r.phone_primary)}>
+              {body}
             </a>
+          ) : (
+            <Link className="sos-chip" key={r.record_id} to="/emergency">
+              {body}
+            </Link>
           );
         })}
       </div>

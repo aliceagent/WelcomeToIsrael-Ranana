@@ -1,13 +1,11 @@
 import { createContext, createElement, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { HomePin, Lang, Profile } from "./types";
+import type { HomePin, Lang } from "./types";
 import meta from "../data/meta.json";
 
 const LANG_KEY = "raanana.lang";
 const FAV_KEY = "raanana.favs";
 const CHECK_KEY = "raanana.checks";
 const HOME_KEY = "raanana.home";
-const PROFILE_KEY = "raanana.profile";
-const DEFAULT_PROFILE: Profile = { drives: true, kids: true, kupah: null, bank: null };
 
 type Store = {
   lang: Lang;
@@ -19,8 +17,6 @@ type Store = {
   home: HomePin;
   setHome: (p: HomePin) => void;
   resetHome: () => void;
-  profile: Profile;
-  setProfile: (p: Partial<Profile>) => void;
   online: boolean;
 };
 
@@ -42,10 +38,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
-  const [profile, setProfileState] = useState<Profile>(() => {
-    const stored = readJson<Partial<Profile>>(PROFILE_KEY, {});
-    return { ...DEFAULT_PROFILE, ...stored, drives: true, kids: true };
-  });
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
 
   useEffect(() => {
@@ -63,9 +55,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(HOME_KEY, JSON.stringify(home));
   }, [home]);
-  useEffect(() => {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  }, [profile]);
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -101,11 +90,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       home,
       setHome: setHomeState,
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
-      profile,
-      setProfile: (p) => setProfileState((prev) => ({ ...prev, ...p, drives: true, kids: true })),
       online,
     }),
-    [lang, favorites, checks, home, profile, online],
+    [lang, favorites, checks, home, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

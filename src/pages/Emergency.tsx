@@ -3,7 +3,7 @@ import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import { telHref } from "../lib/geo";
-import { priorityScore } from "../lib/format";
+import { displayName, priorityScore } from "../lib/format";
 import { meta } from "../lib/data";
 
 export function EmergencyPage() {
@@ -24,9 +24,9 @@ export function EmergencyPage() {
       {strip.map((r) =>
         r?.phone_primary ? (
           <a key={r.record_id} className="call-hero" href={telHref(r.phone_primary)} style={{ marginBottom: 10, textDecoration: "none" }}>
-            <div>{r.name_en}</div>
+            <div>{displayName(r, lang)}</div>
             <div className="phone">{r.phone_primary}</div>
-            <div>{r.name_he}</div>
+            {lang !== "he" ? <div>{r.name_he}</div> : null}
           </a>
         ) : null,
       )}

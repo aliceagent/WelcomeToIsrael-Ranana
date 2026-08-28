@@ -123,6 +123,12 @@ export const dict = {
     fr: "Hors ligne. Voici les fiches correspondantes déjà sur cet appareil.",
     he: "אין רשת. הנה כרטיסים תואמים ששמורים במכשיר.",
   },
+  glossarySearchHint: {
+    en: "Arnona, kupah, mashkanta…",
+    fr: "Arnona, kupah, mashkanta…",
+    he: "ארנונה, קופה, משכנתא…",
+  },
+  listen: { en: "Listen", fr: "Écouter", he: "השמעה" },
   searchEmpty: {
     en: "Tap a need, or type a name, phone, or Hebrew word.",
     fr: "Touchez un besoin, ou tapez un nom, un numéro, un mot d'hébreu.",

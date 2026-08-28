@@ -36,7 +36,6 @@ export function SearchPage() {
       >
         <SearchIcon size={22} />
         <input
-          autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={t(lang, "searchHint")}

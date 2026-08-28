@@ -57,8 +57,17 @@ export function appleMapsUrl(r: Resource, home: HomePin): string {
   return `https://maps.apple.com/?saddr=${home.lat},${home.lng}&daddr=${d}&dirflg=w`;
 }
 
+/** Some records list alternates as "09-123 4567 / 106"; each deserves its own tel: link. */
+export function phoneNumbers(phone: string | null | undefined): string[] {
+  if (!phone) return [];
+  return phone
+    .split("/")
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export function telHref(phone: string): string {
-  const cleaned = phone.replace(/[^\d+*]/g, "");
+  const cleaned = phoneNumbers(phone)[0]?.replace(/[^\d+*]/g, "") ?? "";
   return `tel:${cleaned}`;
 }
 

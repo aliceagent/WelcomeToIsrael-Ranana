@@ -8,7 +8,7 @@ export function FavoritesPage() {
   const items = records.filter((r) => favorites.has(r.record_id));
   return (
     <div>
-      <h1 className="chrome-title">{t(lang, "favorites")}</h1>
+      <h1 className="chrome-title">{t(lang, "saved")}</h1>
       {items.length === 0 ? <div className="empty">{t(lang, "noFavorites")}</div> : items.map((r) => <RecordCard key={r.record_id} r={r} />)}
     </div>
   );

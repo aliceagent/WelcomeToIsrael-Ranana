@@ -2,10 +2,10 @@ import { useParams } from "react-router-dom";
 import { getBySlug } from "../lib/data";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
 import { Distance } from "../components/RecordCard";
-import { appleMapsUrl, directionsUrl, mapsSearchUrl, telHref, wazeUrl, whatsappHref } from "../lib/geo";
+import { appleMapsUrl, directionsUrl, mapsSearchUrl, phoneNumbers, telHref, wazeUrl, whatsappHref } from "../lib/geo";
 import { PlacesMap } from "../components/PlacesMap";
 import { sameUrl } from "../lib/urls";
 
@@ -50,16 +50,18 @@ export function RecordPage() {
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
         <Distance r={r} />
       </div>
-      {desc ? <p>{desc}</p> : null}
+      {desc ? <p dir={descriptionDir(r, lang)}>{desc}</p> : null}
 
       {r.record_type === "important_phone_or_emergency_service" && r.phone_primary ? (
         <div className="call-hero">
           <div>{name}</div>
           <div className="phone">{r.phone_primary}</div>
           {r.availability_hours_note ? <div>{r.availability_hours_note}</div> : null}
-          <a className="btn danger" href={telHref(r.phone_primary)}>
-            {t(lang, "call")} {r.phone_primary}
-          </a>
+          {phoneNumbers(r.phone_primary).map((num) => (
+            <a key={num} className="btn danger" href={telHref(num)}>
+              {t(lang, "call")} {num}
+            </a>
+          ))}
         </div>
       ) : null}
 
@@ -121,16 +123,18 @@ export function RecordPage() {
       {r.latitude_est != null && r.longitude_est != null ? <PlacesMap places={[r]} highlight={r.record_id} /> : null}
 
       <div className="actions">
-        {r.phone_primary && r.record_type !== "important_phone_or_emergency_service" ? (
-          <a className="btn primary" href={telHref(r.phone_primary)}>
-            {t(lang, "call")} {r.phone_primary}
+        {r.record_type !== "important_phone_or_emergency_service"
+          ? phoneNumbers(r.phone_primary).map((num) => (
+              <a key={num} className="btn primary" href={telHref(num)}>
+                {t(lang, "call")} {num}
+              </a>
+            ))
+          : null}
+        {phoneNumbers(r.phone_secondary).map((num) => (
+          <a key={num} className="btn" href={telHref(num)}>
+            {num}
           </a>
-        ) : null}
-        {r.phone_secondary ? (
-          <a className="btn" href={telHref(r.phone_secondary)}>
-            {r.phone_secondary}
-          </a>
-        ) : null}
+        ))}
         {r.whatsapp_sms ? (
           <a className="wa-text" href={whatsappHref(r.whatsapp_sms)}>
             {t(lang, "whatsapp")}

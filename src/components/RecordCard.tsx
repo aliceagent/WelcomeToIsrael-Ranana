@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Resource } from "../lib/types";
-import { displayDescription, displayName, TYPE_LABELS } from "../lib/format";
+import { descriptionDir, displayDescription, displayName, TYPE_LABELS } from "../lib/format";
 import { recordPath } from "../lib/share";
 import { t } from "../lib/i18n";
 import { useStore } from "../lib/store";
@@ -48,7 +48,7 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
           <div className="card-body">
             {r.name_he && lang !== "he" ? <div className="he-name">{r.name_he}</div> : null}
             <h3>{name}</h3>
-            {!compact && desc ? <p className="muted" style={{ margin: 0 }}>{desc}</p> : null}
+            {!compact && desc ? <p className="muted" dir={descriptionDir(r, lang)} style={{ margin: 0 }}>{desc}</p> : null}
             <div className="chips">
               {r.priority ? <span className={`chip ${/Critical|Essential/i.test(r.priority) ? "hot" : ""}`}>{r.priority}</span> : null}
               {type ? <span className="chip">{type}</span> : null}

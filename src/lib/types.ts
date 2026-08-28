@@ -82,10 +82,3 @@ export interface HomePin {
   lat: number;
   lng: number;
 }
-
-export interface Profile {
-  drives: boolean | null;
-  kids: boolean | null;
-  kupah: string | null;
-  bank: string | null;
-}
