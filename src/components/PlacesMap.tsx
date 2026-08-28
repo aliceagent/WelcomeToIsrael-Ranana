@@ -27,7 +27,7 @@ function iconFor(type: string) {
   });
 }
 
-const homeIcon = L.divIcon({
+export const homeIcon = L.divIcon({
   className: "",
   html: `<span style="display:block;width:22px;height:22px;border-radius:50%;background:#1a2b24;border:3px solid #f3ead9"></span>`,
   iconSize: [22, 22],
@@ -35,8 +35,8 @@ const homeIcon = L.divIcon({
 });
 
 export function PlacesMap({ places, highlight }: { places: Resource[]; highlight?: string }) {
-  const { lang, home } = useStore();
-  const center = useMemo<[number, number]>(() => [home.lat, home.lng], [home]);
+  const { lang, home, origin } = useStore();
+  const center = useMemo<[number, number]>(() => [origin.lat, origin.lng], [origin]);
   const shown = places.filter((p) => p.latitude_est != null && p.longitude_est != null).slice(0, 250);
 
   return (
@@ -46,7 +46,7 @@ export function PlacesMap({ places, highlight }: { places: Resource[]; highlight
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={center} icon={homeIcon}>
+        <Marker position={[home.lat, home.lng]} icon={homeIcon}>
           <Popup>{meta.home_default.label}</Popup>
         </Marker>
         {shown.map((p) => (

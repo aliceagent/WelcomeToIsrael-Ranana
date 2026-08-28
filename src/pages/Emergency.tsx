@@ -2,19 +2,22 @@ import { getById, records } from "../lib/data";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { telHref } from "../lib/geo";
+import { effectiveKm, telHref } from "../lib/geo";
 import { displayName, priorityScore } from "../lib/format";
 import { meta } from "../lib/data";
 
 export function EmergencyPage() {
-  const { lang } = useStore();
+  const { lang, origin, originIsDefault } = useStore();
   const strip = meta.emergency_strip.map(getById).filter(Boolean);
   const numbers = records
     .filter((r) => r.category === "Emergency & Important Numbers")
     .sort((a, b) => priorityScore(b.priority) - priorityScore(a.priority));
   const shelters = records
     .filter((r) => r.record_type === "public_shelter")
-    .sort((a, b) => (a.distance_from_home_km_est ?? 99) - (b.distance_from_home_km_est ?? 99))
+    .sort(
+      (a, b) =>
+        (effectiveKm(a, origin, originIsDefault) ?? 99) - (effectiveKm(b, origin, originIsDefault) ?? 99),
+    )
     .slice(0, 8);
 
   return (

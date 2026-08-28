@@ -1,14 +1,17 @@
 import { useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
+import { NearMeToggle } from "../components/NearMeToggle";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { getFolder, folderLabel, recordsInFolder, sortDirectory } from "../lib/directory";
+import { getFolder, folderLabel, recordsInFolder, directorySorter } from "../lib/directory";
+import { effectiveKm } from "../lib/geo";
 import { shareContent, whatsappShareUrl, absoluteUrl } from "../lib/share";
+import type { Resource } from "../lib/types";
 
 export function FolderPage() {
   const { slug } = useParams();
-  const { lang } = useStore();
+  const { lang, origin, originIsDefault } = useStore();
   const folder = getFolder(slug);
   const [raanana, setRaanana] = useState(false);
   const [physical, setPhysical] = useState(false);
@@ -16,15 +19,16 @@ export function FolderPage() {
 
   const items = useMemo(() => {
     if (!folder) return [];
-    let list = recordsInFolder(folder);
+    const kmOf = (r: Resource) => effectiveKm(r, origin, originIsDefault);
+    let list = recordsInFolder(folder, kmOf);
     if (chip !== "all" && folder.chips) {
       const selected = folder.chips.find((c) => c.id === chip);
-      if (selected) list = list.filter(selected.match).sort(sortDirectory);
+      if (selected) list = list.filter(selected.match).sort(directorySorter(kmOf));
     }
     if (raanana) list = list.filter((r) => r.is_raanana);
     if (physical) list = list.filter((r) => r.is_physical_location);
     return list;
-  }, [folder, raanana, physical, chip]);
+  }, [folder, raanana, physical, chip, origin, originIsDefault]);
 
   if (!slug) return <Navigate to="/" replace />;
   if (!folder) return <div className="empty">{t(lang, "noResults")}</div>;
@@ -51,6 +55,7 @@ export function FolderPage() {
         </div>
       ) : null}
       <div className="filters">
+        <NearMeToggle />
         <button aria-pressed={raanana} className={raanana ? "on" : ""} onClick={() => setRaanana((v) => !v)}>
           {t(lang, "raananaOnly")}
         </button>

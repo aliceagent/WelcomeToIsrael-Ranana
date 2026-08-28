@@ -995,6 +995,9 @@ button, a {
 }
 
 .field { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+.field-row { display: flex; gap: 10px; }
+.field-row .field { flex: 1; min-width: 0; }
+.field-row input { width: 100%; }
 .field input {
   border: 1px solid var(--line);
   border-radius: 12px;

@@ -19,6 +19,18 @@ export function estimateTravel(kmStraight: number) {
   return { walkKm, walkMin, driveMin };
 }
 
+/**
+ * Distance in km from the active origin: the dataset's precomputed estimate
+ * when measuring from the default family pin, a live haversine otherwise.
+ */
+export function effectiveKm(r: Resource, origin: HomePin, originIsDefault: boolean): number | null {
+  if (originIsDefault) return r.distance_from_home_km_est;
+  if (r.latitude_est != null && r.longitude_est != null) {
+    return haversineKm(origin, r.latitude_est, r.longitude_est);
+  }
+  return r.distance_from_home_km_est;
+}
+
 export function isLowConfidence(r: Resource): boolean {
   const c = (r.coordinate_confidence || "").toLowerCase();
   return c.includes("fallback") || c.includes("unavailable") || c.includes("city-center");

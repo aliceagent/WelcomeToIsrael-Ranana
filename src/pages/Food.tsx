@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
-import { foodAllFolders, folderCount, folderLabel, isFoodRecord, sortDirectory } from "../lib/directory";
+import { foodAllFolders, folderCount, folderLabel, isFoodRecord, directorySorter } from "../lib/directory";
+import { effectiveKm } from "../lib/geo";
+import type { Resource } from "../lib/types";
 import { records } from "../lib/data";
 import { SearchIcon } from "../components/Icons";
 import { ShabbatBanner } from "../components/ShabbatBanner";
@@ -12,15 +14,16 @@ import { buildSearch, searchRecords } from "../lib/search";
 buildSearch(records);
 
 export function FoodPage() {
-  const { lang } = useStore();
+  const { lang, origin, originIsDefault } = useStore();
   const [q, setQ] = useState("");
   const folders = foodAllFolders();
 
   const results = useMemo(() => {
     const query = q.trim();
     if (query) return searchRecords(query).filter(isFoodRecord).slice(0, 40);
-    return records.filter(isFoodRecord).sort(sortDirectory).slice(0, 12);
-  }, [q]);
+    const kmOf = (r: Resource) => effectiveKm(r, origin, originIsDefault);
+    return records.filter(isFoodRecord).sort(directorySorter(kmOf)).slice(0, 12);
+  }, [q, origin, originIsDefault]);
 
   return (
     <div>

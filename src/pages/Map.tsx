@@ -2,11 +2,13 @@ import { useMemo, useState } from "react";
 import { physicalRecords } from "../lib/data";
 import { PlacesMap } from "../components/PlacesMap";
 import { RecordCard } from "../components/RecordCard";
+import { NearMeToggle } from "../components/NearMeToggle";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
+import { effectiveKm } from "../lib/geo";
 
 export function MapPage() {
-  const { lang, online } = useStore();
+  const { lang, online, origin, originIsDefault } = useStore();
   const [mode, setMode] = useState<"all" | "shelter" | "shul" | "shop">("all");
   const places = useMemo(() => {
     return physicalRecords.filter((r) => {
@@ -17,13 +19,15 @@ export function MapPage() {
     });
   }, [mode]);
   const nearest = [...places].sort(
-    (a, b) => (a.distance_from_home_km_est ?? 99) - (b.distance_from_home_km_est ?? 99),
+    (a, b) =>
+      (effectiveKm(a, origin, originIsDefault) ?? 99) - (effectiveKm(b, origin, originIsDefault) ?? 99),
   );
 
   return (
     <div>
       <h1 className="chrome-title">{t(lang, "map")}</h1>
       <div className="filters">
+        <NearMeToggle />
         <button aria-pressed={mode === "all"} className={mode === "all" ? "on" : ""} onClick={() => setMode("all")}>
           {t(lang, "any")}
         </button>

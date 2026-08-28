@@ -17,6 +17,16 @@ type Store = {
   home: HomePin;
   setHome: (p: HomePin) => void;
   resetHome: () => void;
+  /** Device location, session-only — never persisted. */
+  gps: HomePin | null;
+  setGps: (p: HomePin | null) => void;
+  useGps: boolean;
+  setUseGps: (v: boolean) => void;
+  /** Active measuring point: device location when enabled, else the home pin. */
+  origin: HomePin;
+  originIsGps: boolean;
+  /** True when distances can use the dataset's precomputed home estimates. */
+  originIsDefault: boolean;
   online: boolean;
 };
 
@@ -38,6 +48,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
+  const [gps, setGps] = useState<HomePin | null>(null);
+  const [useGps, setUseGps] = useState(false);
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
 
   useEffect(() => {
@@ -67,6 +79,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  const originIsGps = useGps && gps != null;
+  const origin = originIsGps && gps ? gps : home;
+  const originIsDefault =
+    !originIsGps &&
+    Math.abs(home.lat - meta.home_default.lat) < 0.0002 &&
+    Math.abs(home.lng - meta.home_default.lng) < 0.0002;
+
   const value = useMemo<Store>(
     () => ({
       lang,
@@ -90,9 +109,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       home,
       setHome: setHomeState,
       resetHome: () => setHomeState({ lat: meta.home_default.lat, lng: meta.home_default.lng }),
+      gps,
+      setGps,
+      useGps,
+      setUseGps,
+      origin,
+      originIsGps,
+      originIsDefault,
       online,
     }),
-    [lang, favorites, checks, home, online],
+    [lang, favorites, checks, home, gps, useGps, origin, originIsGps, originIsDefault, online],
   );
 
   return createElement(Ctx.Provider, { value }, children);

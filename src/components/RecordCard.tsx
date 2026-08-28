@@ -5,7 +5,6 @@ import { recordPath } from "../lib/share";
 import { t } from "../lib/i18n";
 import { useStore } from "../lib/store";
 import { estimateTravel, haversineKm, isLowConfidence } from "../lib/geo";
-import { meta } from "../lib/data";
 import { openState } from "../lib/hours";
 
 export function OpenChip({ r }: { r: Resource }) {
@@ -16,19 +15,19 @@ export function OpenChip({ r }: { r: Resource }) {
   return <span className={`chip ${state === "closed" ? "hot" : "ok"}`}>{t(lang, key)}</span>;
 }
 
-export function Distance({ r }: { r: Resource }) {
-  const { lang, home } = useStore();
+const WALKABLE_MIN = 18;
+
+export function Distance({ r, full }: { r: Resource; full?: boolean }) {
+  const { lang, origin, originIsDefault, originIsGps } = useStore();
   if (r.latitude_est == null || r.longitude_est == null) {
     if (r.distance_from_home_display) return <span className="chip">{r.distance_from_home_display}</span>;
     return null;
   }
-  const usingDefault =
-    Math.abs(home.lat - meta.home_default.lat) < 0.0002 && Math.abs(home.lng - meta.home_default.lng) < 0.0002;
   let km = r.distance_from_home_km_est;
   let walk = r.walking_time_from_home_min_est;
   let drive = r.driving_time_from_home_min_est_off_peak;
-  if (!usingDefault) {
-    const straight = haversineKm(home, r.latitude_est, r.longitude_est);
+  if (!originIsDefault) {
+    const straight = haversineKm(origin, r.latitude_est, r.longitude_est);
     const est = estimateTravel(straight);
     km = est.walkKm;
     walk = est.walkMin;
@@ -36,10 +35,21 @@ export function Distance({ r }: { r: Resource }) {
   }
   if (km == null) return null;
   const prefix = isLowConfidence(r) ? `${t(lang, "approx")} ` : "";
+  const suffix = originIsGps ? t(lang, "fromYou") : t(lang, "fromHome");
+  if (full) {
+    return (
+      <span className="chip">
+        {prefix}
+        {km.toFixed(1)} {t(lang, "km")} · {walk} {t(lang, "minWalk")} · {drive} {t(lang, "minDrive")} {suffix}
+      </span>
+    );
+  }
+  const walkable = walk != null && walk <= WALKABLE_MIN;
   return (
     <span className="chip">
       {prefix}
-      {km.toFixed(1)} {t(lang, "km")} · {walk} {t(lang, "minWalk")} · {drive} {t(lang, "minDrive")} {t(lang, "fromHome")}
+      {km.toFixed(1)} {t(lang, "km")} ·{" "}
+      {walkable ? `${walk} ${t(lang, "minWalk")}` : `${drive} ${t(lang, "minDrive")}`} {suffix}
     </span>
   );
 }

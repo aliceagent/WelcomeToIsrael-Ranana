@@ -49,7 +49,7 @@ export function RecordPage() {
         {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
         <OpenChip r={r} />
-        <Distance r={r} />
+        <Distance r={r} full />
       </div>
       {desc ? <p dir={descriptionDir(r, lang)}>{desc}</p> : null}
 
