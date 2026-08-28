@@ -36,7 +36,7 @@ export function HomePage() {
     <div className="home-dir">
       <AskBar />
 
-      <ShabbatBanner />
+      <ShabbatBanner always />
 
       <NeedChips />
 

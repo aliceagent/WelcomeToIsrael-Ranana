@@ -146,6 +146,20 @@ export const dict = {
     fr: "{name} — la plupart des lieux sont fermés jusqu'à environ {t}.",
     he: "{name} — רוב המקומות סגורים עד בערך {t}.",
   },
+  shabbatComing: {
+    en: "Shabbat · {p} — candles Friday {t}",
+    fr: "Chabbat · {p} — bougies vendredi {t}",
+    he: "שבת · {p} — הדלקת נרות ביום שישי {t}",
+  },
+  shabbatTimes: { en: "Shabbat", fr: "Chabbat", he: "שבת" },
+  parshaLabel: { en: "Torah portion (Israel)", fr: "Paracha (Israël)", he: "פרשת השבוע" },
+  candles: { en: "Candle lighting", fr: "Allumage des bougies", he: "הדלקת נרות" },
+  havdalah: { en: "Shabbat ends", fr: "Sortie de Chabbat", he: "צאת השבת" },
+  shabbatTimesNote: {
+    en: "Times are for the Ra'anana home pin: candles 20 minutes before sunset, ends 40 minutes after sunset. Follow your community's calendar for customs.",
+    fr: "Horaires pour le point maison à Ra'anana : bougies 20 minutes avant le coucher du soleil, sortie 40 minutes après. Suivez le calendrier de votre communauté.",
+    he: "הזמנים לפי נקודת הבית ברעננה: הדלקה 20 דקות לפני השקיעה, צאת השבת 40 דקות אחריה. יש לנהוג לפי לוח הקהילה.",
+  },
   glossarySearchHint: {
     en: "Arnona, kupah, mashkanta…",
     fr: "Arnona, kupah, mashkanta…",
