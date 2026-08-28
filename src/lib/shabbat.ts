@@ -1,4 +1,5 @@
 import {
+  gregorianFromRd,
   holidayForRd,
   rdFromGregorian,
   sunsetUtcMs,
@@ -74,6 +75,42 @@ export type ShabbatNotice = {
   name: { en: string; fr: string; he: string } | null;
   timeMs: number | null;
 };
+
+export type Ymd = { year: number; month: number; day: number; rd: number };
+
+export type ShabbatTimes = {
+  friday: Ymd;
+  saturday: Ymd;
+  candlesMs: number | null;
+  havdalahMs: number | null;
+};
+
+/** The current Shabbat (when it's Shabbat in Israel now) or the upcoming one. */
+export function upcomingShabbat(now: Date, pin: HomePin): ShabbatTimes {
+  const today = jerusalemDay(now);
+  const satRd = today.rd + ((6 - today.weekday + 7) % 7);
+  const satG = gregorianFromRd(satRd);
+  const friG = gregorianFromRd(satRd - 1);
+  const friSunset = sunsetUtcMs(friG.year, friG.month, friG.day, pin.lat, pin.lng);
+  const satSunset = sunsetUtcMs(satG.year, satG.month, satG.day, pin.lat, pin.lng);
+  return {
+    friday: { ...friG, rd: satRd - 1 },
+    saturday: { ...satG, rd: satRd },
+    candlesMs: friSunset != null ? friSunset - CANDLE_OFFSET_MIN * 60000 : null,
+    havdalahMs: satSunset != null ? satSunset + HAVDALAH_OFFSET_MIN * 60000 : null,
+  };
+}
+
+/** "Friday, 4 Sep" (or the locale's equivalent) for a civil date in Israel. */
+export function formatJerusalemDate(g: { year: number; month: number; day: number }, lang: Lang): string {
+  const locale = lang === "he" ? "he-IL" : lang === "fr" ? "fr-FR" : "en-GB";
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: "Asia/Jerusalem",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date(Date.UTC(g.year, g.month - 1, g.day, 12)));
+}
 
 function restDayAt(rd: number): boolean {
   return weekdayOfRd(rd) === 6 || holidayForRd(rd)?.kind === "chag";

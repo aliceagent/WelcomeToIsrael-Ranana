@@ -15,6 +15,7 @@ import { HubPage } from "./pages/Hub";
 import { FoodPage } from "./pages/Food";
 import { FolderPage } from "./pages/Folder";
 import { AskPage } from "./pages/Ask";
+import { ShabbatPage } from "./pages/Shabbat";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/map" element={<MapPage />} />
         <Route path="/saved" element={<FavoritesPage />} />
         <Route path="/emergency" element={<EmergencyPage />} />
+        <Route path="/shabbat" element={<ShabbatPage />} />
         <Route path="/checklists" element={<ChecklistsPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/share" element={<ShareKitPage />} />

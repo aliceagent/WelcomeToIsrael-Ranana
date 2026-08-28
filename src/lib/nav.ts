@@ -42,6 +42,7 @@ export function useChromeTitle(): string {
   if (path === "/ask") return t(lang, "askHeadline");
   if (path === "/saved") return t(lang, "saved");
   if (path === "/emergency") return t(lang, "sos");
+  if (path === "/shabbat") return t(lang, "shabbatTimes");
   if (path === "/map") return t(lang, "map");
   if (path === "/settings") return t(lang, "settings");
   if (path === "/checklists") return t(lang, "checklists");

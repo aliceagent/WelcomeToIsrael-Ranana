@@ -885,6 +885,62 @@ button, a {
 .banner.warn { background: var(--banner-warn-bg); border-color: var(--banner-warn-line); }
 .banner.off { background: var(--banner-off-bg); }
 .banner.shabbat { font-weight: 650; }
+a.banner-tap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.banner-chev {
+  margin-inline-start: auto;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
+
+.parsha-card { text-align: center; }
+.card-label {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.parsha-he {
+  font-family: var(--display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--olive-text);
+  margin: 0;
+  line-height: 1.2;
+}
+.parsha-translit {
+  font-size: 1.05rem;
+  font-weight: 650;
+  margin: 4px 0 0;
+}
+.parsha-card .muted { margin: 8px 0 0; }
+
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.time-row + .time-row { border-top: 1px solid var(--line); }
+.time-ico { font-size: 1.4rem; flex: none; }
+.time-copy { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.time-val {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
 
 .bottom-nav {
   position: fixed;
