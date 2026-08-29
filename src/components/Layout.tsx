@@ -64,7 +64,14 @@ export function Layout() {
     scrollToTop();
     const frame = requestAnimationFrame(scrollToTop);
     return () => cancelAnimationFrame(frame);
-  }, [loc.pathname, loc.hash, navType, loc.key]);
+    // Deps are the PAGE identity only — never loc.key: typing in the search
+    // box replace-navigates on every keystroke (same pathname, new key), and
+    // re-running this effect then would steal focus from the input (closing
+    // the phone keyboard after one character) and force-scroll to top.
+    // navType/loc.key are read but only ever change alongside a pathname
+    // change we care about.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loc.pathname, loc.hash]);
 
   // Keep the current history entry's remembered scroll position fresh as
   // the user scrolls, so it's ready if they later come back via POP.
