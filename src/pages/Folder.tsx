@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { RecordCard } from "../components/RecordCard";
 import { NearMeToggle } from "../components/NearMeToggle";
 import { useStore } from "../lib/store";
@@ -48,6 +48,8 @@ export function FolderPage() {
 
   const url = absoluteUrl(`/d/${folder.id}`);
   const title = folderLabel(folder, lang);
+  const mappable = items.some((r) => r.latitude_est != null && r.longitude_est != null);
+  const mapLink = `/map?d=${folder.id}${chip !== "all" ? `&chip=${chip}` : ""}`;
 
   return (
     <div>
@@ -77,6 +79,11 @@ export function FolderPage() {
         </button>
       </div>
       <div className="actions" style={{ marginBottom: 12 }}>
+        {mappable ? (
+          <Link className="btn" to={mapLink}>
+            🗺️ {t(lang, "showOnMap")}
+          </Link>
+        ) : null}
         <button
           className="btn"
           onClick={async () => {

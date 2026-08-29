@@ -159,6 +159,11 @@ export function SearchPage() {
             </span>
             {results.length ? (
               <span className="result-share">
+                {results.some((r) => r.latitude_est != null && r.longitude_est != null) ? (
+                  <Link className="btn small" to={`/map?q=${encodeURIComponent(q.trim())}`}>
+                    🗺️ {t(lang, "map")}
+                  </Link>
+                ) : null}
                 <button
                   type="button"
                   className="btn small"
