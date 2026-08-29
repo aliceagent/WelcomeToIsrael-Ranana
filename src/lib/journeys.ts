@@ -26,13 +26,23 @@ export const RELATED_RECORDS: Record<string, string[]> = {
   "CHK-013": ["GOV-014", "GOV-004"],
   "CHK-014": ["GOV-027"],
   "CHK-015": ["GOV-028"],
-  "CHK-016": ["REL-008"],
+  // "order groceries and medications early" only helps with somewhere to order.
+  "CHK-016": ["REL-008", "DEL-004", "DEL-015"],
   "CHK-017": ["REL-008", "GLO-038"],
   "CHK-018": ["APP-003"],
   "CHK-019": ["GOV-001"],
   "CHK-020": ["GOV-023", "GOV-012"],
   "CHK-021": ["EDU-018", "GLO-016"],
   "CHK-022": ["MUN-005"],
+};
+
+/**
+ * Whole folders worth opening from a checklist, where one record is not the
+ * point — planning for Shabbat means browsing what delivers, not one shop.
+ * Values are directory folder ids (`/d/<id>`).
+ */
+export const RELATED_FOLDERS: Record<string, string[]> = {
+  "CHK-016": ["grocery-delivery"],
 };
 
 export const JOURNEYS: Journey[] = [

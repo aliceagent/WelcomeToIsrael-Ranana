@@ -2,18 +2,38 @@ import { Link } from "react-router-dom";
 import type { Resource } from "../lib/types";
 import { descriptionDir, displayDescription, displayName, priorityLabel, TYPE_LABELS } from "../lib/format";
 import { recordPath } from "../lib/share";
-import { t } from "../lib/i18n";
+import { shortWeekday, t } from "../lib/i18n";
 import { useStore } from "../lib/store";
 import { estimateTravel, haversineKm, isLowConfidence } from "../lib/geo";
-import { openState } from "../lib/hours";
+import { openStateDetail } from "../lib/hours";
 import { Phone } from "./Phone";
 
+/**
+ * Open/closed is only half the answer: someone reading this at 16:40 needs to
+ * know the shop shuts at 17:00, and someone reading it on Shabbat needs to
+ * know when it comes back.
+ */
 export function OpenChip({ r }: { r: Resource }) {
   const { lang } = useStore();
-  const state = openState(r);
-  if (!state) return null;
-  const key = state === "always" ? "open247" : state === "open" ? "openNow" : "closedNow";
-  return <span className={`chip ${state === "closed" ? "hot" : "ok"}`}>{t(lang, key)}</span>;
+  const detail = openStateDetail(r);
+  if (!detail) return null;
+  let label: string;
+  if (detail.state === "always") {
+    label = t(lang, "open247");
+  } else if (detail.state === "open") {
+    label = detail.closesAt ? t(lang, "openUntil").replace("{t}", detail.closesAt) : t(lang, "openNow");
+  } else if (detail.opensAt) {
+    label = detail.opensAt.today
+      ? t(lang, "reopensToday").replace("{t}", detail.opensAt.time)
+      : t(lang, "reopensOn")
+          .replace("{d}", shortWeekday(lang, detail.opensAt.weekday))
+          .replace("{t}", detail.opensAt.time);
+  } else if (detail.closedFor) {
+    label = t(lang, detail.closedFor === "shabbat" ? "closedShabbat" : "closedHoliday");
+  } else {
+    label = t(lang, "closedNow");
+  }
+  return <span className={`chip ${detail.state === "closed" ? "hot" : "ok"}`}>{label}</span>;
 }
 
 const WALKABLE_MIN = 18;

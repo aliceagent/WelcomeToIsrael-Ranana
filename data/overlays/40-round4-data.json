@@ -1,0 +1,62 @@
+{
+ "comment": "Round-4 sprint-1 data fixes (items 7 and 8), authored 2026-08-29. Shabbat closures are recorded as closed_days [6] (Saturday) only where the business is a certified-kosher chain or the record's own kosher_status asserts kosher — Israeli kosher certification is not granted to businesses trading on Shabbat. No weekday opening hours are claimed: official chain sites (rami-levy.co.il, super-pharm.co.il, shufersal.co.il) were fetched on 2026-08-29 and returned 403 / a redirect with no branch hours / a maintenance page, so none could be verified. Tiv Taam (BUS-034, record notes it is not kosher and it trades on Shabbat), Carrefour Hyper (BUS-032), La Perle (BUS-037) and every pharmacy are deliberately left unmarked as unverified.",
+ "patch": [
+  {
+   "record_id": "BUS-031",
+   "closed_days": [6],
+   "notes": "Shufersal is a kosher-certified national chain; branches do not trade on Shabbat. Weekday hours not recorded — check the branch before travelling."
+  },
+  {
+   "record_id": "BUS-030",
+   "closed_days": [6],
+   "notes": "Rami Levy is a kosher chain (see kosher status); branches do not trade on Shabbat. Weekday hours not recorded — check the branch before travelling."
+  },
+  {
+   "record_id": "BUS-033",
+   "closed_days": [6],
+   "notes": "Victory is a kosher-certified chain; branches do not trade on Shabbat. Weekday hours not recorded — check the branch before travelling."
+  },
+  {
+   "record_id": "BUS-013",
+   "closed_days": [6],
+   "notes": "Roladin is a kosher-certified national bakery chain; branches do not trade on Shabbat. Weekday hours not recorded — check before travelling."
+  },
+  {
+   "record_id": "BUS-001",
+   "closed_days": [6],
+   "notes": "Reported kosher / Mehadrin (see kosher status), so closed on Shabbat. Weekday hours not recorded — check before travelling."
+  },
+  {
+   "record_id": "BUS-002",
+   "closed_days": [6],
+   "notes": "Reported kosher (see kosher status), so closed on Shabbat. Weekday hours not recorded — check before travelling."
+  },
+  {
+   "record_id": "BUS-038",
+   "latitude_est": 32.1794165,
+   "longitude_est": 34.8787958,
+   "coordinate_confidence": "Mapped point / high-confidence (OSM)",
+   "notes": "Merged with the duplicate OpenStreetMap listing of the same Ahuza Street branch (retired BUS-049, mapped ~40 m away); coordinates taken from the OSM point, phone and street number from the curated record."
+  },
+  {
+   "record_id": "DIR-007",
+   "name_fr": "Easy — restaurants et commerces de Ra'anana",
+   "name_he": "Easy — מסעדות ועסקים ברעננה"
+  },
+  {
+   "record_id": "DIR-008",
+   "name_fr": "Google Maps — commerces près de chez vous",
+   "name_he": "Google Maps — עסקים ליד הבית"
+  },
+  {
+   "record_id": "APP-001",
+   "name_fr": "Commandement du Front intérieur"
+  }
+ ],
+ "remove": [
+  {
+   "record_id": "BUS-049",
+   "reason": "Duplicate of BUS-038 (Super-Pharm Ahuza): same branch, mapped ~40 m apart. BUS-038 keeps the phone number and street address; its coordinates were updated from this record's OSM point."
+  }
+ ]
+}

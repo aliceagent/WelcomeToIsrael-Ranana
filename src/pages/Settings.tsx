@@ -184,7 +184,7 @@ export function SettingsPage() {
           {syncMsg ? <span className="muted">{syncMsg}</span> : null}
         </div>
       </div>
-      <p className="muted">{meta.privacy_note}</p>
+      <p className="muted">{t(lang, "settingsPrivacy")}</p>
     </div>
   );
 }

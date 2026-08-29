@@ -4,7 +4,8 @@ import { t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName } from "../lib/format";
 import { Link } from "react-router-dom";
 import { recordPath } from "../lib/share";
-import { JOURNEYS, RELATED_RECORDS } from "../lib/journeys";
+import { JOURNEYS, RELATED_FOLDERS, RELATED_RECORDS } from "../lib/journeys";
+import { FOLDERS, folderLabel } from "../lib/directory";
 import type { Resource } from "../lib/types";
 
 export function ChecklistsPage() {
@@ -18,6 +19,9 @@ export function ChecklistsPage() {
     const related = (RELATED_RECORDS[r.record_id] || [])
       .map(getById)
       .filter((rec): rec is Resource => !!rec);
+    const folders = (RELATED_FOLDERS[r.record_id] || [])
+      .map((id) => FOLDERS.find((f) => f.id === id))
+      .filter((f): f is (typeof FOLDERS)[number] => !!f);
     return (
       <div key={r.record_id}>
         <button className={`check-item ${checks.has(r.record_id) ? "done" : ""}`} onClick={() => toggleCheck(r.record_id)}>
@@ -31,6 +35,12 @@ export function ChecklistsPage() {
           {related.map((rec) => (
             <Link className="check-link" key={rec.record_id} to={recordPath(rec)}>
               {displayName(rec, lang)}
+            </Link>
+          ))}
+          {folders.map((f) => (
+            <Link className="check-link" key={f.id} to={`/d/${f.id}`}>
+              <span aria-hidden="true">{f.icon} </span>
+              {folderLabel(f, lang)}
             </Link>
           ))}
           <Link className="check-link details" to={recordPath(r)}>

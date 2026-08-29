@@ -127,6 +127,11 @@ export const dict = {
   open247: { en: "Open 24/7", fr: "Ouvert 24h/24", he: "פתוח 24/7" },
   openNow: { en: "Open now", fr: "Ouvert", he: "פתוח עכשיו" },
   closedNow: { en: "Closed now", fr: "Fermé", he: "סגור עכשיו" },
+  openUntil: { en: "Open until {t}", fr: "Ouvert jusqu'à {t}", he: "פתוח עד {t}" },
+  reopensToday: { en: "Reopens today {t}", fr: "Rouvre aujourd'hui {t}", he: "נפתח היום ב־{t}" },
+  reopensOn: { en: "Reopens {d} {t}", fr: "Rouvre {d} {t}", he: "נפתח {d} ב־{t}" },
+  closedShabbat: { en: "Closed for Shabbat", fr: "Fermé pour Chabbat", he: "סגור בשבת" },
+  closedHoliday: { en: "Closed for the holiday", fr: "Fermé pour la fête", he: "סגור בחג" },
   shabbatStartsAt: {
     en: "Shabbat starts at {t} — most shops close early.",
     fr: "Chabbat commence à {t} — la plupart des magasins ferment tôt.",
@@ -407,6 +412,11 @@ export const dict = {
     fr: "{name} — {type}. Bienvenue à Ra'anana.",
     he: "{name} — {type}. ברוכים הבאים לרעננה.",
   },
+  settingsPrivacy: {
+    en: "Home street address is not published. Distances are estimates from a family home pin. Live directions are generated on-device.",
+    fr: "L'adresse du domicile n'est pas publiée. Les distances sont estimées depuis le point maison. Les itinéraires sont générés sur l'appareil.",
+    he: "כתובת הבית אינה מתפרסמת. המרחקים הם הערכה מנקודת הבית. הניווט נוצר במכשיר עצמו.",
+  },
   correctionText: {
     en: 'Welcome to Ra\'anana — correction for "{name}" ({id}): ',
     fr: 'Bienvenue à Ra\'anana — correction pour « {name} » ({id}) : ',
@@ -418,6 +428,150 @@ export type DictKey = keyof typeof dict;
 
 export function t(lang: Lang, key: DictKey): string {
   return dict[key][lang];
+}
+
+/**
+ * Subcategory chips are raw dataset strings (185 distinct values). The ones
+ * below cover the great majority of records; anything else falls back to the
+ * English value rather than guessing a translation.
+ */
+const SUBCATEGORY_LABELS: Record<string, { fr: string; he: string }> = {
+  Synagogue: { fr: "Synagogue", he: "בית כנסת" },
+  "Public shelter": { fr: "Abri public", he: "מקלט ציבורי" },
+  "Key Hebrew term": { fr: "Mot d'hébreu essentiel", he: "מונח עברי חשוב" },
+  School: { fr: "École", he: "בית ספר" },
+  "School platform": { fr: "Plateforme scolaire", he: "מערכת בית ספר" },
+  Checklist: { fr: "Liste à cocher", he: "רשימת משימות" },
+  Groceries: { fr: "Courses", he: "מצרכים" },
+  Banking: { fr: "Banque", he: "בנקאות" },
+  "Banking — branch": { fr: "Banque — agence", he: "בנק — סניף" },
+  "Credit cards": { fr: "Cartes de crédit", he: "כרטיסי אשראי" },
+  "Package forwarding": { fr: "Réexpédition de colis", he: "העברת חבילות" },
+  "Emergency Services": { fr: "Services d'urgence", he: "שירותי חירום" },
+  "Ra’anana essential phone": { fr: "Numéro essentiel à Ra'anana", he: "טלפון חיוני ברעננה" },
+  "Parks & playgrounds": { fr: "Parcs et aires de jeux", he: "פארקים וגני שעשועים" },
+  Aliyah: { fr: "Alya", he: "עלייה" },
+  "Aliyah & Government": { fr: "Alya et administration", he: "עלייה וממשל" },
+  Pharmacy: { fr: "Pharmacie", he: "בית מרקחת" },
+  "Pharmacy & health": { fr: "Pharmacie et santé", he: "בית מרקחת ובריאות" },
+  "Pharmacy delivery": { fr: "Pharmacie en ligne", he: "משלוחי בית מרקחת" },
+  Telecom: { fr: "Télécom", he: "תקשורת" },
+  Fashion: { fr: "Mode", he: "אופנה" },
+  "International fashion": { fr: "Mode internationale", he: "אופנה בינלאומית" },
+  "Mental Health & Support": { fr: "Santé mentale et soutien", he: "בריאות הנפש ותמיכה" },
+  Jobs: { fr: "Emploi", he: "תעסוקה" },
+  Mikvah: { fr: "Mikvé", he: "מקווה" },
+  Electronics: { fr: "Électronique", he: "אלקטרוניקה" },
+  "Electronics & general": { fr: "Électronique et généraliste", he: "אלקטרוניקה וכללי" },
+  Sports: { fr: "Sport", he: "ספורט" },
+  Healthcare: { fr: "Santé", he: "בריאות" },
+  "Health fund": { fr: "Caisse maladie", he: "קופת חולים" },
+  Language: { fr: "Langue", he: "שפה" },
+  Supermarket: { fr: "Supermarché", he: "סופרמרקט" },
+  "Gourmet grocery": { fr: "Épicerie fine", he: "מכולת גורמה" },
+  "Fruit & vegetables": { fr: "Fruits et légumes", he: "פירות וירקות" },
+  Butcher: { fr: "Boucherie", he: "קצבייה" },
+  Bakery: { fr: "Boulangerie", he: "מאפייה" },
+  Cafe: { fr: "Café", he: "בית קפה" },
+  "Cafe & bakery": { fr: "Café et boulangerie", he: "בית קפה ומאפייה" },
+  "Cafe & bagels": { fr: "Café et bagels", he: "בית קפה ובייגלס" },
+  "French bakery & prepared food": { fr: "Boulangerie française et traiteur", he: "מאפייה צרפתית ומזון מוכן" },
+  "French deli": { fr: "Épicerie française", he: "דליקטסן צרפתי" },
+  "French retailer": { fr: "Enseigne française", he: "קמעונאי צרפתי" },
+  "Ice cream": { fr: "Glaces", he: "גלידה" },
+  Pizza: { fr: "Pizza", he: "פיצה" },
+  Italian: { fr: "Italien", he: "איטלקי" },
+  Sushi: { fr: "Sushi", he: "סושי" },
+  Asian: { fr: "Asiatique", he: "אסייתי" },
+  "Asian & sushi": { fr: "Asiatique et sushi", he: "אסייתי וסושי" },
+  Burgers: { fr: "Burgers", he: "המבורגרים" },
+  Barbecue: { fr: "Grillades", he: "על האש" },
+  "Meat restaurant": { fr: "Restaurant de viande", he: "מסעדת בשרים" },
+  "Restaurant & local delivery": { fr: "Restaurants et livraison locale", he: "מסעדות ומשלוחים" },
+  Shopping: { fr: "Achats", he: "קניות" },
+  "International marketplace": { fr: "Marché en ligne international", he: "זירת מסחר בינלאומית" },
+  "International beauty": { fr: "Beauté à l'international", he: "יופי מחו״ל" },
+  "International health": { fr: "Santé à l'international", he: "בריאות מחו״ל" },
+  "International handmade": { fr: "Artisanat international", he: "עבודות יד מחו״ל" },
+  "Home & kitchen": { fr: "Maison et cuisine", he: "בית ומטבח" },
+  "Home & DIY": { fr: "Maison et bricolage", he: "בית וכלי עבודה" },
+  "Home & furniture": { fr: "Maison et meubles", he: "בית וריהוט" },
+  "Home & value": { fr: "Maison à petits prix", he: "בית במחירים נמוכים" },
+  Home: { fr: "Maison", he: "בית" },
+  Appliances: { fr: "Électroménager", he: "מוצרי חשמל" },
+  "Apple products": { fr: "Produits Apple", he: "מוצרי Apple" },
+  "Baby & children": { fr: "Bébé et enfants", he: "תינוקות וילדים" },
+  Toys: { fr: "Jouets", he: "צעצועים" },
+  Books: { fr: "Livres", he: "ספרים" },
+  "Office & school": { fr: "Bureau et fournitures scolaires", he: "משרד וציוד לבית הספר" },
+  News: { fr: "Actualités", he: "חדשות" },
+  Navigation: { fr: "Navigation", he: "ניווט" },
+  "Public transport": { fr: "Transports en commun", he: "תחבורה ציבורית" },
+  "Public Transportation": { fr: "Transports en commun", he: "תחבורה ציבורית" },
+  Classifieds: { fr: "Petites annonces", he: "לוח מודעות" },
+  "Price comparison": { fr: "Comparateur de prix", he: "השוואת מחירים" },
+  "Service marketplace": { fr: "Annuaire de professionnels", he: "מדריך בעלי מקצוע" },
+  "Business search": { fr: "Recherche de commerces", he: "חיפוש עסקים" },
+  "Map search": { fr: "Recherche sur carte", he: "חיפוש במפה" },
+  "Import rules": { fr: "Règles d'importation", he: "כללי יבוא אישי" },
+};
+
+export function subcategoryLabel(lang: Lang, subcategory: string): string {
+  if (lang === "en") return subcategory;
+  return SUBCATEGORY_LABELS[subcategory]?.[lang] ?? subcategory;
+}
+
+/**
+ * The `languages` field is free text. These are the recurring exact values —
+ * roughly two thirds of the records that carry one; the rest show as written.
+ */
+const LANGUAGE_LABELS: Record<string, { fr: string; he: string }> = {
+  "Hebrew-first": { fr: "Hébreu en priorité", he: "בעיקר עברית" },
+  Hebrew: { fr: "Hébreu", he: "עברית" },
+  English: { fr: "Anglais", he: "אנגלית" },
+  "English and French": { fr: "Anglais et français", he: "אנגלית וצרפתית" },
+  "English; French": { fr: "Anglais ; français", he: "אנגלית; צרפתית" },
+  "Hebrew / English / French": { fr: "Hébreu / anglais / français", he: "עברית / אנגלית / צרפתית" },
+  Multilingual: { fr: "Multilingue", he: "רב-לשוני" },
+  "Language support varies": { fr: "Le soutien linguistique varie", he: "התמיכה בשפות משתנה" },
+  "English information available": { fr: "Informations disponibles en anglais", he: "יש מידע באנגלית" },
+  "Hebrew; English/French service varies by staff and shift": {
+    fr: "Hébreu ; service en anglais/français selon le personnel et l'horaire",
+    he: "עברית; שירות באנגלית/צרפתית משתנה לפי הצוות והמשמרת",
+  },
+  "Hebrew; English/French availability noted where confirmed": {
+    fr: "Hébreu ; anglais/français indiqués lorsque confirmés",
+    he: "עברית; אנגלית/צרפתית מצוינות היכן שאושרו",
+  },
+  "Hebrew; English/French availability varies": {
+    fr: "Hébreu ; disponibilité de l'anglais/français variable",
+    he: "עברית; זמינות אנגלית/צרפתית משתנה",
+  },
+  "Hebrew; English/French support varies; absorption services explicitly serve both": {
+    fr: "Hébreu ; anglais/français variables ; les services d'intégration servent les deux",
+    he: "עברית; אנגלית/צרפתית משתנות; שירותי הקליטה מיועדים לשתי השפות",
+  },
+  "Hebrew; municipal absorption staff can help in English/French": {
+    fr: "Hébreu ; le service municipal d'intégration aide en anglais/français",
+    he: "עברית; צוות הקליטה העירוני מסייע באנגלית/צרפתית",
+  },
+  "Municipal information; emergency instructions available through Home Front Command": {
+    fr: "Informations municipales ; consignes d'urgence via le Commandement du Front intérieur",
+    he: "מידע עירוני; הנחיות חירום דרך פיקוד העורף",
+  },
+};
+
+export function languagesLabel(lang: Lang, value: string): string {
+  if (lang === "en") return value;
+  return LANGUAGE_LABELS[value.trim()]?.[lang] ?? value;
+}
+
+/** "Sun", "dim.", "א׳" — for "Reopens Sun 08:00". 0=Sunday. */
+export function shortWeekday(lang: Lang, weekday: number): string {
+  const locale = lang === "he" ? "he-IL" : lang === "fr" ? "fr-FR" : "en-GB";
+  // 7 Jan 2024 was a Sunday, so day-of-month 7+weekday lands on that weekday.
+  const date = new Date(Date.UTC(2024, 0, 7 + (((weekday % 7) + 7) % 7), 12));
+  return new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" }).format(date);
 }
 
 export function categoryLabel(lang: Lang, category: string): string {
