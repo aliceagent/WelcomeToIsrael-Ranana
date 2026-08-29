@@ -4,7 +4,7 @@ import { recordPath } from "../lib/share";
 import { BOOKING_HINTS } from "../lib/booking";
 import { SpeakButton } from "../components/SpeakButton";
 import { useStore } from "../lib/store";
-import { t } from "../lib/i18n";
+import { categoryLabel, languagesLabel, subcategoryLabel, t } from "../lib/i18n";
 import { descriptionDir, displayDescription, displayName, priorityLabel, TYPE_LABELS } from "../lib/format";
 import { ShareBar } from "../components/ShareBar";
 import { Distance, OpenChip } from "../components/RecordCard";
@@ -35,7 +35,7 @@ export function RecordPage() {
     <article className="detail">
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
         <p className="muted" style={{ margin: 0 }}>
-          {type} · {r.category}
+          {type} · {categoryLabel(lang, r.category)}
         </p>
         <button
           type="button"
@@ -64,7 +64,7 @@ export function RecordPage() {
       {showGlossaryHeHeading && r.name_en ? <p className="muted">{r.name_en}</p> : null}
       <div className="chips">
         {r.priority ? <span className="chip hot">{priorityLabel(r.priority, lang)}</span> : null}
-        {r.subcategory ? <span className="chip">{r.subcategory}</span> : null}
+        {r.subcategory ? <span className="chip">{subcategoryLabel(lang, r.subcategory)}</span> : null}
         {r.denomination_nusach ? <span className="chip">{r.denomination_nusach}</span> : null}
         <OpenChip r={r} />
         <Distance r={r} full />
@@ -94,7 +94,10 @@ export function RecordPage() {
         </div>
       ) : null}
       {r.record_type === "directory" ? <div className="banner">{t(lang, "directoryCaveat")}</div> : null}
-      {r.availability_hours_note && r.record_type !== "important_phone_or_emergency_service" ? (
+      {/* On a checklist the field holds a legal disclaimer, not opening hours. */}
+      {r.availability_hours_note &&
+      r.record_type !== "important_phone_or_emergency_service" &&
+      r.record_type !== "checklist" ? (
         <p>
           <strong>{t(lang, "hours")}: </strong>
           {r.availability_hours_note}
@@ -148,7 +151,7 @@ export function RecordPage() {
       {r.languages ? (
         <p>
           <strong>{t(lang, "languagesSpoken")}: </strong>
-          {r.languages}
+          {languagesLabel(lang, r.languages)}
         </p>
       ) : null}
       {r.cost_fee_notes ? <p className="muted">{r.cost_fee_notes}</p> : null}
@@ -257,7 +260,8 @@ export function RecordPage() {
           {t(lang, "reportProblem")}
         </a>
       </p>
-      {r.verification_status ? <p className="muted">{r.verification_status}</p> : null}
+      {/* verification_status is an internal QA note ("…require launch QA"),
+          English-only and meaningless to a reader — it stays out of the page. */}
     </article>
   );
 }

@@ -88,6 +88,21 @@ export function SettingsPage() {
       <div className="sheet">
         <h2>{t(lang, "homePin")}</h2>
         <p className="muted">{t(lang, "homePinHelp")}</p>
+        <div className="actions">
+          <button className="btn primary" onClick={useMyLocation} disabled={locating}>
+            <span aria-hidden="true">📍 </span>
+            {locateFailed ? t(lang, "locationError") : locating ? "…" : t(lang, "useMyLocation")}
+          </button>
+          <button
+            className="btn"
+            onClick={() => {
+              resetHome();
+              jumpTo({ lat: meta.home_default.lat, lng: meta.home_default.lng });
+            }}
+          >
+            {t(lang, "useDefaultPin")}
+          </button>
+        </div>
         {online ? (
           <>
             <p className="muted">{t(lang, "tapToSetPin")}</p>
@@ -108,46 +123,36 @@ export function SettingsPage() {
         ) : (
           <div className="banner off">{t(lang, "mapsNeedNetwork")}</div>
         )}
-        <div className="field-row">
-          <label className="field">
-            {t(lang, "latitude")}
-            <input
-              value={String(draft.lat)}
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                if (Number.isFinite(v)) setDraft((d) => ({ ...d, lat: v }));
-              }}
-              inputMode="decimal"
-            />
-          </label>
-          <label className="field">
-            {t(lang, "longitude")}
-            <input
-              value={String(draft.lng)}
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                if (Number.isFinite(v)) setDraft((d) => ({ ...d, lng: v }));
-              }}
-              inputMode="decimal"
-            />
-          </label>
-        </div>
+        <details className="settings-advanced">
+          <summary>{t(lang, "settingsAdvanced")}</summary>
+          <div className="field-row">
+            <label className="field">
+              {t(lang, "latitude")}
+              <input
+                value={String(draft.lat)}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (Number.isFinite(v)) setDraft((d) => ({ ...d, lat: v }));
+                }}
+                inputMode="decimal"
+              />
+            </label>
+            <label className="field">
+              {t(lang, "longitude")}
+              <input
+                value={String(draft.lng)}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (Number.isFinite(v)) setDraft((d) => ({ ...d, lng: v }));
+                }}
+                inputMode="decimal"
+              />
+            </label>
+          </div>
+        </details>
         <div className="actions">
           <button className="btn primary" onClick={() => setHome(draft)}>
             {t(lang, "save")}
-          </button>
-          <button className="btn" onClick={useMyLocation} disabled={locating}>
-            <span aria-hidden="true">📍 </span>
-            {locateFailed ? t(lang, "locationError") : locating ? "…" : t(lang, "useMyLocation")}
-          </button>
-          <button
-            className="btn"
-            onClick={() => {
-              resetHome();
-              jumpTo({ lat: meta.home_default.lat, lng: meta.home_default.lng });
-            }}
-          >
-            {t(lang, "useDefaultPin")}
           </button>
         </div>
       </div>
@@ -184,7 +189,7 @@ export function SettingsPage() {
           {syncMsg ? <span className="muted">{syncMsg}</span> : null}
         </div>
       </div>
-      <p className="muted">{meta.privacy_note}</p>
+      <p className="muted">{t(lang, "settingsPrivacy")}</p>
     </div>
   );
 }

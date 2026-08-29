@@ -2,11 +2,14 @@
  * Apply checked-in data overlays to src/data/records.json.
  *
  * Overlay files live in data/overlays/*.json with the shape:
- *   { "patch": [{ "record_id": "...", ...fields }], "add": [{ ...record }] }
+ *   { "patch": [{ "record_id": "...", ...fields }], "add": [{ ...record }],
+ *     "remove": [{ "record_id": "...", "reason": "..." }] }
  *
  * Patches merge fields into existing records; adds append new records with
  * defaults, computed search_text, and distance estimates from the default
- * home pin. Idempotent: re-running produces identical output.
+ * home pin; removes drop a record (a later overlay can retire a duplicate an
+ * earlier one added). Files apply in filename order. Idempotent: re-running
+ * produces identical output.
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -132,7 +135,7 @@ const DEFAULTS = {
 };
 
 function main() {
-  const records = JSON.parse(readFileSync(recordsPath, "utf8"));
+  let records = JSON.parse(readFileSync(recordsPath, "utf8"));
   const meta = JSON.parse(readFileSync(metaPath, "utf8"));
   const byId = new Map(records.map((r) => [r.record_id, r]));
   if (!existsSync(overlaysDir)) {
@@ -142,8 +145,15 @@ function main() {
   const files = readdirSync(overlaysDir).filter((f) => f.endsWith(".json")).sort();
   let patched = 0;
   let added = 0;
+  let removed = 0;
   for (const file of files) {
     const overlay = JSON.parse(readFileSync(join(overlaysDir, file), "utf8"));
+    for (const drop of overlay.remove || []) {
+      if (!byId.has(drop.record_id)) continue; // already gone: idempotent
+      records = records.filter((r) => r.record_id !== drop.record_id);
+      byId.delete(drop.record_id);
+      removed += 1;
+    }
     for (const patch of overlay.patch || []) {
       const target = byId.get(patch.record_id);
       if (!target) {
@@ -176,7 +186,7 @@ function main() {
   meta.record_types = [...new Set(records.map((r) => r.record_type))].sort();
   writeFileSync(recordsPath, JSON.stringify(records));
   writeFileSync(metaPath, JSON.stringify(meta, null, 2));
-  console.log(`overlays: patched ${patched}, added ${added}, total ${records.length}`);
+  console.log(`overlays: patched ${patched}, added ${added}, removed ${removed}, total ${records.length}`);
 }
 
 main();

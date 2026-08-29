@@ -142,37 +142,44 @@ function restDayAt(rd: number): boolean {
 }
 
 /**
- * What the home screen should say today: candle-lighting notice on Friday and
- * erev chag, a "closed until ~havdalah" notice on Shabbat and chagim, nothing
- * on a plain weekday.
+ * Havdalah at the end of the run of rest days starting at `startRd` — a chag
+ * running into Shabbat, or Rosh Hashanah's two days, end together.
+ */
+function restEndMs(startRd: number, pin: HomePin): number | null {
+  let last = startRd;
+  for (let i = 0; i < 2 && restDayAt(last + 1); i++) last += 1;
+  const g = gregorianFromRd(last);
+  const sunset = sunsetUtcMs(g.year, g.month, g.day, pin.lat, pin.lng);
+  return sunset != null ? sunset + HAVDALAH_OFFSET_MIN * 60000 : null;
+}
+
+/**
+ * What the home screen should say now: candle-lighting notice on Friday and
+ * erev chag *before* candles, a "closed until ~havdalah" notice once candles
+ * have passed and through Shabbat and chagim, nothing on a plain weekday.
  */
 export function shabbatNotice(now: Date, pin: HomePin): ShabbatNotice | null {
   const d = jerusalemDay(now);
   const hol = holidayForRd(d.rd);
 
+  // Rest ends after the last consecutive rest day (RH day two, chag into Shabbat…).
   if (d.weekday === 6 || hol?.kind === "chag") {
-    // Rest ends after the last consecutive rest day (RH day two, chag into Shabbat…).
-    let last = d;
-    for (let i = 1; i <= 2; i++) {
-      if (!restDayAt(d.rd + i)) break;
-      const g = new Date(now.getTime() + i * 86400000);
-      last = jerusalemDay(g);
-    }
-    const sunset = sunsetUtcMs(last.year, last.month, last.day, pin.lat, pin.lng);
     return {
       kind: "rest",
       name: hol?.kind === "chag" ? HOLIDAY_NAMES[hol.code] : null,
-      timeMs: sunset != null ? sunset + HAVDALAH_OFFSET_MIN * 60000 : null,
+      timeMs: restEndMs(d.rd, pin),
     };
   }
 
   if (d.weekday === 5 || hol?.kind === "erev") {
     const sunset = sunsetUtcMs(d.year, d.month, d.day, pin.lat, pin.lng);
-    return {
-      kind: "eve",
-      name: hol?.kind === "erev" ? HOLIDAY_NAMES[hol.code] : null,
-      timeMs: sunset != null ? sunset - CANDLE_OFFSET_MIN * 60000 : null,
-    };
+    const candlesMs = sunset != null ? sunset - CANDLE_OFFSET_MIN * 60000 : null;
+    const name = hol?.kind === "erev" ? HOLIDAY_NAMES[hol.code] : null;
+    // Friday 19:30 is not "Shabbat starts at 18:51" — the shops already shut.
+    if (candlesMs != null && now.getTime() >= candlesMs) {
+      return { kind: "rest", name, timeMs: restEndMs(d.rd + 1, pin) };
+    }
+    return { kind: "eve", name, timeMs: candlesMs };
   }
 
   return null;

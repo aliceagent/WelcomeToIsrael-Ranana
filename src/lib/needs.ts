@@ -17,9 +17,32 @@ export type Need = {
  * under broader chips — Health, Handyman, Kids & school — not as separate top-level taps.
  */
 export const NEEDS: Need[] = [
-  { id: "dinner", icon: "🍽️", title: { en: "Dinner", fr: "Dîner", he: "ארוחת ערב" }, to: "/d/restaurants", row: 1, aliases: ["dinner", "restaurant", "eat out", "souper"] },
+  {
+    id: "dinner",
+    icon: "🍽️",
+    title: { en: "Dinner", fr: "Dîner", he: "ארוחת ערב" },
+    to: "/d/restaurants",
+    row: 1,
+    aliases: [
+      "dinner",
+      "restaurant",
+      "eat out",
+      "souper",
+      "hummus",
+      "houmous",
+      "חומוס",
+      "falafel",
+      "felafel",
+      "falafal",
+      "פלאפל",
+      "shawarma",
+      "shwarma",
+      "schwarma",
+      "שווארמה",
+    ],
+  },
   { id: "delivery", icon: "🛵", title: { en: "Delivery", fr: "Livraison", he: "משלוח" }, to: "/d/order-in", row: 1, aliases: ["wolt", "10bis", "delivery", "order in"] },
-  { id: "groceries", icon: "🛒", title: { en: "Groceries", fr: "Courses", he: "סופר" }, to: "/d/groceries", row: 1, aliases: ["supermarket", "shufersal", "groceries"] },
+  { id: "groceries", icon: "🛒", title: { en: "Groceries", fr: "Courses", he: "סופר" }, to: "/d/groceries", row: 1, aliases: ["supermarket", "shufersal", "groceries", "grocery", "grocer"] },
   { id: "coffee", icon: "🥐", title: { en: "Coffee", fr: "Café", he: "קפה" }, to: "/d/bakeries", row: 1, aliases: ["coffee", "bakery", "cafe", "croissant"] },
   { id: "french", icon: "🇫🇷", title: { en: "French food", fr: "Cuisine FR", he: "אוכל צרפתי" }, to: "/d/french-food", row: 1, aliases: ["french", "boulangerie", "traiteur"] },
   { id: "butcher", icon: "🥩", title: { en: "Butcher", fr: "Boucher", he: "קצבייה" }, to: "/d/butcher", row: 1, aliases: ["butcher", "meat", "boucher"] },
@@ -30,7 +53,28 @@ export const NEEDS: Need[] = [
     title: { en: "Health", fr: "Santé", he: "בריאות" },
     to: "/d/health",
     row: 1,
-    aliases: ["doctor", "hospital", "clinic", "kupah", "clalit", "dentist", "dentiste", "urgent", "רופא", "שיניים"],
+    aliases: [
+      "doctor",
+      "hospital",
+      "clinic",
+      "kupah",
+      "kupat",
+      "kupat holim",
+      "koupat holim",
+      "קופת חולים",
+      "clalit",
+      "dentist",
+      "dentiste",
+      "urgent",
+      "medecin",
+      "médecin",
+      "docteur",
+      "hopital",
+      "hôpital",
+      "clinique",
+      "רופא",
+      "שיניים",
+    ],
   },
   {
     id: "handyman",
@@ -73,10 +117,25 @@ export const NEEDS: Need[] = [
     title: { en: "Kids & school", fr: "École & enfants", he: "בית ספר וילדים" },
     to: "/d/schools",
     row: 3,
-    aliases: ["school", "kindergarten", "mashov", "kids", "after school", "camp", "daycare", "école"],
+    aliases: [
+      "school",
+      "kindergarten",
+      "mashov",
+      "kids",
+      "after school",
+      "camp",
+      "daycare",
+      "école",
+      "ecole",
+      "maternelle",
+      "crèche",
+      "creche",
+      "gan",
+      "גן ילדים",
+    ],
   },
   { id: "synagogue", icon: "✡️", title: { en: "Synagogue", fr: "Synagogue", he: "בית כנסת" }, to: "/d/synagogues", row: 3, aliases: ["synagogue", "minyan", "shul"] },
-  { id: "bus", icon: "🚌", title: { en: "Bus / train", fr: "Bus / train", he: "אוטובוס / רכבת" }, to: "/d/transit", row: 3, aliases: ["bus", "train", "rav-kav", "moovit"] },
+  { id: "bus", icon: "🚌", title: { en: "Bus / train", fr: "Bus / train", he: "אוטובוס / רכבת" }, to: "/d/transit", row: 3, aliases: ["bus", "train", "rav-kav", "moovit", "egged", "metropoline", "אגד"] },
   { id: "shelter", icon: "🛡️", title: { en: "Shelter", fr: "Abri", he: "מקלט" }, to: "/d/shelters", row: 3, aliases: ["shelter", "alert", "rocket", "מקלט"] },
   { id: "aliyah", icon: "✈️", title: { en: "Aliyah desk", fr: "Bureau olim", he: "קליטה" }, to: "/d/olim", row: 3, aliases: ["aliyah", "olim", "absorption"] },
   { id: "hebrew", icon: "א", title: { en: "Hebrew word", fr: "Mot d'hébreu", he: "מילה בעברית" }, to: "/glossary", row: 3, aliases: ["hebrew", "glossary", "ulpan"] },
@@ -97,9 +156,12 @@ export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
   { test: /electricien|electrician|חשמלאי|חשמל|handyman|plombier|plumber|אינסטלטור/i, extra: ["midrag", "home center"] },
   { test: /hardware|bricolage|diy|home depot|כלי עבודה/i, extra: ["home center", "ace"] },
   { test: /dentist|dentiste|שיניים/i, extra: ["midrag", "google maps"] },
-  { test: /hairdresser|coiffeur|salon|ספר|מספרה|barber/i, extra: ["midrag", "easy"] },
+  { test: /hairdresser|coiffeur|coiffure|salon|ספר|מספרה|barber|hair ?cut|haircut|תספורת/i, extra: ["midrag", "easy"] },
   { test: /nanny|babysit|nounou|מטפלת/i, extra: ["midrag"] },
-  { test: /kupah|kupat|caisse maladie|קופת חולים|hospital|hôpital|בית חולים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit"] },
+  {
+    test: /kupah|kupat|caisse maladie|קופת חולים|hospital|hôpital|hopital|בית חולים|médecin|medecin|docteur|clinique|doctor|family doctor|רופא משפחה/i,
+    extra: ["clalit", "maccabi", "meuhedet", "leumit"],
+  },
   { test: /pharmacy|pharmacie|בית מרקחת|superpharm|super-pharm/i, extra: ["super-pharm"] },
   { test: /dinner|dîner|souper|ארוחת ערב|tonight/i, extra: ["wolt", "restaurant"] },
   { test: /vet|vétérinaire|וטרינר/i, extra: ["veterinary"] },
@@ -108,24 +170,43 @@ export const SEARCH_SYNONYMS: { test: RegExp; extra: string[] }[] = [
   { test: /licence|license|permis de conduire|רישיון/i, extra: ["driving licence", "ministry of transport"] },
   { test: /ikea|furniture|meuble|רהיט/i, extra: ["ikea"] },
   { test: /garbage|trash|poubelle|אשפה|recycling/i, extra: ["garbage", "recycling"] },
-  { test: /school|école|kindergarten|גן ילדים|mashov/i, extra: ["school", "education"] },
+  { test: /school|école|ecole|maternelle|crèche|creche|kindergarten|גן ילדים|mashov/i, extra: ["school", "education", "kindergarten"] },
   { test: /water heater|boiler|hot water|dud shemesh|דוד שמש|chauffe-eau/i, extra: ["plumber", "home services", "midrag"] },
   { test: /gym|fitness|workout|חדר כושר|musculation/i, extra: ["sports", "tennis", "swimming"] },
   { test: /taxi|cab|מונית|monit/i, extra: ["gett", "taxi"] },
-  { test: /מכולת|makolet|épicerie/i, extra: ["supermarket", "grocery"] },
+  { test: /מכולת|makolet|épicerie|epicerie|grocer(y|ies)?|supermarch/i, extra: ["supermarket", "grocery", "shufersal"] },
   { test: /pediatrician|pédiatre|רופא ילדים/i, extra: ["clalit", "maccabi", "meuhedet", "leumit", "tipat halav", "schneider"] },
   { test: /garderie|daycare|צהרון/i, extra: ["kindergarten", "childcare"] },
   { test: /pharmacie de garde|duty pharmacy/i, extra: ["super-pharm", "pharmacy"] },
   { test: /cacher|casher/i, extra: ["kosher", "butcher"] },
   { test: /locksmith|serrurier|מנעולן|aircon|air condition|מזגן/i, extra: ["midrag", "home services"] },
-  { test: /bus|אוטובוס|autobus/i, extra: ["moovit", "rav-kav"] },
+  { test: /bus|אוטובוס|autobus/i, extra: ["moovit", "rav-kav", "egged", "metropoline"] },
 ];
 
 const THIN_TRADE =
-  /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|nanny|babysit|handyman|חשמלאי|אינסטלטור|שיניים|water heater|boiler|dud shemesh|locksmith|serrurier|aircon|מזגן|מנעולן/i;
+  /electricien|electrician|plumber|plombier|dentist|dentiste|hairdresser|coiffeur|coiffure|hair ?cut|barber|תספורת|nanny|babysit|handyman|חשמלאי|אינסטלטור|שיניים|water heater|boiler|dud shemesh|locksmith|serrurier|aircon|מזגן|מנעולן|hummus|houmous|חומוס|falafel|felafel|פלאפל|shawarma|shwarma|schwarma|שווארמה/i;
 
 export function isThinTradeQuery(query: string): boolean {
   return THIN_TRADE.test(query);
+}
+
+/**
+ * "open"/"open now"/"פתוח עכשיו" say *when* someone wants a place, not what
+ * they are looking for — as search terms they answer with bomb shelters
+ * ("open") and miss every supermarket ("grocery open"). Strip them and let the
+ * page's own open-now grouping carry the intent.
+ */
+const OPEN_INTENT = /\b(open|opened|now|tonight|ouvert|ouverte|maintenant)\b|פתוח|פתוחים|עכשיו/gi;
+
+function hasOpenIntent(query: string): boolean {
+  OPEN_INTENT.lastIndex = 0;
+  return OPEN_INTENT.test(query);
+}
+
+/** The query with the open-now words removed; "" when nothing else was typed. */
+export function stripOpenIntent(query: string): string {
+  if (!hasOpenIntent(query)) return query.trim();
+  return query.replace(OPEN_INTENT, " ").replace(/\s+/g, " ").trim();
 }
 
 export function expandQuery(query: string): string[] {
@@ -135,14 +216,35 @@ export function expandQuery(query: string): string[] {
   return [q, ...extra.filter((term) => term.toLowerCase() !== q.toLowerCase())];
 }
 
+/**
+ * Aliases match on whole words, anchored at a word start: "kupat holim" used
+ * to land on the Aliyah desk because "holim" *contains* "olim". A trailing
+ * inflection is still fine, so "synagogues" finds the synagogue chip.
+ */
+function isWordChar(ch: string): boolean {
+  return /[\p{L}\p{N}]/u.test(ch);
+}
+
+function containsAtWordStart(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  for (let i = haystack.indexOf(needle); i >= 0; i = haystack.indexOf(needle, i + 1)) {
+    if (i === 0 || !isWordChar(haystack[i - 1])) return true;
+  }
+  return false;
+}
+
+function aliasMatches(alias: string, q: string): boolean {
+  return alias === q || containsAtWordStart(q, alias) || containsAtWordStart(alias, q);
+}
+
 export function matchNeed(query: string, lang: Lang = "en"): Need | undefined {
-  const q = query.trim().toLowerCase();
+  const q = stripOpenIntent(query).trim().toLowerCase() || query.trim().toLowerCase();
   if (!q) return undefined;
   return NEEDS.find(
     (n) =>
       n.title[lang].toLowerCase() === q ||
       n.title.en.toLowerCase() === q ||
-      n.aliases.some((a) => a.toLowerCase() === q || q.includes(a.toLowerCase()) || a.toLowerCase().includes(q)),
+      n.aliases.some((a) => aliasMatches(a.toLowerCase(), q)),
   );
 }
 

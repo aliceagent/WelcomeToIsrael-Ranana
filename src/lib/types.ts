@@ -44,6 +44,12 @@ export interface Resource {
   availability_hours_note: string | null;
   /** Structured weekly hours: days 0=Sun..6=Sat, times "HH:MM". */
   hours_structured?: { days: number[]; open: string; close: string }[] | null;
+  /**
+   * Weekdays (0=Sun..6=Sat) the place is known to be shut — e.g. a kosher
+   * supermarket on Shabbat. Recorded separately from opening hours so a
+   * closure can be stated without inventing the rest of the week.
+   */
+  closed_days?: number[] | null;
   eligibility_requirements: string | null;
   cost_fee_notes: string | null;
   delivery_coverage: string | null;

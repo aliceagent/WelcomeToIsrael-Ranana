@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { physicalRecords, records, getById } from "../lib/data";
 import { PlacesMapLazy } from "../components/PlacesMapLazy";
 import { RecordCard } from "../components/RecordCard";
@@ -10,6 +11,7 @@ import { effectiveKm } from "../lib/geo";
 import { buildSearch, searchRecords } from "../lib/search";
 import { getMapCategory, MAP_ROWS } from "../lib/mapview";
 import { openState } from "../lib/hours";
+import { getFolder, folderLabel } from "../lib/directory";
 
 buildSearch(records);
 
@@ -17,16 +19,24 @@ const PAGE = 20;
 
 export function MapPage() {
   const { lang, online, origin, originIsDefault } = useStore();
+  // Folder pages and search results deep-link here (?d=folder&chip=…, ?q=…)
+  // so "see these on a map" carries the same filtered list over.
+  const [params, setParams] = useSearchParams();
+  const folder = getFolder(params.get("d") || undefined);
+  const chip = folder?.chips?.find((c) => c.id === params.get("chip"));
   const [cat, setCat] = useState("all");
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(params.get("q") || "");
   const [selected, setSelected] = useState<string | null>(null);
   const [limit, setLimit] = useState(PAGE);
   const [openOnly, setOpenOnly] = useState(false);
 
   const places = useMemo(() => {
-    const base = q.trim()
+    let base = q.trim()
       ? searchRecords(q).filter((r) => r.is_physical_location && r.latitude_est != null && r.longitude_est != null)
       : physicalRecords;
+    if (folder) {
+      base = base.filter((r) => folder.match(r) && (!chip || chip.match(r)));
+    }
     const category = cat === "all" ? undefined : getMapCategory(cat);
     let list = category ? base.filter(category.match) : base;
     if (openOnly) {
@@ -36,7 +46,7 @@ export function MapPage() {
       });
     }
     return list;
-  }, [cat, q, openOnly]);
+  }, [cat, q, openOnly, folder, chip]);
 
   // How many mappable places each section holds; empty sections hide.
   const counts = useMemo(() => {
@@ -77,6 +87,22 @@ export function MapPage() {
         }}
         placeholder={t(lang, "searchHint")}
       />
+      {folder ? (
+        <div className="filters">
+          <button
+            type="button"
+            className="on"
+            onClick={() => {
+              setParams(q.trim() ? { q: q.trim() } : {}, { replace: true });
+              setSelected(null);
+              setLimit(PAGE);
+            }}
+          >
+            {folderLabel(folder, lang)}
+            {chip ? ` · ${folderLabel(chip, lang)}` : ""} ✕
+          </button>
+        </div>
+      ) : null}
       {MAP_ROWS.map((row, i) => (
         <div className="filters map-filters" key={i}>
           {i === 0 ? (

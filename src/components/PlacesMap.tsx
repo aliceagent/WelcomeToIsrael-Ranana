@@ -70,8 +70,16 @@ function ClusterLayer({
       group.addLayer(marker);
     }
     map.addLayer(group);
-    const bounds = group.getBounds();
-    if (bounds.isValid()) map.fitBounds(bounds.pad(0.12), { maxZoom: 16 });
+    // Fast search→record→back cycles can unmount this map (and remove its
+    // DOM) between building the cluster group above and this pan/zoom call —
+    // Leaflet's fitBounds schedules further work (animation frames touching
+    // internal pane positions) that then throws on a detached container.
+    // Skip that work once the container is gone, and disable the animation
+    // so it can't outlive a teardown that happens moments later.
+    if (map.getContainer()?.isConnected) {
+      const bounds = group.getBounds();
+      if (bounds.isValid()) map.fitBounds(bounds.pad(0.12), { maxZoom: 16, animate: false });
+    }
     return () => {
       map.removeLayer(group);
     };
@@ -80,6 +88,7 @@ function ClusterLayer({
   }, [places, map, onSelect]);
 
   useEffect(() => {
+    if (!map.getContainer()?.isConnected) return;
     for (const [id, marker] of markersRef.current) {
       const r = places.find((p) => p.record_id === id);
       if (r) marker.setIcon(pinIcon(r, id === selectedId));
