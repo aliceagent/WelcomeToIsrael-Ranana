@@ -422,6 +422,22 @@ export const dict = {
     fr: 'Bienvenue à Ra\'anana — correction pour « {name} » ({id}) : ',
     he: 'ברוכים הבאים לרעננה — תיקון עבור "{name}" ({id}): ',
   },
+  settingsAdvanced: {
+    en: "Advanced: exact coordinates",
+    fr: "Avancé : coordonnées exactes",
+    he: "מתקדם: קואורדינטות מדויקות",
+  },
+  shabbatClosuresHeading: { en: "Before Shabbat", fr: "Avant Chabbat", he: "לפני שבת" },
+  shabbatClosuresNote: {
+    en: "Most shops and supermarkets close Friday afternoon before candle-lighting and reopen Saturday night or Sunday. Plan ahead:",
+    fr: "La plupart des commerces et supermarchés ferment le vendredi après-midi avant l'allumage des bougies, et rouvrent samedi soir ou dimanche. À anticiper :",
+    he: "רוב החנויות והסופרמרקטים נסגרים ביום שישי אחר הצהריים לפני הדלקת הנרות, ונפתחים שוב במוצאי שבת או ביום ראשון. כדאי להיערך מראש:",
+  },
+  shabbatFolderBanner: {
+    en: "Shabbat now — most places are closed. Delivery/online options for after: {name}",
+    fr: "C'est Chabbat — la plupart des lieux sont fermés. Options de livraison en ligne pour après : {name}",
+    he: "שבת עכשיו — רוב המקומות סגורים. אפשרויות משלוח ואונליין לאחר השבת: {name}",
+  },
 } as const;
 
 export type DictKey = keyof typeof dict;

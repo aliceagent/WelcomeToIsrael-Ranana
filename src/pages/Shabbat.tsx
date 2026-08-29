@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import {
@@ -11,6 +12,10 @@ import {
 } from "../lib/shabbat";
 import { gregorianFromRd } from "../lib/hebcal.mjs";
 import { parshaFor } from "../lib/parsha";
+import { folderLabel, getFolder } from "../lib/directory";
+
+/** Where to point people before candle-lighting: stock up, or line up delivery for after. */
+const SHABBAT_PLAN_FOLDER_IDS = ["groceries", "pharmacy", "order-in"];
 
 export function ShabbatPage() {
   const { lang, home } = useStore();
@@ -22,6 +27,7 @@ export function ShabbatPage() {
     return { week, parsha: parshaFor(week.saturday) };
   });
   const chagim = upcomingChagim(now, 6);
+  const planFolders = SHABBAT_PLAN_FOLDER_IDS.map(getFolder).filter((f): f is NonNullable<typeof f> => !!f);
 
   return (
     <article className="detail shabbat-page">
@@ -66,6 +72,21 @@ export function ShabbatPage() {
           <span className="time-val">{times.havdalahMs != null ? formatJerusalemTime(times.havdalahMs, lang) : "—"}</span>
         </div>
       </div>
+
+      {planFolders.length ? (
+        <div className="sheet">
+          <h2>{t(lang, "shabbatClosuresHeading")}</h2>
+          <p className="muted">{t(lang, "shabbatClosuresNote")}</p>
+          <div className="try-chips" style={{ justifyContent: "flex-start" }}>
+            {planFolders.map((f) => (
+              <Link className="need-chip" key={f.id} to={`/d/${f.id}`}>
+                <span className="need-ico" aria-hidden="true">{f.icon}</span>
+                {folderLabel(f, lang)}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="section-head">
         <h2>{t(lang, "comingWeeks")}</h2>

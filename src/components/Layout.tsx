@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
 import type { Lang } from "../lib/types";
@@ -16,10 +16,23 @@ function scrollToTop() {
   document.body.scrollTop = 0;
 }
 
+/**
+ * Scroll position per history entry (react-router's location.key), so a
+ * folder list scrolled down and reopened via back lands where it was. This
+ * app uses a plain <BrowserRouter> (no data router), so there's no built-in
+ * <ScrollRestoration> to lean on — and the browser's own automatic
+ * per-entry scroll memory is unreliable here (it snapshots on its own
+ * schedule, which a same-tick pushState navigation right after scrolling
+ * can outrun), so it's tracked explicitly instead. Module-level: Layout
+ * mounts once for the app's lifetime, so this is effectively a singleton.
+ */
+const scrollPositions = new Map<string, number>();
+
 export function Layout() {
   const { lang, setLang, online } = useStore();
   const loc = useLocation();
   const navigate = useNavigate();
+  const navType = useNavigationType();
   const title = useChromeTitle();
   const folder = loc.pathname.startsWith("/d/") ? getFolder(loc.pathname.slice(3)) : undefined;
   const foodOn = loc.pathname === "/food" || folder?.group === "food";
@@ -30,15 +43,44 @@ export function Layout() {
       const el = document.getElementById(decodeURIComponent(loc.hash.slice(1)));
       if (el) {
         el.scrollIntoView();
+        document.getElementById("main")?.focus({ preventScroll: true });
         return;
       }
     }
-    scrollToTop();
     // Land screen-reader/keyboard focus on the new page's content.
     document.getElementById("main")?.focus({ preventScroll: true });
+    // POP (back/forward) restores the scroll position this same history
+    // entry had before we left it — a folder scrolled down, then opened
+    // into a record, is back where it was on return. Only forward
+    // (PUSH/REPLACE) navigation forces the new page to the top.
+    if (navType === "POP") {
+      const saved = scrollPositions.get(loc.key);
+      if (saved == null) return;
+      // The new route's content (and its real scrollable height) isn't
+      // painted yet on this same tick — wait a frame before restoring.
+      const frame = requestAnimationFrame(() => window.scrollTo(0, saved));
+      return () => cancelAnimationFrame(frame);
+    }
+    scrollToTop();
     const frame = requestAnimationFrame(scrollToTop);
     return () => cancelAnimationFrame(frame);
-  }, [loc.pathname, loc.hash]);
+  }, [loc.pathname, loc.hash, navType, loc.key]);
+
+  // Keep the current history entry's remembered scroll position fresh as
+  // the user scrolls, so it's ready if they later come back via POP.
+  // Deliberately *not* also recorded once more on cleanup: React commits
+  // the new route's DOM before running this cleanup, so by then
+  // window.scrollY already reflects the *next* (often shorter) page —
+  // often already auto-clamped down by the browser — not the position
+  // being left. The live listener alone is sufficient: every scroll fires
+  // it, so the map is never behind by more than the scroll that's
+  // currently in flight.
+  useEffect(() => {
+    const key = loc.key;
+    const record = () => scrollPositions.set(key, window.scrollY);
+    window.addEventListener("scroll", record, { passive: true });
+    return () => window.removeEventListener("scroll", record);
+  }, [loc.key]);
 
   function goBack() {
     if (loc.key !== "default") navigate(-1);

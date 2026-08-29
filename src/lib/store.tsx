@@ -59,6 +59,31 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
+/**
+ * The address is always plain text, but was read with readJson()'s
+ * JSON.parse — so a value seeded directly (e.g. localStorage.setItem, not
+ * through this store's own JSON.stringify write path) isn't valid JSON,
+ * JSON.parse throws, and the initializer silently fell back to "". The
+ * write-back effect below then persisted that "" over the pre-existing
+ * value on the very next render, permanently wiping it. Fall back to the
+ * raw string instead of discarding it when it isn't JSON.
+ */
+function readStoredAddress(): string {
+  try {
+    const raw = localStorage.getItem(ADDRESS_KEY);
+    if (raw == null) return "";
+    try {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed === "string") return parsed;
+    } catch {
+      // Not JSON-encoded — use the raw value verbatim rather than wiping it.
+    }
+    return raw;
+  } catch {
+    return "";
+  }
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => readJson(LANG_KEY, "en"));
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set(readJson<string[]>(FAV_KEY, [])));
@@ -66,7 +91,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [home, setHomeState] = useState<HomePin>(() =>
     readJson(HOME_KEY, { lat: meta.home_default.lat, lng: meta.home_default.lng }),
   );
-  const [address, setAddress] = useState<string>(() => readJson(ADDRESS_KEY, ""));
+  const [address, setAddress] = useState<string>(readStoredAddress);
   const [notes, setNotes] = useState<Record<string, string>>(() => readJson(NOTES_KEY, {}));
   const [gps, setGps] = useState<HomePin | null>(null);
   const [useGps, setUseGps] = useState(false);

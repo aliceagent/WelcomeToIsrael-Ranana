@@ -7,12 +7,16 @@ import { t } from "../lib/i18n";
 import { getFolder, folderLabel, recordsInFolder, directorySorter } from "../lib/directory";
 import { effectiveKm } from "../lib/geo";
 import { openState } from "../lib/hours";
+import { shabbatNotice } from "../lib/shabbat";
 import { shareContent, whatsappShareUrl, absoluteUrl } from "../lib/share";
 import type { Resource } from "../lib/types";
 
+/** Food folders where "everything's shut for Shabbat" is worth a nudge toward delivery. */
+const SHABBAT_DELIVERY_FOLDER_IDS = new Set(["groceries", "bakeries", "butcher", "restaurants", "french-food", "order-in"]);
+
 export function FolderPage() {
   const { slug } = useParams();
-  const { lang, origin, originIsDefault } = useStore();
+  const { lang, home, origin, originIsDefault } = useStore();
   const [msg, setMsg] = useState("");
   const folder = getFolder(slug);
   // Filters live in the URL so back-navigation keeps them and lists stay shareable.
@@ -50,6 +54,8 @@ export function FolderPage() {
   const title = folderLabel(folder, lang);
   const mappable = items.some((r) => r.latitude_est != null && r.longitude_est != null);
   const mapLink = `/map?d=${folder.id}${chip !== "all" ? `&chip=${chip}` : ""}`;
+  const showShabbatDelivery = SHABBAT_DELIVERY_FOLDER_IDS.has(folder.id) && shabbatNotice(new Date(), home)?.kind === "rest";
+  const deliveryFolder = getFolder(folder.id === "order-in" ? "grocery-delivery" : "order-in");
 
   return (
     <div>
@@ -103,6 +109,15 @@ export function FolderPage() {
       {folder.caveat === "hours" ? <div className="banner">{t(lang, "hoursCaveat")}</div> : null}
       {folder.caveat === "kosher" ? <div className="banner">{t(lang, "kosherCaveat")}</div> : null}
       {folder.pinIds?.length ? <div className="banner">{t(lang, "tryLiveHelp")}</div> : null}
+      {showShabbatDelivery && deliveryFolder ? (
+        <Link to={`/d/${deliveryFolder.id}`} className="banner shabbat banner-tap">
+          <span aria-hidden="true">🕯️ </span>
+          {t(lang, "shabbatFolderBanner").replace("{name}", folderLabel(deliveryFolder, lang))}
+          <span className="banner-chev" aria-hidden="true">
+            ›
+          </span>
+        </Link>
+      ) : null}
       {items.length === 0 ? <div className="empty">{t(lang, "noResults")}</div> : null}
       {items.map((r) => {
         const closed = openState(r) === "closed";
