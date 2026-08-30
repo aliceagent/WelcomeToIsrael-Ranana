@@ -33,10 +33,32 @@ function rateLimited(ip: string): boolean {
   return kept.length > RATE_LIMIT;
 }
 
+/**
+ * Vercel's storage integrations name their REST credentials differently
+ * depending on which one is attached (legacy Vercel KV, the Upstash
+ * marketplace entry, or a hand-rolled pair), so accept every spelling
+ * rather than making the choice of integration matter.
+ */
+const URL_KEYS = ["KV_REST_API_URL", "UPSTASH_REDIS_REST_URL", "REDIS_REST_API_URL", "STORAGE_REST_API_URL"];
+const TOKEN_KEYS = [
+  "KV_REST_API_TOKEN",
+  "UPSTASH_REDIS_REST_TOKEN",
+  "REDIS_REST_API_TOKEN",
+  "STORAGE_REST_API_TOKEN",
+];
+
+function firstEnv(keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = process.env[key];
+    if (value) return value;
+  }
+  return undefined;
+}
+
 function redisEnv(): { url: string; token: string } | null {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  return url && token ? { url, token } : null;
+  const url = firstEnv(URL_KEYS);
+  const token = firstEnv(TOKEN_KEYS);
+  return url && token ? { url: url.replace(/\/+$/, ""), token } : null;
 }
 
 async function pipeline(commands: (string | number)[][]): Promise<unknown[] | null> {
@@ -57,7 +79,8 @@ export async function handleStats(request: Request): Promise<Response> {
 
   if (request.method === "GET") {
     if (!redisEnv()) {
-      return Response.json({ available: false }, { headers: { "Cache-Control": "s-maxage=300" } });
+      // "no_store": nothing attached yet. The home page hides the section.
+      return Response.json({ available: false, reason: "no_store" }, { headers: { "Cache-Control": "s-maxage=60" } });
     }
     try {
       const rows = await pipeline([["PFCOUNT", "stats:devices"], ...COUNTERS.map((c) => ["GET", `stats:${c}`])]);
@@ -69,8 +92,12 @@ export async function handleStats(request: Request): Promise<Response> {
         // One request a minute serves the whole family via the CDN.
         headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=600" },
       });
-    } catch {
-      return Response.json({ available: false }, { status: 200 });
+    } catch (err) {
+      // Attached but unreachable/misconfigured — say so instead of looking empty.
+      return Response.json(
+        { available: false, reason: "store_error", detail: String((err as Error).message || err).slice(0, 120) },
+        { status: 200 },
+      );
     }
   }
 
