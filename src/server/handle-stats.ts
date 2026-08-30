@@ -80,7 +80,16 @@ export async function handleStats(request: Request): Promise<Response> {
   if (request.method === "GET") {
     if (!redisEnv()) {
       // "no_store": nothing attached yet. The home page hides the section.
-      return Response.json({ available: false, reason: "no_store" }, { headers: { "Cache-Control": "s-maxage=60" } });
+      // `saw` lists only the NAMES of storage-ish variables the runtime can
+      // see (never a value), which is what distinguishes "nothing attached"
+      // from "attached under a name this code does not know yet".
+      const saw = Object.keys(process.env)
+        .filter((k) => /REDIS|KV_|UPSTASH|STORAGE/i.test(k))
+        .sort();
+      return Response.json(
+        { available: false, reason: "no_store", saw },
+        { headers: { "Cache-Control": "no-store" } },
+      );
     }
     try {
       const rows = await pipeline([["PFCOUNT", "stats:devices"], ...COUNTERS.map((c) => ["GET", `stats:${c}`])]);
