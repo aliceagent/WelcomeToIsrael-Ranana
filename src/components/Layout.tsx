@@ -7,6 +7,8 @@ import { getFolder } from "../lib/directory";
 import { fallbackParent, isTabPath, useChromeTitle } from "../lib/nav";
 import { FoodIcon, HomeIcon, SavedIcon, SearchIcon, SosIcon } from "./Icons";
 import { Onboarding } from "./Onboarding";
+import { InstallNudge } from "./InstallNudge";
+import { initStats } from "../lib/appstats";
 
 const LANGS: Lang[] = ["en", "fr", "he"];
 
@@ -37,6 +39,10 @@ export function Layout() {
   const folder = loc.pathname.startsWith("/d/") ? getFolder(loc.pathname.slice(3)) : undefined;
   const foodOn = loc.pathname === "/food" || folder?.group === "food";
   const tab = isTabPath(loc.pathname);
+
+  useEffect(() => {
+    initStats();
+  }, []);
 
   useEffect(() => {
     if (loc.hash) {
@@ -100,6 +106,7 @@ export function Layout() {
         {t(lang, "skipToContent")}
       </a>
       <Onboarding />
+      <InstallNudge />
       <header className={`topbar ${tab ? "tab" : "stack"}`}>
         {tab ? (
           <Link className="brand" to="/">

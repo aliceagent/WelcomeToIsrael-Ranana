@@ -1593,3 +1593,48 @@ html[dir="rtl"] .banner-chev { transform: scaleX(-1); }
   .food-grid { grid-template-columns: repeat(6, 1fr); }
   .app-grid { grid-template-columns: repeat(6, 1fr); }
 }
+
+.nudge-card { max-width: 360px; }
+.nudge-ico { font-size: 3rem; line-height: 1; }
+.nudge-steps {
+  text-align: start;
+  margin: 4px 0 0;
+  padding-inline-start: 22px;
+  display: grid;
+  gap: 10px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.nudge-steps li::marker { font-weight: 800; color: var(--olive-text); }
+.nudge-never {
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  font-size: 0.9rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.stats-caption { margin-top: -4px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.stat-tile {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 10px 12px;
+  text-align: center;
+}
+.stat-tile .num {
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--olive-text);
+  line-height: 1.1;
+}
+.stat-tile .lbl { font-size: 0.875rem; color: var(--ink-soft); margin-top: 2px; }

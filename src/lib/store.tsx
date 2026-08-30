@@ -1,6 +1,7 @@
 import { createContext, createElement, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { HomePin, Lang } from "./types";
 import meta from "../data/meta.json";
+import { recordStat } from "./appstats";
 
 const LANG_KEY = "raanana.lang";
 const FAV_KEY = "raanana.favs";
@@ -146,7 +147,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setFavorites((prev) => {
           const next = new Set(prev);
           if (next.has(id)) next.delete(id);
-          else next.add(id);
+          else {
+            next.add(id);
+            recordStat("favorites");
+          }
           return next;
         }),
       notes,

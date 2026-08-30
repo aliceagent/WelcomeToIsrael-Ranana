@@ -11,6 +11,7 @@ import { t } from "../lib/i18n";
 import { matchNeed, needLabel, suggestNeeds } from "../lib/needs";
 import { absoluteUrl, shareContent, whatsappShareUrl } from "../lib/share";
 import { openState } from "../lib/hours";
+import { recordStat } from "../lib/appstats";
 import type { Resource } from "../lib/types";
 
 buildSearch(records);
@@ -74,6 +75,18 @@ export function SearchPage() {
 
   useEffect(() => {
     setLimit(PAGE);
+  }, [q]);
+
+  // One community-stats tick per settled, distinct query — not per keystroke.
+  const lastCounted = useRef("");
+  useEffect(() => {
+    const query = q.trim().toLowerCase();
+    if (query.length < 2 || query === lastCounted.current) return;
+    const timer = setTimeout(() => {
+      lastCounted.current = query;
+      recordStat("searches");
+    }, 900);
+    return () => clearTimeout(timer);
   }, [q]);
 
   // Leaving the page (usually by tapping a result) keeps the query in Recent.

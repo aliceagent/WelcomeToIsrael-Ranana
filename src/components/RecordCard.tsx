@@ -5,6 +5,7 @@ import { recordPath } from "../lib/share";
 import { shortWeekday, t } from "../lib/i18n";
 import { useStore } from "../lib/store";
 import { estimateTravel, haversineKm, isLowConfidence } from "../lib/geo";
+import { recordStat } from "../lib/appstats";
 import { openStateDetail } from "../lib/hours";
 import { Phone } from "./Phone";
 
@@ -83,7 +84,7 @@ export function RecordCard({ r, compact }: { r: Resource; compact?: boolean }) {
   const saved = favorites.has(r.record_id);
   return (
     <div className="card">
-      <Link to={recordPath(r)} className="card-link">
+      <Link to={recordPath(r)} className="card-link" onClick={() => recordStat("card_taps")}>
         <div className="card-row">
           <div className="card-body">
             {r.name_he && lang !== "he" ? <div className="he-name">{r.name_he}</div> : null}
