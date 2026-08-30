@@ -1,4 +1,5 @@
 import type { Resource } from "./types";
+import { recordStat } from "./appstats";
 
 export function recordPath(r: Resource): string {
   return `/e/${r.slug}`;
@@ -29,6 +30,7 @@ export async function shareContent(
   url: string,
   imagePath?: string,
 ): Promise<"shared" | "copied" | "failed"> {
+  recordStat("shares");
   const payload: ShareData = { title, text, url };
   if (imagePath && typeof navigator.canShare === "function") {
     try {

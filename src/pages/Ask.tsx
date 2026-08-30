@@ -8,6 +8,7 @@ import { AskProgress } from "../components/AskProgress";
 import { AskIcon } from "../components/Icons";
 import { useStore } from "../lib/store";
 import { t } from "../lib/i18n";
+import { recordStat } from "../lib/appstats";
 import { getById } from "../lib/data";
 import { askIsBusy, askProgressLabelKey, askProgressPhase, textOf } from "../lib/ask-progress";
 import type { DictKey } from "../lib/i18n";
@@ -106,6 +107,7 @@ export function AskPage() {
     e.preventDefault();
     const text = draft.trim();
     if (!text) return;
+    recordStat("asks");
     sendMessage({ text });
     setDraft("");
   }
@@ -150,7 +152,8 @@ export function AskPage() {
                 className="ask-chip"
                 onClick={() => {
                   sentQueries.add(prompt[lang]);
-                  sendMessage({ text: prompt[lang] });
+                  recordStat("asks");
+                    sendMessage({ text: prompt[lang] });
                 }}
               >
                 {prompt[lang]}

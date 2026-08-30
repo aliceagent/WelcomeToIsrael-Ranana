@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getById, meta } from "../lib/data";
 import { useStore } from "../lib/store";
-import { t } from "../lib/i18n";
+import { t, type DictKey } from "../lib/i18n";
+import { fetchStats, type StatsSummary } from "../lib/appstats";
 import { telHref } from "../lib/geo";
 import { displayName } from "../lib/format";
 import { recordPath } from "../lib/share";
@@ -104,7 +106,51 @@ export function HomePage() {
           </div>
         </section>
       ))}
+
+      <AppStats />
     </div>
+  );
+}
+
+/** Community counters under Help — every device using the guide, combined. */
+function AppStats() {
+  const { lang } = useStore();
+  const [stats, setStats] = useState<StatsSummary | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetchStats().then((s) => alive && setStats(s));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  if (!stats?.available) return null;
+  const tiles: { key: DictKey; value: number | undefined }[] = [
+    { key: "statsDevices", value: stats.devices },
+    { key: "statsSessions", value: stats.sessions },
+    { key: "statsMinutes", value: stats.seconds != null ? Math.round(stats.seconds / 60) : undefined },
+    { key: "statsSearches", value: stats.searches },
+    { key: "statsTaps", value: stats.card_taps },
+    { key: "statsFavorites", value: stats.favorites },
+    { key: "statsAsks", value: stats.asks },
+    { key: "statsShares", value: stats.shares },
+  ];
+  return (
+    <section>
+      <div className="section-head tight">
+        <h2>{t(lang, "statsTitle")}</h2>
+      </div>
+      <p className="muted stats-caption">{t(lang, "statsCaption")}</p>
+      <div className="stats-grid">
+        {tiles
+          .filter((x): x is { key: DictKey; value: number } => x.value != null)
+          .map((x) => (
+            <div className="stat-tile" key={x.key}>
+              <div className="num">{x.value.toLocaleString()}</div>
+              <div className="lbl">{t(lang, x.key)}</div>
+            </div>
+          ))}
+      </div>
+    </section>
   );
 }
 
